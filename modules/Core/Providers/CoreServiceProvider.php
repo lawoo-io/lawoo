@@ -1,0 +1,107 @@
+<?php
+
+namespace Modules\Core\Providers;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\ServiceProvider;
+use Modules\Core\Console\Commands\ModulesResBuildCommand;
+use Modules\Core\Console\Commands\ModulesCheckCommand;
+use Modules\Core\Console\Commands\ModulesInstallCommand;
+use Modules\Core\Console\Commands\ModulesRemoveCommand;
+use Modules\Core\Console\Commands\ModulesUpdateCommand;
+use Modules\Core\Database\Seeders\ModuleCategorySeeders;
+use Modules\Core\Models\Module;
+use Modules\Core\Models\Override;
+use Illuminate\Support\Facades\Schema;
+
+class CoreServiceProvider extends ServiceProvider
+{
+
+    public function register(): void {
+
+        $this->commands([
+            ModulesCheckCommand::class,
+            ModulesInstallCommand::class,
+            ModulesUpdateCommand::class,
+            ModulesRemoveCommand::class,
+            ModulesResBuildCommand::class,
+        ]);
+    }
+
+    public function boot(): void {
+
+        /**
+         * Load Migrations
+         */
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
+        /**
+         * Merge Config
+         */
+        $this->mergeConfigFrom(__DIR__ . '/../config.php', 'core');
+
+        /**
+         * Register RouteServiceProvider
+         */
+        $this->app->register(RouteServiceProvider::class);
+
+        /**
+         * Register Seeds
+         */
+        $this->registerSeeds();
+
+        /**
+         * Register activated modules
+         */
+        $this->registerModules();
+
+        /**
+         * Register override classes
+         */
+        $this->registerOverrides();
+    }
+
+    protected function registerSeeds(): void {
+        if (App::runningInConsole() && $this->app->runningUnitTests() === false) {
+            $this->app->afterResolving(Seeder::class, function (Seeder $seeder) {
+                $seeder->call(ModuleCategorySeeders::class);
+            });
+        }
+    }
+
+
+    /**
+     * Register enabled modules
+     * @return void
+     */
+    protected function registerModules(): void {
+
+        if (!Schema::hasTable('modules')) return;
+        $modules = Module::where('enabled', 1)->pluck('system_name');
+
+        foreach ($modules as $module) {
+            $providerClass = "Modules\\{$module}\\Providers\\{$module}ServiceProvider";
+
+            if (class_exists($providerClass)) {
+                $this->app->register($providerClass);
+            }
+        }
+    }
+
+    /**
+     * Register override classes
+     * @return void
+     */
+    protected function registerOverrides(): void {
+        if (!Schema::hasTable('overrides')) return;
+
+        $overrides = Override::all();
+
+        foreach ($overrides as $override) {
+            if (class_exists($override->original_class) && class_exists($override->override_class)) {
+                $this->app->bind($override->original_class, $override->override_class);
+            }
+        }
+    }
+}
