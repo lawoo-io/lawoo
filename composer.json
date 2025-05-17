@@ -21,7 +21,7 @@
   },
   "scripts": {
     "post-autoload-dump": [
-      "@php artisan package:discover"
+      "@php artisan lawoo:install || true"
     ]
   },
   "repositories": {

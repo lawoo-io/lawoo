@@ -5,6 +5,7 @@ namespace Modules\Core\Providers;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Console\Commands\InitCommand;
 use Modules\Core\Console\Commands\ModulesResBuildCommand;
 use Modules\Core\Console\Commands\ModulesCheckCommand;
 use Modules\Core\Console\Commands\ModulesInstallCommand;
@@ -21,6 +22,7 @@ class CoreServiceProvider extends ServiceProvider
     public function register(): void {
 
         $this->commands([
+            InitCommand::class,
             ModulesCheckCommand::class,
             ModulesInstallCommand::class,
             ModulesUpdateCommand::class,
