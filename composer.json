@@ -1,5 +1,5 @@
 {
-  "name": "lawoo-io/lawoo",
+  "name": "lawoo/lawoo",
   "type": "library",
   "license": "BUSL-1.1",
   "description": "Modular Framework for Laravel-Projects",
@@ -23,5 +23,11 @@
     "post-autoload-dump": [
       "@php artisan package:discover"
     ]
+  },
+  "repositories": {
+    "lawoo": {
+      "type": "vcs",
+      "url": "https://github.com/lawoo-io/lawoo.git"
+    }
   }
 }
