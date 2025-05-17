@@ -1,9 +1,11 @@
 <?php
 
+namespace Modules\Core\Console\Commands;
+
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class InitCommand
+class InitCommand extends Command
 {
     protected $signature = 'lawoo:init';
     protected $description = 'Install all Lawoo modules into /modules';
@@ -14,7 +16,7 @@ class InitCommand
         $targetBase = base_path('modules');
 
         if (!File::exists($sourceBase)) {
-            $this->error("❌ Lawoo modules not found in vendor/lawoo-io/lawoo/modules");
+            $this->error("❌ Lawoo modules not found.");
             return;
         }
 
@@ -27,7 +29,7 @@ class InitCommand
             $targetPath = $targetBase . DIRECTORY_SEPARATOR . $moduleName;
 
             if (File::exists($targetPath)) {
-                $this->warn("⚠️  Module '$moduleName' already exists in /modules – skipped.");
+                $this->warn("⚠️  $moduleName already exists – skipped.");
                 continue;
             }
 
@@ -35,6 +37,6 @@ class InitCommand
             $this->info("✅ Installed: $moduleName");
         }
 
-        $this->info("🎉 All modules installed.");
+        $this->info("🎉 All Lawoo modules installed.");
     }
 }
