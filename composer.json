@@ -29,5 +29,7 @@
       "type": "vcs",
       "url": "https://github.com/lawoo-io/lawoo.git"
     }
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
