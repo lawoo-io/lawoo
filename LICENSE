@@ -1,0 +1,27 @@
+Business Source License 1.1
+
+Parameters
+----------
+Licensor: Alexander Kröker / Lexcode
+Licensed Work: Lawoo – modular ERP-Framework based on Laravel
+Additional Use Grant: Private and non-commercial use is permitted.
+Change Date: 2028-01-01
+Change License: Apache 2.0
+
+Trademark Notice
+----------------
+"Laravel" is a registered trademark of Taylor Otwell and is used here to indicate framework compatibility. This project is not affiliated with or endorsed by Laravel or Taylor Otwell.
+
+"Lawoo" is a registered trademark of Alexander Kröker. Use of the trademark for derivative or commercial works requires explicit permission.
+
+Terms
+-----
+The Licensed Work is made available under the terms of the Business Source License
+version 1.1 (BUSL-1.1), as published by MariaDB Corporation Ab.
+
+Use Limitation: The Licensed Work may not be used for any commercial purpose except as
+expressly permitted by the Licensor.
+
+On the Change Date, the License will automatically be changed to the Change License.
+
+Full license text: https://mariadb.com/bsl11
