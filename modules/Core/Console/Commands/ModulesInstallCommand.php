@@ -18,7 +18,7 @@ class ModulesInstallCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'modules:install {module}';
+    protected $signature = 'lawoo:install {module}';
 
     /**
      * The console command description.

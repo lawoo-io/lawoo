@@ -15,7 +15,7 @@ class ModulesRemoveCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'modules:remove {name : The name of the module} {--remove-db}';
+    protected $signature = 'lawoo:remove {name : The name of the module} {--remove-db}';
 
     /**
      * The console command description.

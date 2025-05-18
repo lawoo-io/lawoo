@@ -13,7 +13,7 @@ class ModulesCheckCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'modules:check {module?}';
+    protected $signature = 'lawoo:check {module?}';
 
     /**
      * The console command description.

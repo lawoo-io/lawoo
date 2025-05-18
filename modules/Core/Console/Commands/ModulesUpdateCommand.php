@@ -19,7 +19,7 @@ class ModulesUpdateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'modules:update {module}';
+    protected $signature = 'lawoo:update {module}';
 
     /**
      * The console command description.

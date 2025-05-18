@@ -21,7 +21,7 @@
   },
   "scripts": {
     "post-autoload-dump": [
-      "@php artisan lawoo:install || true"
+      "@php artisan lawoo:init || true"
     ]
   },
   "repositories": {

@@ -64,5 +64,5 @@ This command will:
 
 ```bash
 php artisan migrate
-php artisan modules:check
+php artisan lawoo:check
 ```
