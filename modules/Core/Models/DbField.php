@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class DbField extends Model
 {
+    protected $table = 'db_fields';
+
     protected $fillable = [
         'name',
         'description',

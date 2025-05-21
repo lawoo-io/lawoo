@@ -6,6 +6,10 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Console\Commands\InitCommand;
+use Modules\Core\Console\Commands\MakeLivewireCommand;
+use Modules\Core\Console\Commands\MakeModelCommand;
+use Modules\Core\Console\Commands\MakeModuleCommand;
+use Modules\Core\Console\Commands\MakeViewCommand;
 use Modules\Core\Console\Commands\ModulesResBuildCommand;
 use Modules\Core\Console\Commands\ModulesCheckCommand;
 use Modules\Core\Console\Commands\ModulesInstallCommand;
@@ -28,6 +32,11 @@ class CoreServiceProvider extends ServiceProvider
             ModulesUpdateCommand::class,
             ModulesRemoveCommand::class,
             ModulesResBuildCommand::class,
+            ModulesUpdateCommand::class,
+            MakeModelCommand::class,
+            MakeLivewireCommand::class,
+            MakeViewCommand::class,
+            MakeModuleCommand::class,
         ]);
     }
 

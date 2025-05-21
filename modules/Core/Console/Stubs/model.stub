@@ -1,0 +1,31 @@
+<?php
+
+namespace Modules\{{module}}\Models;
+
+use Modules\Core\Abstracts\BaseModel;
+
+
+/**
+ * Database model description
+ *
+ * @property int $id
+ */
+
+class {{name}} extends BaseModel
+{
+
+    /**
+    * The database table name.
+    *
+    * @var string
+    */
+    protected $table = '{{table}}';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [];
+
+}
