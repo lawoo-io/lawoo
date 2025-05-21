@@ -25,10 +25,10 @@ class DbFieldManager
             foreach ($yamlFiles as $yamlFile) {
                 $parsed = Yaml::parseFile($yamlFile->path);
 
-                foreach ($parsed as $key => $fields) {
-                    $models[$key] = $fields;
-                    foreach ($fields as $field => $params) {
-                        $models[$key][$field] = $params;
+                foreach ($parsed as $table => $data) {
+                    $models[$table] = $data['fields'];
+                    foreach ($data['fields'] as $field => $params) {
+                        $models[$table][$field] = $params;
                     }
                 }
             }
