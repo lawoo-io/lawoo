@@ -24,6 +24,8 @@ return new class extends Migration
 
             $table->string('path');
 
+            $table->string('resource_path');
+
             $table->foreignId('parent_id')
                 ->nullable()
                 ->constrained('module_views')

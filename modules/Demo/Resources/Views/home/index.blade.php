@@ -1,18 +1,13 @@
-{{--
-name: 'web-home',
-base: 1,
-active: 1,
-override_name: '',
-priority: 0
---}}
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Test</title>
+    <title>Livewire</title>
 </head>
 <body>
-    <p class="base">Test Modular blade</p>
+
+    <h1>Hello Livewire</h1>
+    <x-test-component text="Test text from index"></x-test-component>
 </body>
 </html>

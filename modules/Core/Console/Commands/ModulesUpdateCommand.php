@@ -76,7 +76,7 @@ class ModulesUpdateCommand extends Command
             /**
              * Run OverrideViews
              */
-            $result = OverrideViews::run([$module]);
+//            $result = OverrideViews::run([$module]);
 
         } catch (\RuntimeException $e) {
             $this->error("❌ " . $e->getMessage());

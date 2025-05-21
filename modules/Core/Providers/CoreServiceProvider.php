@@ -12,9 +12,9 @@ use Modules\Core\Console\Commands\ModulesInstallCommand;
 use Modules\Core\Console\Commands\ModulesRemoveCommand;
 use Modules\Core\Console\Commands\ModulesUpdateCommand;
 use Modules\Core\Database\Seeders\ModuleCategorySeeders;
-use Modules\Core\Models\Module;
 use Modules\Core\Models\Override;
 use Illuminate\Support\Facades\Schema;
+use Modules\Core\Repositories\ModuleRepository;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -56,7 +56,10 @@ class CoreServiceProvider extends ServiceProvider
         /**
          * Register activated modules
          */
-        $this->registerModules();
+        $moduleRepo = app(ModuleRepository::class);
+        $moduleRepo->registerEnabledModules(); // ⬅ Nur ServiceProvider!
+
+        $moduleRepo->registerLivewireForAll(); // ⬅ Separater Scan danach
 
         /**
          * Register override classes
@@ -69,25 +72,6 @@ class CoreServiceProvider extends ServiceProvider
             $this->app->afterResolving(Seeder::class, function (Seeder $seeder) {
                 $seeder->call(ModuleCategorySeeders::class);
             });
-        }
-    }
-
-
-    /**
-     * Register enabled modules
-     * @return void
-     */
-    protected function registerModules(): void {
-
-        if (!Schema::hasTable('modules')) return;
-        $modules = Module::where('enabled', 1)->pluck('system_name');
-
-        foreach ($modules as $module) {
-            $providerClass = "Modules\\{$module}\\Providers\\{$module}ServiceProvider";
-
-            if (class_exists($providerClass)) {
-                $this->app->register($providerClass);
-            }
         }
     }
 
@@ -105,5 +89,6 @@ class CoreServiceProvider extends ServiceProvider
                 $this->app->bind($override->original_class, $override->override_class);
             }
         }
+
     }
 }

@@ -4,6 +4,9 @@ namespace Modules\Core\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Modules\Core\Services\Resources\OverrideViews;
 
 /**
  * Module view model representing a view in the ERP system.
@@ -78,6 +81,8 @@ class ModuleView extends Model
             throw new \RuntimeException("Module '{$moduleName}' not found or not installed in the database.");
         }
 
+        static::checkPaths($module);
+
         $view = self::firstOrNew(['path' => $metaData['path'], 'name' => $metaData['name']]);
 
         if (!$view->file_modified_at || $view->file_modified_at->timestamp !== $fileTime) {
@@ -122,10 +127,45 @@ class ModuleView extends Model
                 $parentView->save();
             }
 
+            $resource_path = OverrideViews::generateView($view);
+
+            $resource_path = Str::after($resource_path, resource_path() . DIRECTORY_SEPARATOR);
+
             $view->fill($metaData);
             $view->file_hash = $fileHash;
+            $view->resource_path = $resource_path;
             $view->save();
         }
 
+    }
+
+    public static function checkPaths($module): void
+    {
+        foreach ($module->moduleViews as $view) {
+            if (!file_exists($view->path)) {
+                unlink(resource_path($view->resource_path));
+                static::deleteEmptyParentDirs(resource_path($view->resource_path));
+                $view->delete();
+            }
+        }
+    }
+
+    public static function deleteEmptyParentDirs(string $absoluteFilePath, string $stopDir = 'views')
+    {
+        $dir = dirname($absoluteFilePath);
+        $stopPath = resource_path($stopDir); // z. B. resources/views
+
+        while (Str::startsWith($dir, $stopPath) && $dir !== $stopPath) {
+            if (
+                File::exists($dir) &&
+                count(File::allFiles($dir)) === 0 &&
+                count(File::directories($dir)) === 0
+            ) {
+                File::deleteDirectory($dir);
+                $dir = dirname($dir);
+            } else {
+                break;
+            }
+        }
     }
 }

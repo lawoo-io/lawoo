@@ -19,7 +19,7 @@ class ModuleInstaller
         } elseif ($mod->enabled) {
             return [
                 'type' => 'error',
-                'message' => 'Module is already installed. Please use: modules:update ' . $moduleName . '.',
+                'message' => 'Module is already installed. Please use: lawoo:update ' . $moduleName . '.',
             ];
         }
 

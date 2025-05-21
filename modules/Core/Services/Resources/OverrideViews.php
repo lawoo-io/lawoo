@@ -20,6 +20,8 @@ class OverrideViews
             foreach ($module->moduleViews as $view) {
                 if ($view->base && $view->content_changed) {
                     static::generateView($view);
+                } elseif($view->base) {
+                    static::generateView($view);
                 }
             }
         }
@@ -31,7 +33,7 @@ class OverrideViews
 
     }
 
-    protected static function generateView(object $view): void {
+    public static function generateView(object $view): string {
         $source = base_path($view->path);
 
         if (!File::exists($source)) {
@@ -57,6 +59,8 @@ class OverrideViews
         File::put($destination, $patched);
 
         echo "{$source} → {$destination}\n";
+
+        return $destination;
     }
 
     protected static function applyPatchesRecursively(object $view, ?string $html = null): string

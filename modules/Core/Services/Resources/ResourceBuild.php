@@ -28,7 +28,10 @@ class ResourceBuild
 
             foreach ($phpFiles as $file) {
 
-                if ($file->getExtension() !== 'php') self::copyAssets($file, $module);
+                if ($file->getExtension() !== 'php') {
+                    self::copyAssets($file, $module);
+                    continue;
+                }
 
                 $contents = File::get($file->getPathname());
 

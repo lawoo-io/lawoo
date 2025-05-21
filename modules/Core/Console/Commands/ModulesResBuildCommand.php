@@ -14,7 +14,7 @@ class ModulesResBuildCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'lawoo:build-res {module}';
+    protected $signature = 'lawoo:build-resources {module}';
 
     /**
      * The console command description.
