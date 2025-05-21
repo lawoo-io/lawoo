@@ -19,6 +19,15 @@ class ModuleRepository extends BaseRepository
     }
 
     /**
+     * @param $name
+     * @return Module|null
+     */
+    public function getBySystemName($name): Module|null
+    {
+        return $this->model->where('system_name', $name)->first() ?: null;
+    }
+
+    /**
      * Registriert alle aktivierten Module in richtiger Reihenfolge (abhängig von depends)
      */
     public function registerEnabledModules(): void
@@ -53,10 +62,6 @@ class ModuleRepository extends BaseRepository
             }
         }
 
-//        // Register Livewire Components
-//        foreach ($ordered as $moduleName) {
-//            $this->registerEnabledModules($moduleName);
-//        }
     }
 
     /**

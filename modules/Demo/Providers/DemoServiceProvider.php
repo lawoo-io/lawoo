@@ -19,13 +19,12 @@ class DemoServiceProvider extends ServiceProvider
     }
 
     public function boot(): void {
-//        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
-        $this->loadViewsFrom(__DIR__ . '/../Resources/Views', 'demo');
-        Blade::anonymousComponentPath( __DIR__ . '/../Resources/Views/components');
+//        $this->loadViewsFrom(__DIR__ . '/../Resources/Views', 'demo');
+//        Blade::anonymousComponentPath( __DIR__ . '/../Resources/Views/components');
 
         /**
          * Register Livewire Components
          */
-        Livewire::component('web.counter', Counter::class);
+//        Livewire::component('web.counter', Counter::class);
     }
 }

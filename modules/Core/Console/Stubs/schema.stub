@@ -1,0 +1,8 @@
+# The key is the database table name (string)
+# base: whether this is a base model definition (1 = yes, 0 = no)
+# fields: list of fields and their definitions (array)
+
+{{table}}:
+    base: 1
+    fields:
+        id: id
