@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Core\Repositories\YamlFileRepository;
 
 /**
  * YAML file model for the ERP system.
@@ -37,34 +38,15 @@ class YamlFile extends Model
     {
         $module = Module::where('system_name', $module)->first();
 
-        $path = str_replace(base_path() . '/', '', $file->getPathname());
+        $yamlFileRepository = app(YamlFileRepository::class);
 
-        $yamlFile = YamlFile::where('path', '=', $path)->first();
-
-        $changed = false;
-        if (!$yamlFile) {
-            $yamlFile = app(YamlFile::class);
-            $yamlFile->path = $path;
-            $yamlFile->file_modified_at = $file->getMTime();
-            $yamlFile->file_hash = hash_file('md5', $file->getPathname());
-            $yamlFile->module_id = $module->id;
-            $yamlFile->save();
-            $changed = true;
-        }
-
-        if ($yamlFile->file_modified_at < $file->getMTime() || $yamlFile->file_hash !== hash_file('md5', $file->getPathname())) {
-            $yamlFile->file_modified_at = $file->getMTime();
-            $yamlFile->file_hash = hash_file('md5', $file->getPathname());
-            $yamlFile->save();
-            $changed = true;
-        }
-
-        if (!$changed) return 0;
+        $yamlFile = $yamlFileRepository->getOrCreate($file, $module->id);
+        if (!$yamlFile) return 0;
 
         $ids = [];
 
-        foreach ($parsed as $key => $value) {
-            $ids[] = DbModel::setChanged($key, true, $module->id);
+        foreach ($parsed as $name => $value) {
+            $ids[] = DbModel::setChanged($name, true, $module->id);
         }
 
         $yamlFile->dbModels()->syncWithoutDetaching($ids);
