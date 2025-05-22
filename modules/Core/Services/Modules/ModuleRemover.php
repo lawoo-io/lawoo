@@ -46,8 +46,6 @@ class ModuleRemover
             $moduleNames[] = $dependency->system_name;
         }
 
-        print_r($moduleNames);
-
         if (count($moduleNames) > 0) {
             foreach ($moduleNames as $moduleName) {
                 ResourceBuild::run([$moduleName]);

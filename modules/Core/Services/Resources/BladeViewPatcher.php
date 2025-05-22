@@ -3,7 +3,6 @@
 namespace Modules\Core\Services\Resources;
 
 use Illuminate\Support\Facades\File;
-// use Symfony\Component\CssSelector\CssSelectorConverter; // No longer needed as DOMDocument is removed for patching
 
 class BladeViewPatcher
 {
@@ -37,17 +36,13 @@ class BladeViewPatcher
      */
     public function patchWith(string $patchHtml, bool $patchAllOccurrences = false): self
     {
-        echo "DEBUG: patchWith-function started." . PHP_EOL; // DEBUG output
-        echo "DEBUG: Content of \$patchHtml UPON entering patchWith:\n" . $patchHtml . PHP_EOL; // NEW DEBUG output
+//        echo "DEBUG: patchWith-function started." . PHP_EOL; // DEBUG output
+//        echo "DEBUG: Content of \$patchHtml UPON entering patchWith:\n" . $patchHtml . PHP_EOL; // NEW DEBUG output
 
-        // NEU: Entferne alle Blade-Kommentare aus dem Patch-HTML, bevor Overrides verarbeitet werden.
-        // Dies stellt sicher, dass Kommentare die Erkennung von <override>-Tags nicht stören.
         $patchHtml = preg_replace('/{{--.*?--}}/s', '', $patchHtml);
 
         echo "DEBUG: Content of \$patchHtml AFTER removing ALL Blade comments:\n" . $patchHtml . PHP_EOL; // NEW DEBUG output
 
-        // Find all override blocks (normal or self-closing)
-        // Group 1,2,3 for full tag; Group 4,5 for self-closing tag
         preg_match_all(
             '/<override[^>]*find="(.*?)"[^>]*make="(.*?)"[^>]*>(.*?)<\/override>' .
             '|<override[^>]*find="(.*?)"[^>]*make="(.*?)"[^>]*\/>/is',
@@ -56,9 +51,9 @@ class BladeViewPatcher
             PREG_SET_ORDER
         );
 
-        if (empty($matches)) {
-            echo "BladeViewPatcher: No <override>-tags found in the patch HTML. This means no changes will be applied." . PHP_EOL;
-        }
+//        if (empty($matches)) {
+//            echo "BladeViewPatcher: No <override>-tags found in the patch HTML. This means no changes will be applied." . PHP_EOL;
+//        }
 
         foreach ($matches as $match) {
             $selector = '';
@@ -75,11 +70,11 @@ class BladeViewPatcher
                 $action   = $match[5];
                 $replacement = '';
             } else {
-                echo "BladeViewPatcher: Unexpected match format for override tag. Skipping." . PHP_EOL;
+//                echo "BladeViewPatcher: Unexpected match format for override tag. Skipping." . PHP_EOL;
                 continue;
             }
 
-            echo "BladeViewPatcher: Processing override - Selector: '" . $selector . "', Action: '" . $action . "'" . PHP_EOL;
+//            echo "BladeViewPatcher: Processing override - Selector: '" . $selector . "', Action: '" . $action . "'" . PHP_EOL;
 
             // Parse the current <override> tag itself using DOMDocument to get its attributes (e.g., 'add', 'remove')
             // This is still needed to reliably extract 'add' and 'remove' attributes from the <override> tag itself.
@@ -123,11 +118,11 @@ class BladeViewPatcher
                 // m[5]: closing tag (optional)
                 $pattern = '/(<' . $componentName . '(?=\s|>)([^>]*?)(\/?>))([\s\S]*?)(?(3)(<\/' . $componentName . '>))?/is';
             } else {
-                echo "BladeViewPatcher: Unrecognized selector format: " . $selector . ". Skipping." . PHP_EOL;
+//                echo "BladeViewPatcher: Unrecognized selector format: " . $selector . ". Skipping." . PHP_EOL;
                 continue;
             }
 
-            echo "BladeViewPatcher: Generated Regex Pattern for '" . $selector . "': " . $pattern . PHP_EOL; // IMPORTANT DEBUG OUTPUT
+//            echo "BladeViewPatcher: Generated Regex Pattern for '" . $selector . "': " . $pattern . PHP_EOL; // IMPORTANT DEBUG OUTPUT
 
             // Set the limit for preg_replace_callback: -1 for all occurrences, 1 for only the first.
             $limit = $patchAllOccurrences ? -1 : 1;
@@ -136,8 +131,8 @@ class BladeViewPatcher
             $initialHtml = $this->patchedHtml;
 
             $this->patchedHtml = preg_replace_callback($pattern, function ($m) use ($action, $replacement, $selector, $overrideElement, $isBladeComponent) {
-                echo "BladeViewPatcher: Selector found: " . $selector . PHP_EOL;
-                echo "BladeViewPatcher: Original Match (Start):\n" . substr($m[0], 0, 200) . (strlen($m[0]) > 200 ? '...' : '') . PHP_EOL;
+//                echo "BladeViewPatcher: Selector found: " . $selector . PHP_EOL;
+//                echo "BladeViewPatcher: Original Match (Start):\n" . substr($m[0], 0, 200) . (strlen($m[0]) > 200 ? '...' : '') . PHP_EOL;
 
                 $openingTagHtml = '';
                 $innerContentHtml = '';
@@ -162,12 +157,12 @@ class BladeViewPatcher
                         $closingTagHtml = '';
                     }
 
-                    echo "BladeViewPatcher: DEBUG: Blade Component Match - m[1] (Full Opening Tag): '" . substr($m[1], 0, 100) . "'";
+//                    echo "BladeViewPatcher: DEBUG: Blade Component Match - m[1] (Full Opening Tag): '" . substr($m[1], 0, 100) . "'";
                     if (isset($m[2])) echo " m[2] (Attributes): '" . substr($m[2], 0, 100) . "'";
                     if (isset($m[3])) echo " m[3] (Tag End): '" . substr($m[3], 0, 100) . "'";
                     if (isset($m[4])) echo " m[4] (Inner Content): '" . substr($m[4], 0, 100) . "'";
                     if (isset($m[5])) echo " m[5] (Closing Tag): '" . substr($m[5], 0, 100) . "'";
-                    echo " (Self-Closing: " . ($isSelfClosing ? 'true' : 'false') . ")" . PHP_EOL;
+//                    echo " (Self-Closing: " . ($isSelfClosing ? 'true' : 'false') . ")" . PHP_EOL;
 
                 } else {
                     // For HTML tags (ID or Tag.Class): $m[1]=opening tag, $m[2]=tag name, $m[3]=inner content, $m[4]=closing tag
@@ -175,7 +170,7 @@ class BladeViewPatcher
                     $innerContentHtml = $m[3];
                     $closingTagHtml = $m[4];
                     $isSelfClosing = false; // HTML tags are not self-closing in this context for content manipulation
-                    echo "BladeViewPatcher: DEBUG: HTML Tag Match - m[1] (Opening Tag): '" . substr($m[1], 0, 100) . "' m[2] (Tag Name): '" . substr($m[2], 0, 100) . "' m[3] (Inner Content): '" . substr($m[3], 0, 100) . "' m[4] (Closing Tag): '" . substr($m[4], 0, 100) . "'" . PHP_EOL;
+//                    echo "BladeViewPatcher: DEBUG: HTML Tag Match - m[1] (Opening Tag): '" . substr($m[1], 0, 100) . "' m[2] (Tag Name): '" . substr($m[2], 0, 100) . "' m[3] (Inner Content): '" . substr($m[3], 0, 100) . "' m[4] (Closing Tag): '" . substr($m[4], 0, 100) . "'" . PHP_EOL;
                 }
 
                 $indent = self::indent($m[0]);
@@ -206,7 +201,7 @@ class BladeViewPatcher
                             break;
                         case 'inside':
                             if ($isSelfClosing) {
-                                echo "BladeViewPatcher: WARNING: 'inside' action not applicable for self-closing tag '" . $selector . "'. Skipping content injection." . PHP_EOL;
+//                                echo "BladeViewPatcher: WARNING: 'inside' action not applicable for self-closing tag '" . $selector . "'. Skipping content injection." . PHP_EOL;
                                 $result = $m[0]; // No change for self-closing
                             } else {
                                 // Insert replacement content before the closing tag within the matched element's content
@@ -215,12 +210,12 @@ class BladeViewPatcher
                             }
                             break;
                         default:
-                            echo "BladeViewPatcher: Unknown content action '" . $action . "' for selector. Skipping." . PHP_EOL;
+//                            echo "BladeViewPatcher: Unknown content action '" . $action . "' for selector. Skipping." . PHP_EOL;
                             break;
                     }
                 }
 
-                echo "BladeViewPatcher: Action '" . $action . "' applied for selector '" . $selector . "'." . PHP_EOL;
+//                echo "BladeViewPatcher: Action '" . $action . "' applied for selector '" . $selector . "'." . PHP_EOL;
                 $this->appliedPatches[] = [
                     'selector' => $selector,
                     'action' => $action,
@@ -230,9 +225,9 @@ class BladeViewPatcher
                 return $result;
             }, $this->patchedHtml, $limit);
 
-            if ($initialHtml === $this->patchedHtml) {
-                echo "BladeViewPatcher: No match found or no change applied for selector: " . $selector . " with pattern: " . $pattern . PHP_EOL;
-            }
+//            if ($initialHtml === $this->patchedHtml) {
+//                echo "BladeViewPatcher: No match found or no change applied for selector: " . $selector . " with pattern: " . $pattern . PHP_EOL;
+//            }
 
             // Remove any remaining Blade comments from the patch HTML (already processed)
             // This line is kept as it might be intended to clean up the patchHtml variable itself,
@@ -241,7 +236,7 @@ class BladeViewPatcher
             // $patchHtml = preg_replace('/{{--.*?--}}/s', '', $patchHtml);
         }
 
-        echo "DEBUG: patchWith-function finished." . PHP_EOL; // DEBUG output
+//        echo "DEBUG: patchWith-function finished." . PHP_EOL; // DEBUG output
 
         return $this;
     }
@@ -267,9 +262,9 @@ class BladeViewPatcher
         $path = $destination ?? $this->originalPath;
         try {
             File::put($path, $this->render());
-            echo "BladeViewPatcher: Patched HTML successfully saved to: " . $path . PHP_EOL;
+//            echo "BladeViewPatcher: Patched HTML successfully saved to: " . $path . PHP_EOL;
         } catch (\Exception $e) {
-            echo "BladeViewPatcher: Error saving patched HTML to " . $path . ": " . $e->getMessage() . PHP_EOL;
+//            echo "BladeViewPatcher: Error saving patched HTML to " . $path . ": " . $e->getMessage() . PHP_EOL;
             throw new \Exception("Could not save patched HTML to " . $path . ": " . $e->getMessage(), 0, $e);
         }
     }
@@ -302,8 +297,8 @@ class BladeViewPatcher
         $add = $override->getAttribute('add');
         $remove = $override->getAttribute('remove');
 
-        echo "BladeViewPatcher: Regex Attribute DEBUG: Processing attribute '" . $attribute . "' for opening tag: '" . $openingTagHtml . "'." . PHP_EOL;
-        echo "BladeViewPatcher: Regex Attribute DEBUG: Add: '" . $add . "', Remove: '" . $remove . "'." . PHP_EOL;
+//        echo "BladeViewPatcher: Regex Attribute DEBUG: Processing attribute '" . $attribute . "' for opening tag: '" . $openingTagHtml . "'." . PHP_EOL;
+//        echo "BladeViewPatcher: Regex Attribute DEBUG: Add: '" . $add . "', Remove: '" . $remove . "'." . PHP_EOL;
 
         $modifiedTagHtml = $openingTagHtml;
 
@@ -330,7 +325,7 @@ class BladeViewPatcher
                 $existingValue = $attrMatch[4][0];
             }
 
-            echo "BladeViewPatcher: Regex Attribute DEBUG: Found existing attribute '" . $attributeNameFound . "' with value: '" . $existingValue . "'." . PHP_EOL;
+//            echo "BladeViewPatcher: Regex Attribute DEBUG: Found existing attribute '" . $attributeNameFound . "' with value: '" . $existingValue . "'." . PHP_EOL;
 
             $finalValue = $existingValue;
             $newAttributeString = '';
@@ -365,7 +360,7 @@ class BladeViewPatcher
                 }
             }
 
-            echo "BladeViewPatcher: Regex Attribute DEBUG: Final attribute value: '" . $finalValue . "'." . PHP_EOL;
+//            echo "BladeViewPatcher: Regex Attribute DEBUG: Final attribute value: '" . $finalValue . "'." . PHP_EOL;
 
             // Replace the old attribute string with the new one
             // Use PREG_OFFSET_CAPTURE to get the exact position for replacement
@@ -386,13 +381,13 @@ class BladeViewPatcher
                 $newAttribute = ' ' . $attrToAdd . '="' . $add . '"';
                 // Insert before the closing '>' of the opening tag
                 $modifiedTagHtml = preg_replace('/>$/', $newAttribute . '>', $openingTagHtml, 1);
-                echo "BladeViewPatcher: Regex Attribute DEBUG: Attribute '" . $attrToAdd . "' added with value: '" . $add . "'." . PHP_EOL;
+//                echo "BladeViewPatcher: Regex Attribute DEBUG: Attribute '" . $attrToAdd . "' added with value: '" . $add . "'." . PHP_EOL;
             } else {
-                echo "BladeViewPatcher: Regex Attribute DEBUG: Attribute '" . $attribute . "' not found and no 'add' value to add it. No change." . PHP_EOL;
+//                echo "BladeViewPatcher: Regex Attribute DEBUG: Attribute '" . $attribute . "' not found and no 'add' value to add it. No change." . PHP_EOL;
             }
         }
 
-        echo "BladeViewPatcher: Regex Attribute DEBUG: Modified opening tag: '" . $modifiedTagHtml . "'." . PHP_EOL;
+//        echo "BladeViewPatcher: Regex Attribute DEBUG: Modified opening tag: '" . $modifiedTagHtml . "'." . PHP_EOL;
         return $modifiedTagHtml;
     }
 
