@@ -35,13 +35,13 @@ class ModulesRemoveCommand extends Command
         $names = array_map(fn($m) => $m->system_name, $modules);
 
         foreach ($names as $name) {
-            self::installModule($name);
+            self::removeModule($name);
         }
 
-        self::installModule($module);
+        self::removeModule($module, true);
     }
 
-    public function installModule(string $name): void
+    public function removeModule(string $name, bool $self = false): void
     {
         $result = ModuleRemover::run($name);
 

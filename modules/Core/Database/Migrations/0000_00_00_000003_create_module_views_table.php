@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->string('path');
 
-            $table->string('resource_path');
+            $table->string('resource_path')->nullable();
 
             $table->foreignId('parent_id')
                 ->nullable()

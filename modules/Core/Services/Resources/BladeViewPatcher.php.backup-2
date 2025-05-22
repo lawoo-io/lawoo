@@ -1,0 +1,245 @@
+<?php
+
+namespace Modules\Core\Services\Resources;
+
+use Illuminate\Support\Facades\File;
+
+class BladeViewPatcher
+{
+    protected string $originalPath;
+    protected string $baseHtml;
+    protected string $patchedHtml;
+    protected array $appliedPatches = []; // To log which patches were applied
+
+    /**
+     * Creates a new instance of the BladeViewPatcher from an HTML string.
+     *
+     * @param string $html The original HTML content.
+     * @param string $path The original file path (for saving).
+     * @return self
+     */
+    public static function fromHtml(string $html, string $path): self
+    {
+        $instance = new self();
+        $instance->originalPath = $path;
+        $instance->baseHtml = $html;
+        $instance->patchedHtml = $html;
+        return $instance;
+    }
+
+    /**
+     * Applies patches to the HTML content.
+     *
+     * @param string $patchHtml The HTML string containing the <override>-tags.
+     * @param bool $patchAllOccurrences If true, all matching occurrences will be patched. Otherwise, only the first.
+     * @return self
+     */
+    public function patchWith(string $patchHtml, bool $patchAllOccurrences = false): self
+    {
+        echo "DEBUG: patchWith-function started." . PHP_EOL; // DEBUG output
+        echo "DEBUG: Content of \$patchHtml UPON entering patchWith:\n" . $patchHtml . PHP_EOL; // NEW DEBUG output
+
+        // This line was problematic and has been removed.
+        // It incorrectly stripped all content if it started with a Blade comment containing an override.
+        // $patchHtml = preg_replace('/{{--.*?<override.*?<\/override>.*?--}}/is', '', $patchHtml);
+
+        // Debug output after the (now removed) comment stripping. This will now show the full content.
+        echo "DEBUG: Content of \$patchHtml AFTER (potential) removing of Blade comments (this step is now skipped):\n" . $patchHtml . PHP_EOL;
+
+
+        // Find all override blocks (normal or self-closing)
+        // Group 1,2,3 for full tag; Group 4,5 for self-closing tag
+        preg_match_all(
+            '/<override[^>]*find="(.*?)"[^>]*make="(.*?)"[^>]*>(.*?)<\/override>' .
+            '|<override[^>]*find="(.*?)"[^>]*make="(.*?)"[^>]*\/>/is',
+            $patchHtml,
+            $matches,
+            PREG_SET_ORDER
+        );
+
+        if (empty($matches)) {
+            echo "BladeViewPatcher: No <override>-tags found in the patch HTML. This means no changes will be applied." . PHP_EOL;
+        }
+
+        foreach ($matches as $match) {
+            $selector = '';
+            $action = '';
+            $replacement = '';
+
+            if (!empty($match[1]) && !empty($match[2])) { // Full tag
+                $selector = $match[1];
+                $action   = $match[2];
+                $replacement = trim($match[3] ?? '');
+            } elseif (!empty($match[4]) && !empty($match[5])) { // Self-closing tag
+                $selector = $match[4];
+                $action   = $match[5];
+                $replacement = '';
+            } else {
+                echo "BladeViewPatcher: Unexpected match format for override tag. Skipping." . PHP_EOL;
+                continue;
+            }
+
+            echo "BladeViewPatcher: Processing override - Selector: '" . $selector . "', Action: '" . $action . "'" . PHP_EOL;
+
+            $pattern = '';
+            if (str_starts_with($selector, '#')) {
+                // Selector is an ID: e.g., #myId
+                // Matches any tag with the specified ID. Ensures it's a complete element.
+                $id = substr($selector, 1);
+                $pattern = '/<([a-z0-9\-:]+)[^>]*id=["\']' . preg_quote($id, '/') . '["\'][^>]*>[\s\S]*?<\/\1>/i';
+            } elseif (preg_match('/^(\w+)\.([\w\-]+)/', $selector, $selMatch)) {
+                // Selector is Tag.Class: e.g., div.myClass
+                // Matches the specific tag with the specified class.
+                // \b ensures the class name matches completely.
+                $tag = $selMatch[1];
+                $class = $selMatch[2];
+                $pattern = '/<(' . $tag . ')[\s\S]*?class=["\'][^"\']*\b' . preg_quote($class, '/') . '\b[^"\']*["\'][\s\S]*?>[\s\S]*?<\/\1>/i';
+            } elseif (str_starts_with($selector, 'x-')) {
+                // Selector is a Blade Component: e.g., x-web.layouts.sidebar
+                // Matches the full Blade component tag, including its content.
+                // This regex is a simplification and might not handle all edge cases (e.g., self-closing components without `/>`, complex attributes, nested components of the same name).
+                $componentName = preg_quote($selector, '/');
+                $pattern = '/(<' . $componentName . '[^>]*>)([\s\S]*?)(<\/' . $componentName . '>)/is';
+            }
+            else {
+                // Selector format not recognized
+                echo "BladeViewPatcher: Unrecognized selector format: " . $selector . ". Skipping." . PHP_EOL;
+                continue;
+            }
+
+            echo "BladeViewPatcher: Generated Regex Pattern for '" . $selector . "': " . $pattern . PHP_EOL; // IMPORTANT DEBUG OUTPUT
+
+            // Set the limit for preg_replace_callback: -1 for all occurrences, 1 for only the first.
+            $limit = $patchAllOccurrences ? -1 : 1;
+
+            // Store the current HTML state to check if a patch was applied.
+            $initialHtml = $this->patchedHtml;
+
+            $this->patchedHtml = preg_replace_callback($pattern, function ($m) use ($action, $replacement, $selector) {
+                // Log the match for debugging
+                echo "BladeViewPatcher: Selector found: " . $selector . PHP_EOL;
+                echo "BladeViewPatcher: Original Match (Start):\n" . substr($m[0], 0, 200) . (strlen($m[0]) > 200 ? '...' : '') . PHP_EOL; // Only first 200 chars
+                // echo "BladeViewPatcher: Original Match (Full):\n" . $m[0] . PHP_EOL; // Only if needed, can be very long
+
+                // Determine the indentation from the originally matched HTML
+                $indent = self::indent($m[0]);
+                // Prepare the replacement with correct indentation
+                $rep = $indent . trim($replacement);
+
+                $result = $m[0]; // Default to no change
+
+                switch ($action) {
+                    case 'replace':
+                        $result = $rep; // Replaces the entire matched element
+                        break;
+                    case 'before':
+                        $result = $rep . PHP_EOL . ltrim($m[0]); // Inserts the replacement before the matched element
+                        break;
+                    case 'after':
+                        $result = rtrim($m[0]) . PHP_EOL . $rep; // Inserts the replacement after the matched element
+                        break;
+                    case 'inside':
+                        // For 'inside', we need to correctly identify the opening, content, and closing parts
+                        // $m[0] is the full matched element (e.g., <div>...</div> or <x-component>...</x-component>)
+                        // The regex for the pattern generation (above) captures the opening tag, content, and closing tag
+                        // in $m[1], $m[2], $m[3] respectively IF the pattern was for an x-component.
+                        // For HTML tags, $m[1] is the tag name, and $m[0] is the full element.
+                        // We need a robust way to insert before the *last* closing tag of the matched element.
+                        // The pattern for 'inside' needs to be applied to $m[0] (the full matched block).
+                        // Let's ensure the regex for 'inside' captures the parts correctly.
+                        // Using a callback to process the inner structure of the matched block.
+                        $innerPattern = '/(<' . preg_quote($m[1], '/') . '[^>]*>)([\s\S]*?)(<\/' . preg_quote($m[1], '/') . '>)/is';
+                        $result = preg_replace_callback($innerPattern, function ($innerMatch) use ($rep) {
+                            $openingTag = $innerMatch[1];
+                            $innerContent = $innerMatch[2];
+                            $closingTag = $innerMatch[3];
+
+                            // Insert the replacement content before the closing tag of the element's inner content
+                            // This ensures the replacement is truly 'inside' and before the final closing tag.
+                            $finalInnerContent = rtrim($innerContent) . PHP_EOL . $rep . PHP_EOL;
+                            return $openingTag . $finalInnerContent . $closingTag;
+                        }, $m[0], 1);
+                        break;
+                    default:
+                        // No change
+                        break;
+                }
+
+                // Log the result of the patch
+                echo "BladeViewPatcher: Action '" . $action . "' applied for selector '" . $selector . "'." . PHP_EOL;
+                $this->appliedPatches[] = [
+                    'selector' => $selector,
+                    'action' => $action,
+                    'original_match_start' => strpos($this->baseHtml, $m[0]), // Approximate position for logging
+                    'replacement_length' => strlen($rep),
+                ];
+                return $result;
+            }, $this->patchedHtml, $limit); // Apply the limit here
+
+            // Check if a replacement actually occurred for this pattern
+            if ($initialHtml === $this->patchedHtml) {
+                echo "BladeViewPatcher: No match found or no change applied for selector: " . $selector . " with pattern: " . $pattern . PHP_EOL;
+            }
+
+            // Remove any remaining Blade comments from the patch HTML (already processed)
+            // This line is kept as it might be intended to clean up the patchHtml variable itself,
+            // though it doesn't affect the main patching logic for <override> tags.
+            $patchHtml = preg_replace('/{{--.*?--}}/s', '', $patchHtml);
+        }
+
+        echo "DEBUG: patchWith-function finished." . PHP_EOL; // DEBUG output
+
+        return $this;
+    }
+
+    /**
+     * Returns the patched HTML content.
+     *
+     * @return string
+     */
+    public function render(): string
+    {
+        return $this->patchedHtml;
+    }
+
+    /**
+     * Saves the patched HTML content to a file.
+     *
+     * @param string|null $destination The path where the file should be saved. If null, originalPath is used.
+     * @throws \Exception If the file cannot be written.
+     */
+    public function save(?string $destination = null): void
+    {
+        $path = $destination ?? $this->originalPath;
+        try {
+            File::put($path, $this->render());
+            echo "BladeViewPatcher: Patched HTML successfully saved to: " . $path . PHP_EOL;
+        } catch (\Exception $e) {
+            echo "BladeViewPatcher: Error saving patched HTML to " . $path . ": " . $e->getMessage() . PHP_EOL;
+            throw new \Exception("Could not save patched HTML to " . $path . ": " . $e->getMessage(), 0, $e);
+        }
+    }
+
+    /**
+     * Determines the indentation level of the first line of the given HTML string.
+     *
+     * @param string $html The HTML string.
+     * @return string The leading whitespace (indentation).
+     */
+    protected static function indent(string $html): string
+    {
+        if (preg_match('/^([ \t]*)<[^\s>]/m', $html, $match)) {
+            return $match[1] ?? '';
+        }
+        return '';
+    }
+
+    /**
+     * Returns a log of applied patches.
+     * @return array
+     */
+    public function getAppliedPatches(): array
+    {
+        return $this->appliedPatches;
+    }
+}

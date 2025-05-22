@@ -5,6 +5,7 @@ namespace Modules\Core\Console\Commands;
 use Illuminate\Console\Command;
 use Modules\Core\Models\Module;
 use Modules\Core\Services\Modules\ModuleInstaller;
+use Modules\Core\Services\Resources\OverrideViews;
 use Modules\Core\Services\Resources\ResourceBuild;
 use Modules\Core\Services\Schemas\DbFieldManager;
 use Modules\Core\Services\Schemas\MigrationManager;
@@ -88,5 +89,10 @@ class ModulesInstallCommand extends Command
          */
         MigrationManager::run($module);
 
+        /**
+         * Run OverrideViews
+         */
+        $result = OverrideViews::run([$module]);
+        $this->components->{$result['type']}($result['message']);
     }
 }
