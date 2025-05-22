@@ -69,14 +69,10 @@ class ModulesUpdateCommand extends Command
             MigrationManager::run($module);
 
             /**
-             * Run Artisan migrate command
-             */
-//            Artisan::call('migrate --path=modules/' . $module . '/Database/Migrations');
-
-            /**
              * Run OverrideViews
              */
-//            $result = OverrideViews::run([$module]);
+            $result = OverrideViews::run([$module]);
+            $this->components->{$result['type']}($result['message']);
 
         } catch (\RuntimeException $e) {
             $this->error("❌ " . $e->getMessage());

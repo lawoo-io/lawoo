@@ -25,7 +25,7 @@ class ModuleInstaller
 
         $path = 'modules' . '/' . $moduleName;
 
-        ClassOverrider::scan($path, $mod->id);
+        ClassOverrider::scan($path, $mod);
 
         $mod->enabled = true;
         $mod->version_installed = $mod->version;

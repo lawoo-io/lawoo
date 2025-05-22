@@ -127,13 +127,16 @@ class ModuleView extends Model
                 $parentView->save();
             }
 
-            $resource_path = OverrideViews::generateView($view);
-
-            $resource_path = Str::after($resource_path, resource_path() . DIRECTORY_SEPARATOR);
 
             $view->fill($metaData);
             $view->file_hash = $fileHash;
-            $view->resource_path = $resource_path;
+
+            if ($view->base) {
+                $resource_path = OverrideViews::generateView($view);
+                $resource_path = Str::after($resource_path, resource_path() . DIRECTORY_SEPARATOR);
+                $view->resource_path = $resource_path;
+            }
+
             $view->save();
         }
 

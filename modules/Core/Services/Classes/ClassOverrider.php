@@ -4,18 +4,18 @@ namespace Modules\Core\Services\Classes;
 
 use Illuminate\Support\Facades\File;
 use Modules\Core\Models\Override;
+use Modules\Core\Repositories\ModuleRepository;
+use Modules\Core\Repositories\OverrideRepository;
 
 class ClassOverrider
 {
-    /**
-     * Scans the given directory recursively for PHP files that define
-     * a constant named OVERRIDE_TARGET. Returns a list of override mappings.
-     *
-     * @param string $path Relative path from base_path() to the modules directory
-     * @return array<int, array{target_class: string, override_class: string}>
-     */
-    public static function scan(string $path, int $moduleId): void
+
+    public static function scan(string $path, object $module): void
     {
+
+        $overrideRepository = app(OverrideRepository::class);
+        $overrideRepository->check($module);
+
         $overrides = [];
 
         // Get all files recursively from the given base path
@@ -62,7 +62,7 @@ class ClassOverrider
                         'override_class' => $fqcn
                     ],
                     [
-                        'module_id' => $moduleId
+                        'module_id' => $module->id
                     ]
                 );
             }
