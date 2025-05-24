@@ -74,6 +74,11 @@ class ModulesUpdateCommand extends Command
             $result = OverrideViews::run([$module]);
             $this->components->{$result['type']}($result['message']);
 
+            /**
+             * Run translation command
+             */
+            Artisan::call('lawoo:sync-ui-strings ' . $module . ' --cleanup');
+
         } catch (\RuntimeException $e) {
             $this->error("❌ " . $e->getMessage());
             return CommandAlias::FAILURE;

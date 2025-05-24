@@ -19,6 +19,16 @@ class {{name}}ServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Load config from same Module
+//        $this->mergeConfigFrom(
+//            __DIR__.'/../config.php', '{{name|lower}}'
+//        );
+
+        // Load routes
+        // $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+
+        // Load translations
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', '{{name|lower}}');
+
     }
 }

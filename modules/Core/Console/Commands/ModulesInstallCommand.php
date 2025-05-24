@@ -3,6 +3,7 @@
 namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Modules\Core\Models\Module;
 use Modules\Core\Services\Modules\ModuleInstaller;
 use Modules\Core\Services\Resources\OverrideViews;
@@ -94,5 +95,10 @@ class ModulesInstallCommand extends Command
          */
         $result = OverrideViews::run([$module]);
         $this->components->{$result['type']}($result['message']);
+
+        /**
+         * Run translation command
+         */
+        Artisan::call('lawoo:sync-ui-strings ' . $module . ' --cleanup');
     }
 }
