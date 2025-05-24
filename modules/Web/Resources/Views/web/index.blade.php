@@ -9,4 +9,9 @@ priority: 0
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
         <livewire:web.counter/>
     </div>
+
+    <div>
+        <p>{{ session('locale') }}</p>
+        @_t('Willkommen auf Lawoo!', 'Web')
+    </div>
 </x-web.layouts.sidebar>

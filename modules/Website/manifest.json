@@ -1,0 +1,9 @@
+{
+    "name": "Website Module",
+    "short_desc": "Website for www.lawoo.io",
+    "category": "Website",
+    "author": "Alexander Kröker",
+    "author_url": "https://www.lawoo.io",
+    "version": "0.0.1",
+    "depends": []
+}
