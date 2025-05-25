@@ -100,5 +100,10 @@ class ModulesInstallCommand extends Command
          * Run translation command
          */
         Artisan::call('lawoo:sync-ui-strings ' . $module . ' --cleanup');
+
+        /*
+         * Register permissions
+         */
+        Artisan::call('lawoo:rbac:sync ' . $module);
     }
 }

@@ -81,9 +81,17 @@ class PermissionRegistrar implements PermissionRegistrarInterface
      */
     public function clearCache(): void
     {
-        Cache::forget('rbac.permissions');
-        Cache::forget('rbac.roles');
-        Cache::tags(['rbac'])->flush();
+        // Alle bekannten RBAC Cache-Keys löschen
+        $cacheKeys = [
+            'rbac.permissions',
+            'rbac.roles',
+            'rbac.user_permissions',
+            'rbac.role_permissions',
+        ];
+
+        foreach ($cacheKeys as $key) {
+            Cache::forget($key);
+        }
     }
 
     /**
@@ -116,5 +124,35 @@ class PermissionRegistrar implements PermissionRegistrarInterface
 
         // Add/update new permissions
         $this->registerPermissions($module, $permissions);
+    }
+
+    /**
+     * Cleanup RBAC data for module removal
+     */
+    public function cleanupModuleRBAC(string $module, bool $forceSystem = false): array
+    {
+        $cleanupService = app(RBACCleanupService::class);
+        return $cleanupService->removeModuleRBAC($module, ['force_system' => $forceSystem]);
+    }
+
+    /**
+     * Check what RBAC data exists for a module
+     */
+    public function getModuleRBACInfo(string $module): array
+    {
+        $module = strtolower($module);
+
+        $permissions = Permission::where('module', $module)->get();
+        $roles = Role::where('module', $module)->get();
+
+        return [
+            'module' => $module,
+            'permissions' => $permissions->count(),
+            'permission_list' => $permissions->pluck('slug')->toArray(),
+            'roles' => $roles->count(),
+            'role_list' => $roles->pluck('slug')->toArray(),
+            'has_system_data' => $permissions->where('is_system', true)->count() > 0 ||
+                $roles->where('is_system', true)->count() > 0
+        ];
     }
 }
