@@ -34,9 +34,10 @@ class User extends UserModel
     /**
      * Main permission check method
      */
-    public function can($ability, $arguments = []): bool
+    // Permission Check (Main Method)
+    public function can($permission, $arguments = []): bool
     {
-        // Super Admin bypass - can do everything
+        // Super Admin bypass
         if ($this->isSuperAdmin()) {
             return true;
         }
@@ -46,11 +47,8 @@ class User extends UserModel
             return false;
         }
 
-        // Update last permission check timestamp
-        $this->updatePermissionCheckTimestamp();
-
-        // Check through roles and permissions
-        return $this->hasPermissionViaRole($ability);
+        // Check through roles
+        return $this->hasPermissionViaRole($permission);
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Console\Commands\ClearPermissionCache;
 use Modules\Core\Console\Commands\InitCommand;
 use Modules\Core\Console\Commands\MakeLivewireCommand;
 use Modules\Core\Console\Commands\MakeModelCommand;
@@ -17,6 +18,8 @@ use Modules\Core\Console\Commands\ModulesCheckCommand;
 use Modules\Core\Console\Commands\ModulesInstallCommand;
 use Modules\Core\Console\Commands\ModulesRemoveCommand;
 use Modules\Core\Console\Commands\ModulesUpdateCommand;
+use Modules\Core\Console\Commands\RemoveModuleRBAC;
+use Modules\Core\Console\Commands\SyncModulePermissions;
 use Modules\Core\Console\Commands\SyncUiStrings;
 use Modules\Core\Database\Seeders\ModuleCategorySeeders;
 use Modules\Core\Database\Seeders\RbacSeeder;
@@ -55,6 +58,9 @@ class CoreServiceProvider extends ServiceProvider
             MakeViewCommand::class,
             MakeModuleCommand::class,
             SyncUiStrings::class,
+            ClearPermissionCache::class,
+            SyncModulePermissions::class,
+            RemoveModuleRBAC::class,
         ]);
 
         // Bind the RouteHelpers class to the service container as a singleton.

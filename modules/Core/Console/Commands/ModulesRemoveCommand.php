@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Modules\Core\Models\Module;
 use Modules\Core\Services\Modules\ModuleRemover;
+use Modules\Core\Services\RBACCleanupService;
 use Modules\Core\Services\Schemas\MigrationManager;
 
 class ModulesRemoveCommand extends Command
@@ -48,6 +49,11 @@ class ModulesRemoveCommand extends Command
         if($this->option('remove-db')){
             MigrationManager::removeDb($name);
         }
+
+        // RBAC Cleanup hinzufügen
+        $rbacCleanup = app(RBACCleanupService::class);
+        $results['rbac_cleanup'] = $rbacCleanup->removeModuleRBAC($name);
+
         $this->components->{$result['type']}($result['message']);
     }
 }

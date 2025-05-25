@@ -79,6 +79,12 @@ class ModulesUpdateCommand extends Command
              */
             Artisan::call('lawoo:sync-ui-strings ' . $module . ' --cleanup');
 
+            /*
+             * Update Register permissions
+             */
+            Artisan::call('lawoo:rbac:sync ' . $module);
+            Artisan::call('lawoo:rbac:clear-cache');
+
         } catch (\RuntimeException $e) {
             $this->error("❌ " . $e->getMessage());
             return CommandAlias::FAILURE;
