@@ -19,6 +19,11 @@ class CheckActiveUser
             return $next($request);
         }
 
+        // Skip für Livewire-Requests
+        if ($request->is('livewire/*') || $request->header('X-Livewire')) {
+            return $next($request);
+        }
+
         if (!auth()->check()) {
             return redirect()->route('login');
         }
