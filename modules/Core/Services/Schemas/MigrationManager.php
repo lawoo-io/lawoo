@@ -7,6 +7,7 @@ use Modules\Core\Models\DbField;
 use Modules\Core\Models\DbModel;
 use Modules\Core\Models\MigrationFile;
 use Modules\Core\Models\Module;
+use Modules\Core\Models\ModuleUiTranslation;
 use Modules\Core\Models\YamlFile;
 
 class MigrationManager
@@ -85,6 +86,9 @@ class MigrationManager
                 $dbModel->delete();
             }
         }
+
+        // Remove Translations
+        ModuleUiTranslation::where('module', $moduleName)->delete();
     }
 
     public static function runMigrateByFilePath(MigrationFile $migrationFile, DbModel $dbModel): void

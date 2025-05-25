@@ -11,28 +11,6 @@ $localesWithoutDefault = array_diff($supportedLocales, [$defaultLocale]);
 $localeRegex = implode('|', $localesWithoutDefault);
 
 /*
- * |------------------------------------------------------------------
- * | Group for multilingual routes with an optional prefix
- * |------------------------------------------------------------------
- */
-
-/*
- * Routes for default language
- */
-Route::group([
-    'as' => 'locale.',
-], function() use($localeRegex) {
-    App::setLocale($localeRegex);
-    Route::get('core-test', function () {
-        return Lang::get('core::messages.welcome');
-    })->name('core.test');
-
-//    Route::get('lawoo', function () {
-//        return view('web.index');
-//    })->name('lawoo');
-});
-
-/*
  * Route for change the current language
  */
 Route::get('/change-language/{locale}', function ($locale) {
