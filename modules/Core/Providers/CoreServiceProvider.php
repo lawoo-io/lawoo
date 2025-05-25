@@ -35,15 +35,11 @@ class CoreServiceProvider extends ServiceProvider
 
     public function register(): void {
 
-        \Log::info('CoreServiceProvider register() called');
-
         // User Model Binding - MUSS ZUERST passieren
         $this->app->bind(
             \App\Models\User::class,
             \Modules\Core\Models\ExtendedUser::class
         );
-
-        \Log::info('User binding registered');
 
         $this->commands([
             InitCommand::class,
