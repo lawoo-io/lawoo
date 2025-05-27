@@ -1,6 +1,0 @@
-settings:
-  base: 0
-  fields:
-    test_demo_field_one: string=100.nullable
-    test_demo_field_two: string.nullable
-    test_demo_field_tree: string.nullable

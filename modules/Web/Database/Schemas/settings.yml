@@ -5,10 +5,5 @@ settings:
     name: string=100.unique
     value: string.nullable
     group: string
-    isActive: boolean.default=0
-#    summary: text.nullable
-#    description: text.nullable
-#    test1: boolean.default=1
-#    test2: boolean.default=0
-#    test3: string.nullable
-#    test4: boolean.default=0
+    isActive: boolean.default=1
+    module_id: foreignId.constrained.cascadeOnDelete

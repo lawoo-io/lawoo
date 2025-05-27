@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,6 +8,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'active.user'])->group(function () {
     Route::get('lawoo', function () {
+//        App::setLocale(session('locale'));
         return view('web.index');
     })->name('lawoo');
 });

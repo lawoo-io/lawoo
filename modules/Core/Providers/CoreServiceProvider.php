@@ -28,18 +28,11 @@ use Modules\Core\Http\Middleware\SetLocale;
 use Modules\Core\Models\Override;
 use Illuminate\Support\Facades\Schema;
 use Modules\Core\Repositories\ModuleRepository;
-use Modules\Core\Providers\RbacServiceProvider;
 
 class CoreServiceProvider extends ServiceProvider
 {
 
     public function register(): void {
-
-        // User Model Binding - MUSS ZUERST passieren
-        $this->app->bind(
-            \App\Models\User::class,
-            \Modules\Core\Models\ExtendedUser::class
-        );
 
         $this->commands([
             InitCommand::class,
@@ -68,13 +61,19 @@ class CoreServiceProvider extends ServiceProvider
 
         // RBAC Service Provider registrieren - NUR EINMAL
         $this->app->register(RbacServiceProvider::class);
-
-        // UserServiceBinding ENTFERNT - nicht existent
-        // $this->app->register(\Modules\Core\Providers\UserServiceBinding::class);
-
     }
 
-    public function boot(Kernel $kernel): void {
+    public function boot(): void
+    {
+        /**
+         * Load Kernel
+         */
+        $kernel = $this->app->make(Kernel::class);
+
+        /**
+         * Register Locations
+         */
+        $kernel->appendMiddlewareToGroup('web', SetLocale::class);
 
         /**
          * Load Migrations
@@ -89,7 +88,6 @@ class CoreServiceProvider extends ServiceProvider
         /**
          * Register Kernel
          */
-        $kernel->prependMiddlewareToGroup('web', SetLocale::class);
         Blade::directive('_t', function ($expression) {
             return "<?php echo __t({$expression}); ?>";
         });
@@ -126,10 +124,9 @@ class CoreServiceProvider extends ServiceProvider
          */
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'core');
 
-        // RBAC Service Provider ENTFERNT - bereits in register()
-        // $this->app->register(RbacServiceProvider::class);
-
-        // RBAC Middleware registrieren
+        /**
+         * Register RBAC Middleware
+         */
         $this->registerRbacMiddleware();
     }
 
@@ -154,7 +151,7 @@ class CoreServiceProvider extends ServiceProvider
                 $seeder->call(ModuleCategorySeeders::class);
 
                 // PermissionSeeders
-                $seeder->call(RbacSeeder::class);
+//                $seeder->call(RbacSeeder::class);
             });
         }
     }

@@ -22,10 +22,10 @@ class RbacServiceProvider extends ServiceProvider
         $this->app->singleton('permission.registrar', PermissionRegistrarInterface::class);
 
         // Bind Extended User Model
-        $this->app->bind(
-            \App\Models\User::class,
-            \Modules\Core\Models\ExtendedUser::class
-        );
+//        $this->app->bind(
+//            \App\Models\User::class,
+//            \Modules\Core\Models\ExtendedUser::class
+//        );
     }
 
     /**
