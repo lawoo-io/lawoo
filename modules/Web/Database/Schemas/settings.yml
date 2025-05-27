@@ -6,4 +6,5 @@ settings:
     value: string.nullable
     group: string
     isActive: boolean.default=1
-    module_id: foreignId.constrained.cascadeOnDelete
+    module_id: foreignId.constrained.nullOnDelete
+    sequence: integer.default=10

@@ -32,7 +32,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('yaml_files');
         Schema::dropIfExists('yaml_file_db_model');
+        Schema::dropIfExists('yaml_files');
     }
 };

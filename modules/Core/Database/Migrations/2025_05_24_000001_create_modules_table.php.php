@@ -45,8 +45,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('module_categories');
-        Schema::dropIfExists('modules');
         Schema::dropIfExists('module_dependencies');
+        Schema::dropIfExists('modules');
+        Schema::dropIfExists('module_categories');
     }
 };

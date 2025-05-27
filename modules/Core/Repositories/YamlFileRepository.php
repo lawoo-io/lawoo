@@ -37,13 +37,13 @@ class YamlFileRepository extends BaseRepository
         if (!$yamlFile) {
             $yamlFile = new $this->model;
             $yamlFile->path = $path;
-            $yamlFile->file_modified_at = $file->getMTime();
+            $yamlFile->file_modified_at = now()->setTimestamp($file->getMTime());
             $yamlFile->file_hash = hash_file('md5', $file->getPathname());
             $yamlFile->module_id = $moduleId;
             $yamlFile->save();
             $changed = true;
         } elseif ($yamlFile->file_modified_at < $file->getMTime() || $yamlFile->file_hash !== hash_file('md5', $file->getPathname())) {
-            $yamlFile->file_modified_at = $file->getMTime();
+            $yamlFile->file_modified_at = now()->setTimestamp($file->getMTime());
             $yamlFile->file_hash = hash_file('md5', $file->getPathname());
             $yamlFile->save();
             $changed = true;

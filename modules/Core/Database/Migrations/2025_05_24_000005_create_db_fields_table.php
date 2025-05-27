@@ -24,6 +24,9 @@ return new class extends Migration
             $table->foreignId('module_id')->nullable()->constrained()->nullOnDelete();
             $table->string('params')->nullable();
             $table->string('new_params')->nullable();
+            $table->integer('sequence')->default(10);
+            $table->string('group', 100)->nullable();
+            $table->string('css_class', 100)->nullable();
             $table->timestamps();
             $table->unique(['db_model_id', 'name']);
         });

@@ -34,7 +34,6 @@ class OverrideViews
 
     public static function generateView(object $view): string
     {
-        echo "View: " . $view->name . "\n";
         $source = base_path($view->path);
 
         if (!File::exists($source)) {

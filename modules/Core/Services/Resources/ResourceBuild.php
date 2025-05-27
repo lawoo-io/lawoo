@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services\Resources;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Modules\Core\Models\ModuleView;
@@ -46,7 +47,7 @@ class ResourceBuild
                         $path = $file->getPathname();
                         $parsed['path'] = Str::after($path, base_path() . DIRECTORY_SEPARATOR);
 
-                        $fileTime = filemtime($path);
+                        $fileTime = Carbon::createFromTimestamp(filemtime($path));
                         $fileHash = sha1_file($path);
 
                         ModuleView::saveOrUpdateMetaData($parsed, $fileTime, $fileHash, $module);

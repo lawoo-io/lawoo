@@ -52,7 +52,17 @@ class MigrationManager
 
             $dbModel->setMigrateOff();
             $dbModel->dbFields()->each(fn ($field) => $field->setMigrateOff());
-            DbField::removeFields($dbModel->dbFields, $module->id);        }
+            static::removeFields($dbModel->dbFields, $module->id);        }
+    }
+
+
+    public static function removeFields($dbFields, int $moduleId): void
+    {
+        foreach ($dbFields as $dbField) {
+            if ($dbField->to_remove && $dbField->module_id === $moduleId) {
+                $dbField->delete();
+            }
+        }
     }
 
     public static function removeDb(string $moduleName): void

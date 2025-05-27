@@ -112,7 +112,9 @@ class ModuleView extends Model
                 }
             }
 
-            $metaData['file_modified_at'] = Carbon::createFromTimestamp($fileTime);
+            echo "FileTime: " . $fileTime . "\n";
+
+            $metaData['file_modified_at'] = $fileTime;
             $metaData['file_hash'] = $fileHash;
             $metaData['module_id'] = $module->id;
 
@@ -138,6 +140,8 @@ class ModuleView extends Model
             }
 
             $view->save();
+
+            echo "Test";
         }
 
     }

@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('name', 100)->unique();
             $table->string('value')->nullable();
             $table->string('group');
-            $table->boolean('isActive')->default('0');
+            $table->boolean('isActive')->default('1');
+            $table->foreignId('module_id')->constrained()->nullOnDelete();
+            $table->integer('sequence')->default('10');
         });
     }
 
