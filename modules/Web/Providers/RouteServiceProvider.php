@@ -11,6 +11,7 @@ class RouteServiceProvider extends BaseRouteServiceProvider
 
         $this->routes(function () {
             Route::middleware('web')->group(__DIR__ . '/../Routes/web.php');
+            Route::middleware('api')->group(__DIR__ . '/../Routes/api.php');
         });
     }
 }

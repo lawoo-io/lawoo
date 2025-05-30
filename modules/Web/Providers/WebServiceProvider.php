@@ -8,6 +8,7 @@ use Modules\Web\Extends\Models\ExtendUserModel;
 
 class WebServiceProvider extends ServiceProvider
 {
+    protected string $moduleName = 'web';
 
     public function register(): void
     {
@@ -20,6 +21,8 @@ class WebServiceProvider extends ServiceProvider
          * Register RouteServiceProvider
          */
         $this->app->register(RouteServiceProvider::class);
+
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'core');
 
     }
 }

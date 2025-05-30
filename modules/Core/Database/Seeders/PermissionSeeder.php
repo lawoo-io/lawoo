@@ -13,8 +13,8 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $this->createCorePermissions();
-        $this->createUserManagementPermissions();
-        $this->createSystemPermissions();
+//        $this->createUserManagementPermissions();
+//        $this->createSystemPermissions();
     }
 
     /**
@@ -25,40 +25,40 @@ class PermissionSeeder extends Seeder
         $permissions = [
             [
                 'name' => 'Access Dashboard',
-                'slug' => 'core.dashboard',
+                'slug' => 'web.dashboard',
                 'description' => 'Can access main dashboard',
-                'module' => 'core',
+                'module' => 'web',
                 'resource' => 'dashboard',
                 'action' => 'view',
                 'is_system' => true
             ],
-            [
-                'name' => 'System Settings',
-                'slug' => 'core.settings',
-                'description' => 'Can access system settings',
-                'module' => 'core',
-                'resource' => 'settings',
-                'action' => 'manage',
-                'is_system' => true
-            ],
-            [
-                'name' => 'View Modules',
-                'slug' => 'core.modules.view',
-                'description' => 'Can view installed modules',
-                'module' => 'core',
-                'resource' => 'modules',
-                'action' => 'view',
-                'is_system' => true
-            ],
-            [
-                'name' => 'Manage Modules',
-                'slug' => 'core.modules.manage',
-                'description' => 'Can install/uninstall modules',
-                'module' => 'core',
-                'resource' => 'modules',
-                'action' => 'manage',
-                'is_system' => true
-            ]
+//            [
+//                'name' => 'System Settings',
+//                'slug' => 'core.settings',
+//                'description' => 'Can access system settings',
+//                'module' => 'core',
+//                'resource' => 'settings',
+//                'action' => 'manage',
+//                'is_system' => true
+//            ],
+//            [
+//                'name' => 'View Modules',
+//                'slug' => 'core.modules.view',
+//                'description' => 'Can view installed modules',
+//                'module' => 'core',
+//                'resource' => 'modules',
+//                'action' => 'view',
+//                'is_system' => true
+//            ],
+//            [
+//                'name' => 'Manage Modules',
+//                'slug' => 'core.modules.manage',
+//                'description' => 'Can install/uninstall modules',
+//                'module' => 'core',
+//                'resource' => 'modules',
+//                'action' => 'manage',
+//                'is_system' => true
+//            ]
         ];
 
         foreach ($permissions as $permission) {

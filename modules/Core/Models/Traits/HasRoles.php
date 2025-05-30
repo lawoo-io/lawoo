@@ -12,8 +12,8 @@ trait HasRoles
     // Relationships
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class, 'user_roles')
-            ->withPivot(['assigned_by', 'expires_at'])
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')  // ← Explizite Keys
+        ->withPivot(['assigned_by', 'expires_at'])
             ->withTimestamps();
     }
 
@@ -61,7 +61,7 @@ trait HasRoles
             return $role instanceof Role ? $role->id : $role;
         });
 
-        $this->roles()->sync($roleIds);
+        $this->roles()->syncWithoutDetaching($roleIds);
         return $this;
     }
 

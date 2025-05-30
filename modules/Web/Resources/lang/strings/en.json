@@ -1,3 +1,24 @@
 {
-    "Willkommen auf Lawoo!": "Welcome to Lawoo!"
+    "Platform": "Platform",
+    "Dashboard": "Dashboard",
+    "Repository": "Repository",
+    "Documentation": "Documentation",
+    "Logout": "Logout",
+    "Change your account password": "Change your account password",
+    "Manage your profile and account settings": "Manage your profile and account settings",
+    "Email": "Email",
+    "Welcome to lawoo!": "Welcome to lawoo!",
+    "Name": "Name",
+    "Profile Settings": "Profile Settings",
+    "Save": "Save",
+    "Change Password": "Change Password",
+    "Saved": "Saved",
+    "Your email address is unverified.": "Your email address is unverified.",
+    "Click here to re-send the verification email.": "Click here to re-send the verification email.",
+    "A new verification link has been sent to your email address.": "A new verification link has been sent to your email address.",
+    "Current password": "Current password",
+    "New password": "New password",
+    "Confirm Password": "Confirm Password",
+    "Saved.": "Saved.",
+    "Settings": "Settings"
 }

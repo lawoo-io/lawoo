@@ -55,27 +55,14 @@ if (!function_exists('__t')) {
             // If the translation is found in the database, use its translated value.
             if (empty($translation->translated_value)) {
                 $logMessage = "Missing UI translation: '{$keyString}' for module '{$moduleName}' in locale '{$locale}'.";
-                $valueToReturn = "<span class='inline-block bg-red-100 text-red-800 border border-red-500 rounded px-2 py-1 text-xs font-semibold'>" . $logMessage . "</span>";
+                $valueToReturn = strip_tags("<span class='inline-block bg-red-100 text-red-800 border border-red-500 rounded px-2 py-1 text-xs font-semibold'>" . $logMessage . "</span>");
             } else {
                 $valueToReturn = $translation->translated_value;
             }
         } else {
-            // If the translation is NOT found in the database:
-            // This indicates a missing translation.
-            // Log a warning for developers. The string might be missing in JSON source files
-            // or 'php artisan translations:sync-ui-strings' might not have been run.
-            $logMessage = "Missing UI translation: '{$keyString}' for module '{$moduleName}' in locale '{$locale}'.";
-
-            // In local or staging environments, display a highly visible marker in the view.
             if (App::environment('local', 'staging')) {
-                Log::warning($logMessage . " Please ensure 'php artisan lawoo:sync-ui-strings ModuleName' has been run.");
-                // Return a visually distinct HTML span with Tailwind classes for dev/staging.
-                // This HTML will be rendered if `{!! __t(...) !!}` is used in Blade.
-                $valueToReturn = "<span class='inline-block bg-red-100 text-red-800 border border-red-500 rounded px-2 py-1 text-xs font-semibold'>MISSING: " .
-                    e($keyString) . " ({$moduleName}/{$locale})</span>";
+                $valueToReturn = strip_tags("MISSING: " . e($keyString) . " ({$moduleName}/{$locale})");
             } else {
-                // In production, just log the warning without specific commands and return the original key.
-                Log::warning($logMessage);
                 $valueToReturn = $keyString;
             }
         }

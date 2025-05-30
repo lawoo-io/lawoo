@@ -89,6 +89,7 @@ class ModuleRepository extends BaseRepository
     {
         if (!Schema::hasTable('modules')) return;
 
+
         $modules = $this->model->where('enabled', 1)->get();
 
         $ordered = [];
@@ -109,6 +110,7 @@ class ModuleRepository extends BaseRepository
         }
 
         foreach ($ordered as $moduleName) {
+
             $this->registerLivewireComponents($moduleName);
         }
     }
@@ -135,11 +137,20 @@ class ModuleRepository extends BaseRepository
             $reflection = new ReflectionClass($class);
             if (! $reflection->isSubclassOf(\Livewire\Component::class)) continue;
 
+//            $componentName = Str::of($class)
+//                ->after("Modules\\")
+//                ->replace(['\\Http\\Livewire\\', '\\'], ['.', '.'])
+//                ->replace('Component', '')
+//                ->lower();
             $componentName = Str::of($class)
                 ->after("Modules\\")
                 ->replace(['\\Http\\Livewire\\', '\\'], ['.', '.'])
                 ->replace('Component', '')
-                ->lower();
+                ->pipe(function($str) {
+                    // Teile durch Punkte trennen, jeden Teil kebab-case, wieder zusammenfügen
+                    $parts = explode('.', $str);
+                    return implode('.', array_map(fn($part) => Str::kebab($part), $parts));
+                });
 
             Livewire::component($componentName->toString(), $class);
         }

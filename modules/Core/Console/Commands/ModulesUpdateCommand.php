@@ -85,6 +85,11 @@ class ModulesUpdateCommand extends Command
             Artisan::call('lawoo:rbac:sync ' . $module);
             Artisan::call('lawoo:rbac:clear-cache');
 
+            /**
+             * Update Navigation
+             */
+            Artisan::call('lawoo:nav:sync ' . $module);
+
         } catch (\RuntimeException $e) {
             $this->error("❌ " . $e->getMessage());
             return CommandAlias::FAILURE;

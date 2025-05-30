@@ -150,15 +150,16 @@ class TranslationSyncService
      */
     private function extractTranslationKeys(string $contents): array
     {
+        $keys = [];
+
         preg_match_all(
-            '/@_t\s*\(\s*(["\'])(.*?)\1\s*(?:,\s*(["\'])(.*?)\3\s*)?\)/s',
+            '/__t\s*\(\s*(["\'])(.*?)\1\s*(?:,\s*(["\'])(.*?)\3\s*)?\)/s',
             $contents,
-            $matches,
+            $functionMatches,
             PREG_SET_ORDER
         );
 
-        $keys = [];
-        foreach ($matches as $match) {
+        foreach ($functionMatches as $match) {
             $keys[] = [
                 'key' => $match[2],
                 'module' => isset($match[4]) ? trim($match[4]) : null,
@@ -173,6 +174,7 @@ class TranslationSyncService
      */
     private function syncTranslationKey(string $key, string $module, array $config): bool
     {
+
         $updated = false;
 
         foreach ($config['supported_locales'] as $locale) {
@@ -207,7 +209,7 @@ class TranslationSyncService
 
         // ALTERNATIVE: Falls Default Locale leer sein soll und andere gefüllt
         // (Ungewöhnlich, aber falls gewünscht)
-        $defaultValue = ($locale === $config['default_locale']) ? "" : $key;
+        $defaultValue = ($locale === $config['default_locale']) ? $key : "";
         $jsonContent[$key] = $defaultValue;
 
         if (!$config['dry_run']) {

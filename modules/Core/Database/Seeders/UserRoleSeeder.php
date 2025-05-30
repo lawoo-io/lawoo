@@ -3,8 +3,9 @@
 namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\Core\Models\User;
+use App\Models\User;
 use Modules\Core\Models\Role;
+use Modules\Core\Models\UserExtended;
 
 class UserRoleSeeder extends Seeder
 {
@@ -23,7 +24,7 @@ class UserRoleSeeder extends Seeder
     protected function assignDefaultRoles(): void
     {
         // Make first user Super Admin
-        $firstUser = User::first();
+        $firstUser = UserExtended::first();
         if ($firstUser) {
             $firstUser->update([
                 'is_super_admin' => true,
@@ -37,7 +38,7 @@ class UserRoleSeeder extends Seeder
         }
 
         // Assign basic user role to other users
-        $otherUsers = User::where('id', '>', 1)->get();
+        $otherUsers = UserExtended::where('id', '>', 1)->get();
         $userRole = Role::where('slug', 'user')->first();
 
         if ($userRole) {
@@ -54,7 +55,7 @@ class UserRoleSeeder extends Seeder
     protected function createDemoUsers(): void
     {
         // Create Admin User
-        $admin = User::firstOrCreate(
+        $admin = UserExtended::firstOrCreate(
             ['email' => 'admin@lawoo.local'],
             [
                 'name' => 'Admin User',
@@ -64,41 +65,41 @@ class UserRoleSeeder extends Seeder
             ]
         );
 
-        $adminRole = Role::where('slug', 'admin')->first();
+        $adminRole = Role::where('slug', 'super-admin')->first();
         if ($adminRole) {
             $admin->assignRole($adminRole);
         }
 
-        // Create Manager User
-        $manager = User::firstOrCreate(
-            ['email' => 'manager@lawoo.local'],
-            [
-                'name' => 'Manager User',
-                'password' => bcrypt('password'),
-                'is_active' => true,
-                'email_verified_at' => now()
-            ]
-        );
-
-        $managerRole = Role::where('slug', 'manager')->first();
-        if ($managerRole) {
-            $manager->assignRole($managerRole);
-        }
-
-        // Create Basic User
-        $user = User::firstOrCreate(
-            ['email' => 'user@lawoo.local'],
-            [
-                'name' => 'Basic User',
-                'password' => bcrypt('password'),
-                'is_active' => true,
-                'email_verified_at' => now()
-            ]
-        );
-
-        $userRole = Role::where('slug', 'user')->first();
-        if ($userRole) {
-            $user->assignRole($userRole);
-        }
+//        // Create Manager User
+//        $manager = UserExtended::firstOrCreate(
+//            ['email' => 'manager@lawoo.local'],
+//            [
+//                'name' => 'Manager User',
+//                'password' => bcrypt('password'),
+//                'is_active' => true,
+//                'email_verified_at' => now()
+//            ]
+//        );
+//
+//        $managerRole = Role::where('slug', 'manager')->first();
+//        if ($managerRole) {
+//            $manager->assignRole($managerRole);
+//        }
+//
+//        // Create Basic User
+//        $user = UserExtended::firstOrCreate(
+//            ['email' => 'user@lawoo.local'],
+//            [
+//                'name' => 'Basic User',
+//                'password' => bcrypt('password'),
+//                'is_active' => true,
+//                'email_verified_at' => now()
+//            ]
+//        );
+//
+//        $userRole = Role::where('slug', 'user')->first();
+//        if ($userRole) {
+//            $user->assignRole($userRole);
+//        }
     }
 }
