@@ -19,7 +19,9 @@ use Modules\Core\Console\Commands\ModulesInstallCommand;
 use Modules\Core\Console\Commands\ModulesRemoveCommand;
 use Modules\Core\Console\Commands\ModulesUpdateCommand;
 use Modules\Core\Console\Commands\RemoveModuleRBAC;
+use Modules\Core\Console\Commands\RemoveNavigationCommand;
 use Modules\Core\Console\Commands\SyncModulePermissions;
+use Modules\Core\Console\Commands\SyncNavigationCommand;
 use Modules\Core\Console\Commands\SyncUiStrings;
 use Modules\Core\Database\Seeders\ModuleCategorySeeders;
 use Modules\Core\Database\Seeders\RbacSeeder;
@@ -50,6 +52,8 @@ class CoreServiceProvider extends ServiceProvider
             ClearPermissionCache::class,
             SyncModulePermissions::class,
             RemoveModuleRBAC::class,
+            SyncNavigationCommand::class,
+            RemoveNavigationCommand::class,
         ]);
 
         // Bind the RouteHelpers class to the service container as a singleton.
@@ -85,22 +89,11 @@ class CoreServiceProvider extends ServiceProvider
          */
         $this->mergeConfigFrom(__DIR__ . '/../config.php', 'app');
 
-        /**
-         * Register Kernel
-         */
-        Blade::directive('_t', function ($expression) {
-            return "<?php echo __t({$expression}); ?>";
-        });
 
         /**
          * Register RouteServiceProvider
          */
         $this->app->register(RouteServiceProvider::class);
-
-        /**
-         * Register Seeds
-         */
-        $this->registerSeeds();
 
         /**
          * Register activated modules
@@ -120,6 +113,13 @@ class CoreServiceProvider extends ServiceProvider
         require_once __DIR__ . '/../Helpers/helpers.php';
 
         /**
+         * Register Kernel
+         */
+        Blade::directive('_t', function ($expression) {
+            return "<?php echo __t({$expression}); ?>";
+        });
+
+        /**
          * Load Translations
          */
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'core');
@@ -128,6 +128,11 @@ class CoreServiceProvider extends ServiceProvider
          * Register RBAC Middleware
          */
         $this->registerRbacMiddleware();
+
+        /**
+         * Register Seeds
+         */
+        $this->registerSeeds();
     }
 
     protected function registerRbacMiddleware(): void
@@ -151,7 +156,7 @@ class CoreServiceProvider extends ServiceProvider
                 $seeder->call(ModuleCategorySeeders::class);
 
                 // PermissionSeeders
-//                $seeder->call(RbacSeeder::class);
+                $seeder->call(RbacSeeder::class);
             });
         }
     }

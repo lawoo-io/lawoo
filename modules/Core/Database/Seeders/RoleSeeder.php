@@ -14,9 +14,9 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $this->createSuperAdminRole();
-        $this->createAdminRole();
-        $this->createManagerRole();
-        $this->createUserRole();
+//        $this->createAdminRole();
+//        $this->createManagerRole();
+//        $this->createUserRole();
     }
 
     /**

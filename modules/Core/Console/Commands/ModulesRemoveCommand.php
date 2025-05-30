@@ -44,8 +44,16 @@ class ModulesRemoveCommand extends Command
 
     public function removeModule(string $name, bool $self = false): void
     {
+
+        /**
+         * Remove Module
+         */
         $result = ModuleRemover::run($name);
 
+
+        /**
+         * Remove DB tables
+         */
         if($this->option('remove-db')){
             MigrationManager::removeDb($name);
         }
@@ -55,5 +63,10 @@ class ModulesRemoveCommand extends Command
         $results['rbac_cleanup'] = $rbacCleanup->removeModuleRBAC($name);
 
         $this->components->{$result['type']}($result['message']);
+
+        /**
+         * Remove Navigation
+         */
+        Artisan::call('lawoo:nav:remove ' . $name . ' --force');
     }
 }

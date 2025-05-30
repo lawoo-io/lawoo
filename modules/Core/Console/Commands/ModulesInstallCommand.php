@@ -105,5 +105,10 @@ class ModulesInstallCommand extends Command
          * Register permissions
          */
         Artisan::call('lawoo:rbac:sync ' . $module);
+
+        /*
+         * Sync navigation
+         */
+        Artisan::call('lawoo:nav:sync ' . $module);
     }
 }

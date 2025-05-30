@@ -26,6 +26,7 @@ class RbacServiceProvider extends ServiceProvider
 //            \App\Models\User::class,
 //            \Modules\Core\Models\ExtendedUser::class
 //        );
+
     }
 
     /**
@@ -41,6 +42,14 @@ class RbacServiceProvider extends ServiceProvider
 
         // Register cache clear commands
         $this->registerCommands();
+
+//        $this->app->extend(\App\Models\User::class, function ($app) {
+//            return new \Modules\Core\Models\UserExtended();
+//        });
+        config(['auth.providers.users.model' => \Modules\Core\Models\UserExtended::class]);
+//        $user = $this->app->make(\App\Models\User::class);
+//        $user = \App\Models\User::find(1);
+//        dd(get_class($user));
     }
 
     /**

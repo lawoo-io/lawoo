@@ -3,10 +3,11 @@
 namespace Modules\Core\Models;
 
 use App\Models\User as UserModel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Modules\Core\Models\Traits\HasRoles;
 use Modules\Core\Database\Factories\UserFactory;
 
-class User extends UserModel
+class UserOld extends UserModel implements MustVerifyEmail
 {
     use HasRoles;
 
