@@ -64,9 +64,6 @@ class ModulesRemoveCommand extends Command
 
         $this->components->{$result['type']}($result['message']);
 
-        /**
-         * Remove Navigation
-         */
-        Artisan::call('lawoo:nav:remove ' . $name . ' --force');
+
     }
 }

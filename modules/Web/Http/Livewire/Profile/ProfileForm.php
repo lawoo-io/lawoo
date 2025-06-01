@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Modules\Core\Models\Language;
 
 class ProfileForm extends Component
 {
@@ -15,10 +16,13 @@ class ProfileForm extends Component
 
     public string $email = '';
 
+    public $selectedLanguage;
+
     protected function rules()
     {
         return [
-            'email' => 'required|email|unique:users,email,' . auth()->id()
+            'email' => 'required|email|unique:users,email,' . auth()->id(),
+            'selectedLanguage' => 'nullable|exists:languages,id'
         ];
     }
 
@@ -27,6 +31,23 @@ class ProfileForm extends Component
         $user = auth()->user();
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->selectedLanguage = $user->language_id;
+    }
+
+    public function updatedSelectedLanguage($value)
+    {
+        // Sofort speichern wenn Sprache geändert wird
+        $user = auth()->user();
+        $user->language_id = $value;
+        $user->save();
+
+        // Session setzen für sofortige Wirkung
+        $language = Language::find($value);
+        if ($language) {
+            session(['locale' => $language->code]);
+            app()->setLocale($language->code);
+            $this->js('window.location.reload()');
+        }
     }
 
     public function submit(): void
@@ -44,6 +65,11 @@ class ProfileForm extends Component
         $user->save();
 
         $this->dispatch('profile-updated', name: $user->name);
+    }
+
+    public function getActiveLanguages()
+    {
+        return Language::query()->active()->ordered()->get();
     }
 
     /**

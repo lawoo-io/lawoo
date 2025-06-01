@@ -23,6 +23,7 @@ use Modules\Core\Console\Commands\RemoveNavigationCommand;
 use Modules\Core\Console\Commands\SyncModulePermissions;
 use Modules\Core\Console\Commands\SyncNavigationCommand;
 use Modules\Core\Console\Commands\SyncUiStrings;
+use Modules\Core\Database\Seeders\LanguageSeeders;
 use Modules\Core\Database\Seeders\ModuleCategorySeeders;
 use Modules\Core\Database\Seeders\RbacSeeder;
 use Modules\Core\Helpers\RouteHelper;
@@ -154,6 +155,9 @@ class CoreServiceProvider extends ServiceProvider
             $this->app->afterResolving(Seeder::class, function (Seeder $seeder) {
                 // ModuleCategories
                 $seeder->call(ModuleCategorySeeders::class);
+
+                // Language Seeders
+                $seeder->call(LanguageSeeders::class);
 
                 // PermissionSeeders
                 $seeder->call(RbacSeeder::class);

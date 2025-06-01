@@ -10,6 +10,7 @@ use Modules\Core\Services\Resources\ResourceBuild;
 use Modules\Core\Services\Schemas\DbFieldManager;
 use Modules\Core\Services\Schemas\MigrationManager;
 use Modules\Core\Services\Schemas\SchemaChecker;
+use Modules\Core\Services\TranslationImporter;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
 class ModulesUpdateCommand extends Command
@@ -89,6 +90,12 @@ class ModulesUpdateCommand extends Command
              * Update Navigation
              */
             Artisan::call('lawoo:nav:sync ' . $module);
+
+            /**
+             * Import or Update Default Translations
+             */
+            $importer = app(TranslationImporter::class);
+            $importer->importModuleTranslations($module);
 
         } catch (\RuntimeException $e) {
             $this->error("❌ " . $e->getMessage());

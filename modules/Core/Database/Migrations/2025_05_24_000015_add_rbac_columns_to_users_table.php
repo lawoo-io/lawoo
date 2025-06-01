@@ -9,9 +9,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_super_admin')->default(false)->after('email_verified_at');
-            $table->boolean('is_active')->default(true)->after('is_super_admin');
-            $table->timestamp('last_permission_check')->nullable()->after('updated_at');
+            $table->boolean('is_super_admin')->default(false); // KEIN after()
+            $table->boolean('is_active')->default(true); // KEIN after()
+            $table->timestamp('last_permission_check')->nullable(); // KEIN after()
+            $table->foreignId('language_id')->nullable()->constrained('languages')->nullOnDelete();
 
             // Index für Performance
             $table->index(['is_super_admin']);
@@ -22,6 +23,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['language_id']);
             // Indices ZUERST löschen, dann Spalten
             $table->dropIndex(['is_super_admin']);
             $table->dropIndex(['is_active']);
@@ -30,7 +32,8 @@ return new class extends Migration
             $table->dropColumn([
                 'is_super_admin',
                 'is_active',
-                'last_permission_check'
+                'last_permission_check',
+                'language_id'
             ]);
         });
     }

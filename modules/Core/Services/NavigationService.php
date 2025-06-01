@@ -78,14 +78,17 @@ class NavigationService
         ];
 
         // First pass: Create/Update items without parent relationships
-        foreach ($configData as $route => $config) {
+        foreach ($configData as $key => $config) {
             $stats['processed']++;
-            $result = $this->syncNavigationItem($route, $config, $moduleName);
+            $result = $this->syncNavigationItem($key, $config, $moduleName);
             $stats[$result]++;
         }
 
         // Second pass: Update parent relationships
         $this->updateParentRelationships($moduleName, $configData);
+
+        // Third pass: Remove items that are no longer in config
+        $stats['deleted'] = $this->removeOrphanedItems($moduleName, $configData);
 
         return $stats;
     }
@@ -93,16 +96,16 @@ class NavigationService
     /**
      * Sync individual navigation item
      */
-    protected function syncNavigationItem(string $route, array $config, string $moduleName): string
+    protected function syncNavigationItem(string $key, array $config, string $moduleName): string
     {
-        $existing = Navigation::where('route', $route)
+        $existing = Navigation::where('key', $key)
             ->where('module', $moduleName)
             ->first();
 
         if ($existing) {
             return $this->updateExistingItem($existing, $config);
         } else {
-            return $this->createNewItem($route, $config, $moduleName);
+            return $this->createNewItem($key, $config, $moduleName);
         }
     }
 
@@ -143,10 +146,11 @@ class NavigationService
     /**
      * Create new navigation item
      */
-    protected function createNewItem(string $route, array $config, string $moduleName): string
+    protected function createNewItem(string $key, array $config, string $moduleName): string
     {
         Navigation::create([
-            'route' => $route,
+            'key' => $key,
+            'route' => $config['route'],
             'module' => $moduleName,
             'name' => $config['name'],
             'level' => $config['level'] ?? 0,
@@ -167,19 +171,39 @@ class NavigationService
      */
     protected function updateParentRelationships(string $moduleName, array $configData): void
     {
-        foreach ($configData as $route => $config) {
+        foreach ($configData as $key => $config) {
             if (isset($config['parent'])) {
-                $child = Navigation::where('route', $route)
+                $child = Navigation::where('key', $key)
                     ->where('module', $moduleName)
                     ->first();
 
-                $parent = Navigation::where('route', $config['parent'])->first();
+                $parent = Navigation::where('key', $config['parent'])->first();
 
                 if ($child && $parent) {
                     $child->update(['parent_id' => $parent->id]);
                 }
             }
         }
+    }
+
+    /**
+     * Remove navigation items that are no longer in config
+     */
+    protected function removeOrphanedItems(string $moduleName, array $configData): int
+    {
+        $configRoutes = array_keys($configData);  // Alle Routes aus der aktuellen Config
+
+        $orphanedCount = Navigation::where('module', $moduleName)
+            ->whereNotIn('key', $configRoutes)  // Items die NICHT in Config sind
+            ->count();
+
+        if ($orphanedCount > 0) {
+            Navigation::where('module', $moduleName)
+                ->whereNotIn('key', $configRoutes)  // Lösche Items die nicht in Config sind
+                ->delete();
+        }
+
+        return $orphanedCount;
     }
 
     /**

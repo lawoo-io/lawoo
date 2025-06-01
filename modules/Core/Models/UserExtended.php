@@ -4,6 +4,9 @@ namespace Modules\Core\Models;
 
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
+use Modules\Core\Database\Factories\UserFactory;
 use Modules\Core\Models\Traits\HasRoles;
 
 class UserExtended extends User implements MustVerifyEmail
@@ -27,6 +30,14 @@ class UserExtended extends User implements MustVerifyEmail
             'is_active' => 'boolean',
             'last_permission_check' => 'datetime',
         ]);
+    }
+
+    /**
+     * BelongsTo Language
+     */
+    public function language(): BelongsTo
+    {
+        return $this->belongsTo(Language::class);
     }
 
     // =====================================================================
@@ -174,6 +185,17 @@ class UserExtended extends User implements MustVerifyEmail
     protected static function newFactory()
     {
         return UserFactory::new();
+    }
+
+    /**
+     * Get the user's initials
+     */
+    public function initials(): string
+    {
+        return Str::of($this->name)
+            ->explode(' ')
+            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+            ->implode('');
     }
 
 }

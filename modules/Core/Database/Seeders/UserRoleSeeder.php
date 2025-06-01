@@ -15,7 +15,8 @@ class UserRoleSeeder extends Seeder
     public function run(): void
     {
         $this->assignDefaultRoles();
-        $this->createDemoUsers();
+        $this->createSuperAdmin();
+//        $this->createDemoUsers();
     }
 
     /**
@@ -26,26 +27,53 @@ class UserRoleSeeder extends Seeder
         // Make first user Super Admin
         $firstUser = UserExtended::first();
         if ($firstUser) {
-            $firstUser->update([
-                'is_super_admin' => true,
-                'is_active' => true
-            ]);
-
-            $superAdminRole = Role::where('slug', 'super-admin')->first();
-            if ($superAdminRole) {
-                $firstUser->assignRole($superAdminRole);
-            }
+            $firstUser->delete();
+//            $firstUser->update([
+//                'is_super_admin' => true,
+//                'is_active' => true
+//            ]);
+//
+//            $superAdminRole = Role::where('slug', 'super-admin')->first();
+//            if ($superAdminRole) {
+//                $firstUser->assignRole($superAdminRole);
+//            }
         }
 
         // Assign basic user role to other users
-        $otherUsers = UserExtended::where('id', '>', 1)->get();
-        $userRole = Role::where('slug', 'user')->first();
+//        $otherUsers = UserExtended::where('id', '>', 1)->get();
+//        $userRole = Role::where('slug', 'user')->first();
+//
+//        if ($userRole) {
+//            foreach ($otherUsers as $user) {
+//                $user->update(['is_active' => true]);
+//                $user->assignRole($userRole);
+//            }
+//        }
+    }
 
-        if ($userRole) {
-            foreach ($otherUsers as $user) {
-                $user->update(['is_active' => true]);
-                $user->assignRole($userRole);
-            }
+
+    /**
+     * Create Super Admin User
+     */
+    protected function createSuperAdmin(): void
+    {
+        $defaultLanguage = \Modules\Core\Models\Language::query()->default()->first();
+
+        $admin = UserExtended::firstOrCreate(
+            ['email' => 'admin@lawoo.local'],
+            [
+                'name' => 'Admin User',
+                'password' => bcrypt('password'),
+                'is_super_admin' => true,
+                'is_active' => true,
+                'email_verified_at' => now(),
+                'language_id' => $defaultLanguage?->id
+            ]
+        );
+
+        $adminRole = Role::where('slug', 'super-admin')->first();
+        if ($adminRole) {
+            $admin->assignRole($adminRole);
         }
     }
 
@@ -54,52 +82,37 @@ class UserRoleSeeder extends Seeder
      */
     protected function createDemoUsers(): void
     {
-        // Create Admin User
-        $admin = UserExtended::firstOrCreate(
-            ['email' => 'admin@lawoo.local'],
+
+        // Create Manager User
+        $manager = UserExtended::firstOrCreate(
+            ['email' => 'manager@lawoo.local'],
             [
-                'name' => 'Admin User',
+                'name' => 'Manager User',
                 'password' => bcrypt('password'),
                 'is_active' => true,
                 'email_verified_at' => now()
             ]
         );
 
-        $adminRole = Role::where('slug', 'super-admin')->first();
-        if ($adminRole) {
-            $admin->assignRole($adminRole);
+        $managerRole = Role::where('slug', 'manager')->first();
+        if ($managerRole) {
+            $manager->assignRole($managerRole);
         }
 
-//        // Create Manager User
-//        $manager = UserExtended::firstOrCreate(
-//            ['email' => 'manager@lawoo.local'],
-//            [
-//                'name' => 'Manager User',
-//                'password' => bcrypt('password'),
-//                'is_active' => true,
-//                'email_verified_at' => now()
-//            ]
-//        );
-//
-//        $managerRole = Role::where('slug', 'manager')->first();
-//        if ($managerRole) {
-//            $manager->assignRole($managerRole);
-//        }
-//
-//        // Create Basic User
-//        $user = UserExtended::firstOrCreate(
-//            ['email' => 'user@lawoo.local'],
-//            [
-//                'name' => 'Basic User',
-//                'password' => bcrypt('password'),
-//                'is_active' => true,
-//                'email_verified_at' => now()
-//            ]
-//        );
-//
-//        $userRole = Role::where('slug', 'user')->first();
-//        if ($userRole) {
-//            $user->assignRole($userRole);
-//        }
+        // Create Basic User
+        $user = UserExtended::firstOrCreate(
+            ['email' => 'user@lawoo.local'],
+            [
+                'name' => 'Basic User',
+                'password' => bcrypt('password'),
+                'is_active' => true,
+                'email_verified_at' => now()
+            ]
+        );
+
+        $userRole = Role::where('slug', 'user')->first();
+        if ($userRole) {
+            $user->assignRole($userRole);
+        }
     }
 }

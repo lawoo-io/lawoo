@@ -4,6 +4,7 @@ namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Services\NavigationService;
 
 class RemoveNavigationCommand extends Command

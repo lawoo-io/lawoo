@@ -3,6 +3,7 @@
 namespace Modules\Web\Http\Livewire\Auth;
 
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
@@ -38,7 +39,13 @@ class Login extends Component
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        $user = Auth::user();
+        if ($user->language && $user->language->is_active) {
+            App::setLocale($user->language->code);
+            Session::put('locale', $user->language->code);
+        }
+
+        $this->redirectIntended(default: route('lawoo.dashboard', absolute: false), navigate: true);
     }
 
     public function render()

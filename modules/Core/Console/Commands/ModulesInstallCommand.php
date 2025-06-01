@@ -11,6 +11,7 @@ use Modules\Core\Services\Resources\ResourceBuild;
 use Modules\Core\Services\Schemas\DbFieldManager;
 use Modules\Core\Services\Schemas\MigrationManager;
 use Modules\Core\Services\Schemas\SchemaChecker;
+use Modules\Core\Services\TranslationImporter;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
 class ModulesInstallCommand extends Command
@@ -110,5 +111,11 @@ class ModulesInstallCommand extends Command
          * Sync navigation
          */
         Artisan::call('lawoo:nav:sync ' . $module);
+
+        /**
+         * Import or Update Default Translations
+         */
+        $importer = app(TranslationImporter::class);
+        $importer->importModuleTranslations($module);
     }
 }
