@@ -7,10 +7,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Core\Models\Traits\TranslatableModel;
 
 class Navigation extends BaseModel
 {
+
+    use TranslatableModel;
+
+    protected $translatable = ['name', 'group'];
+    public static string $translationIdentifier = 'key';
+
     protected $fillable = [
+        'key',
         'route',
         'parent_id',
         'module',

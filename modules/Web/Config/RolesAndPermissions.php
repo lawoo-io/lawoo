@@ -25,6 +25,12 @@ return [
                 'description' => 'Can update own password',
                 'resource' => 'password',
                 'action' => 'change',
+            ],
+            'user.appearance.change' => [
+                'name' => 'Change Appearance',
+                'description' => 'Can update own appearance',
+                'resource' => 'appearance',
+                'action' => 'change',
             ]
         ],
     ],
@@ -39,7 +45,8 @@ return [
         'permissions' => [
             'user.profile.view' => [],
             'user.profile.edit' => [],
-            'user.password.change' => []
+            'user.password.change' => [],
+            'user.appearance.change' => [],
         ]
     ]
 ];

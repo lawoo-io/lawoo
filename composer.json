@@ -7,7 +7,7 @@
     "php": "^8.1",
     "laravel/framework": "^12.0",
     "livewire/livewire": "^3.0",
-    "livewire/flux": "^2.0",
+    "livewire/flux-pro": "*",
     "symfony/dom-crawler": "^7.2"
   },
   "autoload": {

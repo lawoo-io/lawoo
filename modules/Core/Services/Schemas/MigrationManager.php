@@ -9,6 +9,7 @@ use Modules\Core\Models\MigrationFile;
 use Modules\Core\Models\Module;
 use Modules\Core\Models\ModuleUiTranslation;
 use Modules\Core\Models\YamlFile;
+use Modules\Core\Services\TranslationImporter;
 
 class MigrationManager
 {
@@ -99,6 +100,18 @@ class MigrationManager
 
         // Remove Translations
         ModuleUiTranslation::where('module', $moduleName)->delete();
+
+        /**
+         * Delete Module Translations
+         */
+//        $importer = app(TranslationImporter::class);
+//        $importer->deleteModuleTranslations($moduleName);
+
+        /**
+         * Remove Navigation
+         */
+        Artisan::call('lawoo:nav:remove ' . $moduleName . ' --force');
+
     }
 
     public static function runMigrateByFilePath(MigrationFile $migrationFile, DbModel $dbModel): void

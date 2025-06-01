@@ -6,11 +6,6 @@ override_name: '',
 priority: 0
 --}}
 <section class="w-full">
-    <div class="relative mb-6 w-full">
-        <flux:heading size="xl" level="1">{{ __t('Change Password', 'Web') }}</flux:heading>
-        <flux:subheading size="lg" class="mb-6">{{ __t('Change your account password', 'Web') }}</flux:subheading>
-        <flux:separator variant="subtle" />
-    </div>
     <form wire:submit="updatePassword" class="my-6 w-full space-y-6">
         <flux:input
             wire:model="current_password"

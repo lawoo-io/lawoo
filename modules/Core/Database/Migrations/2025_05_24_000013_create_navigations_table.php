@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('navigations', function (Blueprint $table) {
             $table->id();
+            $table->string('key')->unique()->index();
             $table->string('route')->index();
             $table->string('middleware')->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('navigations')->onDelete('cascade');

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Web\Http\Controllers\UserController;
 use Modules\Web\Http\Controllers\VerifyEmailController;
 
-Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->group(function () {
+Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->name('lawoo.')->group(function () {
 
     Route::get('/', function(){
         return view('web.index');
@@ -15,14 +15,13 @@ Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->group(functi
         Route::get('/', [UserController::class, 'profile'])->name('view');
         Route::redirect('/', 'profile/form');
         Route::get('/form', [UserController::class, 'profile'])->name('form');
-
-
         Route::get('/password', [UserController::class, 'password'])->name('password');
+        Route::get('/appearance', [UserController::class, 'appearance'])->name('appearance');
     });
 
     // User Management Routes (für später - Admin-Bereich)
     Route::prefix('users')->name('users.')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/', [UserController::class, 'users'])->name('index');
         Route::get('/create', [UserController::class, 'create'])->name('create');
         Route::post('/', [UserController::class, 'store'])->name('store');
         Route::get('/{user}', [UserController::class, 'show'])->name('show');
@@ -37,20 +36,12 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-//Route::middleware(['auth', 'active.user'])->group(function () {
-//    Route::get('lawoo', function () {
-////        App::setLocale(session('locale'));
-//        return view('web.index');
-//    })->name('lawoo');
-//});
-
-
 /**
  * Auth Guests
  */
 Route::middleware('guest')->group(function () {
     Route::get('login', function () {
-        return view('web.auth.login');
+        return view('modules.web.auth.login');
     })->name('login'); // <== DAS FEHLTE
 });
 

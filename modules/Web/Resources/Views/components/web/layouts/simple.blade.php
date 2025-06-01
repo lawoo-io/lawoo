@@ -8,7 +8,7 @@ priority: 0
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
-    @include('web.partials.head')
+    @include('modules.web.partials.head')
 </head>
 <body class="min-h-screen bg-white">
     {{ $slot }}
