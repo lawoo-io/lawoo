@@ -66,6 +66,12 @@ class CoreServiceProvider extends ServiceProvider
 
         // RBAC Service Provider registrieren - NUR EINMAL
         $this->app->register(RbacServiceProvider::class);
+
+        /**
+         * Load Translations
+         */
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'core');
+
     }
 
     public function boot(): void
@@ -114,18 +120,6 @@ class CoreServiceProvider extends ServiceProvider
         require_once __DIR__ . '/../Helpers/helpers.php';
 
         /**
-         * Register Kernel
-         */
-        Blade::directive('_t', function ($expression) {
-            return "<?php echo __t({$expression}); ?>";
-        });
-
-        /**
-         * Load Translations
-         */
-        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'core');
-
-        /**
          * Register RBAC Middleware
          */
         $this->registerRbacMiddleware();
@@ -134,6 +128,14 @@ class CoreServiceProvider extends ServiceProvider
          * Register Seeds
          */
         $this->registerSeeds();
+
+        /**
+         * Register Kernel
+         */
+        Blade::directive('_t', function ($expression) {
+            return "<?php echo __t({$expression}); ?>";
+        });
+
     }
 
     protected function registerRbacMiddleware(): void

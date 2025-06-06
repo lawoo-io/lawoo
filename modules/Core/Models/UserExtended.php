@@ -5,13 +5,14 @@ namespace Modules\Core\Models;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Modules\Core\Database\Factories\UserFactory;
 use Modules\Core\Models\Traits\HasRoles;
 
 class UserExtended extends User implements MustVerifyEmail
 {
-    use HasRoles;
+    use HasRoles, SoftDeletes;
 
     protected $table = 'users';
 

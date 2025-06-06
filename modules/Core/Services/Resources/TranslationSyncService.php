@@ -84,20 +84,22 @@ class TranslationSyncService
         $moduleName = basename($modulePath);
         $this->stats['modules_scanned']++;
 
-        $viewsPath = $modulePath . '/Resources/views';
-        if (!File::isDirectory($viewsPath)) {
-            return [];
-        }
-
-        $files = $this->findViewFiles($viewsPath);
-        if ($files->count() === 0) {
-            return [];
-        }
-
         $moduleActiveKeys = [];
-        foreach ($files as $file) {
-            $fileKeys = $this->processFile($file, $moduleName, $config);
-            $moduleActiveKeys = array_merge($moduleActiveKeys, $fileKeys);
+        foreach(config('app.scan_directories') as $directory) {
+            $viewsPath = $modulePath . '/' . $directory;
+            if (!File::isDirectory($viewsPath)) {
+                continue;
+            }
+
+            $files = $this->findViewFiles($viewsPath);
+            if ($files->count() === 0) {
+                return [];
+            }
+
+            foreach ($files as $file) {
+                $fileKeys = $this->processFile($file, $moduleName, $config);
+                $moduleActiveKeys = array_merge($moduleActiveKeys, $fileKeys);
+            }
         }
 
         return array_unique($moduleActiveKeys);

@@ -79,6 +79,9 @@ priority: 0
 </flux:main>
 
 @fluxScripts
+@persist('toast')
+<flux:toast position="top right" class="mt-12" />
+@endpersist
 </body>
 
 </html>

@@ -30,9 +30,9 @@ abstract class ModuleServiceProvider extends ServiceProvider
         // Call child boot method
         $this->bootModule();
 
-        /**
-         * Load Translations
-         */
+//        /**
+//         * Load Translations
+//         */
 //        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'core');
     }
 

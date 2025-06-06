@@ -19,7 +19,7 @@ class NavTop extends Component
     {
         $currentRoute = request()->route()->getName();
 
-        $currentNav = Navigation::where('route', $currentRoute)->first();
+        $currentNav = Navigation::where('route', $currentRoute)->where('level', 0)->first();
 
         if($currentNav && $currentNav->level == 0) {
             $this->subNavList = $currentNav->children;

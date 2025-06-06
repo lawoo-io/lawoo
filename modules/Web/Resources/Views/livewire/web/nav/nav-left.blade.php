@@ -7,7 +7,7 @@ priority: 0
 --}}
 
 <flux:navlist variant="outline">
-    <flux:navlist.group :heading="__t('Platform', 'Web')" class="grid">
+    <flux:navlist.group :heading="__t('Modules', 'Web')" class="grid">
         @foreach($navlist as $nav)
             @can($nav->middleware)
             <flux:navlist.item
