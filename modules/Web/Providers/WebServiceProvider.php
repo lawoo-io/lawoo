@@ -22,7 +22,7 @@ class WebServiceProvider extends ServiceProvider
          */
         $this->app->register(RouteServiceProvider::class);
 
-        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'core');
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'web');
 
     }
 }

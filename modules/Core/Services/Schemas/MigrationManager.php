@@ -107,11 +107,6 @@ class MigrationManager
 //        $importer = app(TranslationImporter::class);
 //        $importer->deleteModuleTranslations($moduleName);
 
-        /**
-         * Remove Navigation
-         */
-        Artisan::call('lawoo:nav:remove ' . $moduleName . ' --force');
-
     }
 
     public static function runMigrateByFilePath(MigrationFile $migrationFile, DbModel $dbModel): void

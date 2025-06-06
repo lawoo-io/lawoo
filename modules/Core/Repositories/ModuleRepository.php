@@ -152,6 +152,9 @@ class ModuleRepository extends BaseRepository
                     return implode('.', array_map(fn($part) => Str::kebab($part), $parts));
                 });
 
+//            echo "Test: $componentName\n";
+//            echo "Test 2: $class\n";
+
             Livewire::component($componentName->toString(), $class);
         }
     }

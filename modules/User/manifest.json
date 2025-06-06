@@ -1,0 +1,9 @@
+{
+    "name": "User Module",
+    "short_desc": "A Module for managing the users im System",
+    "category": "Basis",
+    "author": "Lawoo",
+    "author_url": "https://www.lawoo.io",
+    "version": "0.0.1",
+    "depends": []
+}

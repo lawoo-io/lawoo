@@ -8,25 +8,25 @@ return [
         'modules' => 'web',
         'is_system' => true,
         'permissions' => [
-            'user.profile.view' => [
+            'web.profile.view' => [
                 'name' => 'Profile',
                 'description' => 'Can view own profile settings',
                 'resource' => 'profile',
                 'action' => 'view',
             ],
-            'user.profile.edit' => [
+            'web.profile.edit' => [
                 'name' => 'Edit Own Profile',
                 'description' => 'Can edit own profile settings',
                 'resource' => 'profile',
                 'action' => 'edit',
             ],
-            'user.password.change' => [
+            'web.password.change' => [
                 'name' => 'Change Password',
                 'description' => 'Can update own password',
                 'resource' => 'password',
                 'action' => 'change',
             ],
-            'user.appearance.change' => [
+            'web.appearance.change' => [
                 'name' => 'Change Appearance',
                 'description' => 'Can update own appearance',
                 'resource' => 'appearance',
@@ -43,10 +43,10 @@ return [
         'modules' => 'web',
         'is_system' => true,
         'permissions' => [
-            'user.profile.view' => [],
-            'user.profile.edit' => [],
-            'user.password.change' => [],
-            'user.appearance.change' => [],
+            'web.profile.view' => [],
+            'web.profile.edit' => [],
+            'web.password.change' => [],
+            'web.appearance.change' => [],
         ]
     ]
 ];

@@ -1,27 +1,27 @@
 <?php
 
 return [
-    'web.users' => [
-        'name' => 'Users',
-        'route' => 'lawoo.users.index',
-        'middleware' => 'permission:users.index',
-        'level' => 0,
-        'icon' => 'users',
-        'sort_order' => 9900,
-        'group' => null,
-    ],
+//    'web.users' => [
+//        'name' => 'Users',
+//        'route' => 'lawoo.users.index',
+//        'middleware' => 'permission:users.index',
+//        'level' => 0,
+//        'icon' => 'users',
+//        'sort_order' => 9900,
+//        'group' => null,
+//    ],
 
     # Level 1
-    'web.users.index' => [
-        'name' => 'Level 1',
-        'parent' => 'web.users',
-        'route' => 'lawoo.profile.view',
-        'middleware' => 'permission:profile.view',
-        'level' => 1,
-        'icon' => 'users',
-        'sort_order' => 100,
-        'group' => null,
-    ],
+//    'web.users.index' => [
+//        'name' => 'Level 1',
+//        'parent' => 'web.users',
+//        'route' => 'lawoo.profile.view',
+//        'middleware' => 'permission:profile.view',
+//        'level' => 1,
+//        'icon' => 'users',
+//        'sort_order' => 100,
+//        'group' => null,
+//    ],
 //    'web.apps' => [
 //        'name' => 'Applications',
 //        'route' => 'web.apps.index',

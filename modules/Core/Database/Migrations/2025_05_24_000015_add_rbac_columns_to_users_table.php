@@ -13,6 +13,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true); // KEIN after()
             $table->timestamp('last_permission_check')->nullable(); // KEIN after()
             $table->foreignId('language_id')->nullable()->constrained('languages')->nullOnDelete();
+            $table->softDeletes();
 
             // Index für Performance
             $table->index(['is_super_admin']);
@@ -35,6 +36,7 @@ return new class extends Migration
                 'last_permission_check',
                 'language_id'
             ]);
+            $table->dropSoftDeletes();
         });
     }
 };
