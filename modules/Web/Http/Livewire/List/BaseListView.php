@@ -2,11 +2,7 @@
 
 namespace Modules\Web\Http\Livewire\List;
 
-use App\Models\User;
-use Flux\Flux;
-use FluxPro\FluxPro;
 use Illuminate\Database\Eloquent\Builder;
-use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -48,6 +44,11 @@ class BaseListView extends Component
     public array $sortColumns = ['id'];
 
     /**
+     * Search configuration
+     */
+    public bool $showSearch = true;
+
+    /**
      * Searchable Fields
      */
     public array $searchFields = [];
@@ -55,12 +56,8 @@ class BaseListView extends Component
     /**
      * Filter configuration
      */
+    #[Url(keep: true)]
     public array $filters = [];
-
-    /**
-     * Only for external search events
-     */
-    public string $search = '';
 
     #[Url]
     public string $sortBy = 'id';
@@ -94,6 +91,11 @@ class BaseListView extends Component
 
     // Loading States
     public bool $isLoading = true;
+
+    public function boot(): void
+    {
+        $this->searchFields = ['id' => __t('ID', 'Web')];
+    }
 
     public function mount(): void {
         $this->moduleName = $this->moduleName ?? $this->guessModuleName();
@@ -175,9 +177,8 @@ class BaseListView extends Component
             $selectFields = $this->getSelectFields();
 
             return $repository->getFilteredData([
-                'search' => $this->search,
-                'search_fields' => $this->searchFields, // <- Übergabe an Repository
                 'filters' => $this->filters,
+                'search_fields' => $this->searchFields, // <- Übergabe an Repository
                 'sort' => [$this->sortBy, $this->sortDirection],
                 'select' => $selectFields,
             ]);
@@ -227,16 +228,8 @@ class BaseListView extends Component
         return null;
     }
 
-    // Event Handlers with Livewire 3 attributes
-    #[On('search-updated')]
-    public function updateSearch(string $query): void
-    {
-        $this->search = $query;
-        $this->resetPage();
-    }
-
-    #[On('filter-changed')]
-    public function updateFilter(array $filters): void
+    #[On('filters-updated')]
+    public function updateFilters(array $filters): void
     {
         $this->filters = $filters;
         $this->resetPage();
@@ -345,6 +338,4 @@ class BaseListView extends Component
             'data' => $query->simplePaginate($this->perPage),
         ]);
     }
-
-
 }

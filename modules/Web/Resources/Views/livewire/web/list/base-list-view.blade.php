@@ -8,7 +8,7 @@ priority: 0
 <div>
     <x-web.list.view>
         <x-slot:toolbar>
-            <flux:heading level="1" size="xl">
+            <flux:heading level="1" size="l">
                 {{ $this->title }}
             </flux:heading>
         </x-slot:toolbar>
@@ -46,7 +46,8 @@ priority: 0
                         </flux:dropdown>
                     <flux:badge.close wire:click="clearSelection" class="cursor-pointer"/>
                 </flux:badge>
-
+            @elseif($this->showSearch)
+                <livewire:web.search.base-search :searchFields="$this->searchFields" :initialFilters="$this->filters" :availableFilters="$this->availableFilters"/>
             @endif
 
         </x-slot:toolbarCenter>

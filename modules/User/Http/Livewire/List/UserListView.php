@@ -14,7 +14,7 @@ class UserListView extends BaseListView
 
     public array $sortColumns = ['id', 'is_active'];
 
-    public array $searchFields = ['name', 'email'];
+    public array $searchFields = [];
 
     public int $perPage = 1;
 
@@ -22,7 +22,6 @@ class UserListView extends BaseListView
 
     public function getAvailableColumns(): array
     {
-//        return parent::getAvailableColumns();
         return [
             'id' => [
                 'label' => __t('ID', 'User')
@@ -49,6 +48,42 @@ class UserListView extends BaseListView
     public function boot(): void
     {
         $this->title = __t('Users', 'User');
+        $this->searchFields = ['name' => __t('Name', 'Web'), 'email' => __t('Email', 'Web')];
+
+        $this->availableFilters = [
+            // Column 1
+            'account' => [
+                'label' => __t('Filter', 'User'),
+                'column' => 1,
+                'filters' => [
+                    'is_active' => [
+                        'label' => __t('Active', 'User'),
+                        'type' => 'boolean',
+                    ],
+                    'is_super_admin' => [
+                        'label' => __t('Super Admin', 'User'),
+                        'type' => 'boolean',
+                    ],
+                    'select_test' => [
+                        'label' => __t('Test', 'User'),
+                        'type' => 'select',
+                        'options' => ['option1' => 'Option 1', 'option2' => 'Option 2'],
+                    ]
+                ]
+            ],
+
+            // Column 2
+            'dates' => [
+                'label' => __t('Date', 'User'),
+                'column' => 2,
+                'filters' => [
+                    'created_at' => [
+                        'label' => __t('Created At', 'User'),
+                        'type' => 'date',
+                    ],
+                ]
+            ],
+        ];
     }
 
     public function delete(): void

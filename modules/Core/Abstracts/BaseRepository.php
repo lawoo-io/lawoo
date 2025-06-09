@@ -55,14 +55,14 @@ abstract class BaseRepository
     {
         $query = $this->model->newQuery();
 
-        // Search
-        if (!empty($params['search']) && !empty($params['search_fields'])) {
-            $this->applySearch($query, $params['search'], $params['search_fields']);
-        }
-
-        // Filters
+        // Der alte 'Search'-Block wurde entfernt.
+        // Alle Filter werden jetzt von der Methode applyFilters gehandhabt.
         if (!empty($params['filters'])) {
-            $this->applyFilters($query, $params['filters']);
+            $this->applyFilters(
+                $query,
+                $params['filters'],
+                $params['search_fields'] ?? [] // Übergibt die erlaubten Text-Suchfelder
+            );
         }
 
         // Sorting
@@ -75,51 +75,42 @@ abstract class BaseRepository
         // Relationships
         $this->loadRelationships($query);
 
-        return $query->select($params['select'] ?? []);
+        // Select
+        if (!empty($params['select'])) {
+            $query->select($params['select']);
+        }
+
+        return $query;
     }
 
-    /**
-     * @param Builder $query
-     * @param string $search
-     * @param array $searchFields
-     * @return void
-     */
-    protected function applySearch(Builder $query, string $search, array $searchFields): void
-    {
-        $query->where(function($q) use ($search, $searchFields) {
-            foreach ($searchFields as $field) {
-                if (str_contains($field, '.')) {
-                    // Relationship field (z.B. 'roles.name')
-                    [$relation, $relationField] = explode('.', $field, 2);
-                    $q->orWhereHas($relation, function($subQuery) use ($relationField, $search) {
-                        $subQuery->where($relationField, 'like', "%{$search}%");
-                    });
-                } else {
-                    // Direct field
-                    $q->orWhere($field, 'like', "%{$search}%");
-                }
-            }
-        });
-    }
-
-    /**
-     * @param Builder $query
-     * @param array $filters
-     * @return void
-     */
-    protected function applyFilters(Builder $query, array $filters): void
+    protected function applyFilters(Builder $query, array $filters, array $textSearchFields): void
     {
         foreach ($filters as $key => $value) {
+
             if (empty($value)) continue;
 
-            // Custom filter method in child repository
+            if (array_key_exists($key, $textSearchFields)) {
+
+                if (is_array($value)) {
+                    $query->where(function ($subQuery) use ($key, $value) {
+                        foreach ($value as $singleValue) {
+                            $subQuery->orWhereRaw('LOWER("' . $key . '") LIKE ?', ['%' . strtolower($singleValue) . '%']);
+                        }
+                    });
+                } else {
+                    $query->whereRaw('LOWER("' . $key . '") LIKE ?', ['%' . strtolower($value) . '%']);
+                }
+                continue;
+            }
+
+            // 2. Priorität: Prüfen, ob eine eigene Filter-Methode im Kind-Repository existiert.
             $customMethod = 'filter' . ucfirst($key);
             if (method_exists($this, $customMethod)) {
                 $this->$customMethod($query, $value);
                 continue;
             }
 
-            // Standard filters
+            // 3. Fallback: Standard-Filterung für exakte Treffer.
             if (is_array($value)) {
                 $query->whereIn($key, $value);
             } else {
