@@ -55,15 +55,19 @@ abstract class BaseRepository
     {
         $query = $this->model->newQuery();
 
-        // Der alte 'Search'-Block wurde entfernt.
-        // Alle Filter werden jetzt von der Methode applyFilters gehandhabt.
-        if (!empty($params['filters'])) {
-            $this->applyFilters(
-                $query,
-                $params['filters'],
-                $params['search_fields'] ?? [] // Übergibt die erlaubten Text-Suchfelder
-            );
+        // NEU: Getrennte Aufrufe
+        if (!empty($params['search_filters_active'])) {
+            $this->applySearchFilters($query, $params['search_filters_active']);
         }
+
+
+        if (!empty($params['panel_filters_active']) && !empty($params['available_filters'])) {
+            $this->applyPanelFilters($query, $params['panel_filters_active'], $params['available_filters']);
+        }
+
+//        if (!empty($params['panel_filters_active'])) {
+//            $this->applyPanelFilters($query, $params['panel_filters_active'], $params['available_filters'] ?? []);
+//        }
 
         // Sorting
         if (!empty($params['sort'])) {
@@ -82,6 +86,85 @@ abstract class BaseRepository
 
         return $query;
     }
+
+    protected function applySearchFilters(Builder $query, array $filters): void
+    {
+        foreach ($filters as $key => $values) {
+            $query->where(function ($subQuery) use ($key, $values) {
+                foreach ($values as $value) {
+                    $subQuery->orWhere($key, 'ILIKE', '%' . $value . '%');
+                }
+            });
+        }
+    }
+
+    /**
+     * Wendet Panel-Filter basierend auf der Konfiguration an.
+     *
+     * @param Builder $query
+     * @param array $activeFilters Die aktiven Filter z.B. ['created_at_from' => '2025-06-11']
+     * @param array $availableFilters Die komplette Konfiguration aus der ListView
+     * @return void
+     */
+    protected function applyPanelFilters(Builder $query, array $activeFilters, array $availableFilters): void
+    {
+        // Flatten der Filter-Definitionen für einfachen Zugriff
+        $flatDefinitions = [];
+        foreach ($availableFilters as $group) {
+            if (!empty($group['filters'])) {
+                $flatDefinitions = array_merge($flatDefinitions, $group['filters']);
+            }
+        }
+
+        foreach ($activeFilters as $key => $value) {
+            if (!isset($flatDefinitions[$key])) continue;
+
+            $definition = $flatDefinitions[$key];
+
+            // Das zu filternde Datenbankfeld. Entweder explizit gesetzt oder der Key selbst.
+            $field = $definition['field'] ?? $key;
+
+            // Der Operator. Entweder aus der Definition oder der Standardwert '='.
+            $operator = $definition['operator'] ?? '=';
+
+            // Spezielle Logik für Operatoren, die besondere Werte erwarten
+            switch ($operator) {
+                case 'between':
+                case 'date_between':
+                    if (count($value) >= 2) {
+                        $query->whereBetween($field, [$value['start'], $value['end']]);
+                    }
+                    break;
+
+                case 'whereIn':
+                case 'notWhereIn':
+                    // Erwartet, dass $value bereits ein Array ist
+                    $method = ($operator === 'whereIn') ? 'whereIn' : 'whereNotIn';
+                    $query->{$method}($field, is_array($value) ? $value : [$value]);
+                    break;
+
+                case 'like':
+                    $query->where($field, 'like', '%' . $value . '%');
+                    break;
+
+                default:
+                    // Für alle Standard-Fälle wie =, !=, >, <, >=, <=
+                    $query->where($field, $operator, $value);
+                    break;
+            }
+        }
+    }
+
+//    protected function applyPanelFilters(Builder $query, array $filters, array $definitions): void
+//    {
+//        foreach ($filters as $key => $value) {
+//            if (is_array($value)) {
+//                $query->whereIn($key, $value);
+//            } else {
+//                $query->where($key, $value);
+//            }
+//        }
+//    }
 
     protected function applyFilters(Builder $query, array $filters, array $textSearchFields): void
     {

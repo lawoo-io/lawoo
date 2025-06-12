@@ -13,6 +13,11 @@ return [
         'de' => 'Deutsch',
     ],
 
+    'date_formats' => [
+        'en' => 'm/d/Y',
+        'de' => 'd.m.Y',
+    ],
+
     /**
      * Cookie for column settings
      */

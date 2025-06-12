@@ -54,10 +54,16 @@ class BaseListView extends Component
     public array $searchFields = [];
 
     /**
-     * Filter configuration
+     * Searchable fields
      */
-    #[Url(keep: true)]
-    public array $filters = [];
+    #[Url(as: 's', keep: true)]
+    public array $searchFilters = [];
+
+    /**
+     * Filtered fields
+     */
+    #[Url(as: 'f', keep: true)]
+    public array $panelFilters = [];
 
     #[Url]
     public string $sortBy = 'id';
@@ -68,7 +74,7 @@ class BaseListView extends Component
     /**
      * Pagination
      */
-    public int $perPage = 15;
+    public int $perPage = 100;
     public bool $hasMorePages = false;
 
     /**
@@ -177,8 +183,10 @@ class BaseListView extends Component
             $selectFields = $this->getSelectFields();
 
             return $repository->getFilteredData([
-                'filters' => $this->filters,
-                'search_fields' => $this->searchFields, // <- Übergabe an Repository
+                'search_filters_active' => $this->searchFilters,
+                'panel_filters_active' => $this->panelFilters,
+                'search_fields' => $this->searchFields,
+                'available_filters' => $this->availableFilters,
                 'sort' => [$this->sortBy, $this->sortDirection],
                 'select' => $selectFields,
             ]);
@@ -229,11 +237,19 @@ class BaseListView extends Component
     }
 
     #[On('filters-updated')]
-    public function updateFilters(array $filters): void
+    public function updateAllFilters(array $searchFilters, array $panelFilters): void
     {
-        $this->filters = $filters;
+        $this->searchFilters = $searchFilters;
+        $this->panelFilters = $panelFilters;
         $this->resetPage();
     }
+
+//    #[On('filters-updated')]
+//    public function updateFilters(array $filters): void
+//    {
+//        $this->filters = $filters;
+//        $this->resetPage();
+//    }
 
     public function sort(string $sortBy, ?string $direction = null): void
     {

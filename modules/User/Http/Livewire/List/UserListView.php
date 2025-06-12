@@ -14,9 +14,7 @@ class UserListView extends BaseListView
 
     public array $sortColumns = ['id', 'is_active'];
 
-    public array $searchFields = [];
-
-    public int $perPage = 1;
+    public int $perPage = 100;
 
     public array $defaultColumns = ['name', 'email'];
 
@@ -64,22 +62,52 @@ class UserListView extends BaseListView
                         'label' => __t('Super Admin', 'User'),
                         'type' => 'boolean',
                     ],
-                    'select_test' => [
-                        'label' => __t('Test', 'User'),
-                        'type' => 'select',
-                        'options' => ['option1' => 'Option 1', 'option2' => 'Option 2'],
-                    ]
+//                    'select_test' => [
+//                        'label' => __t('Test', 'User'),
+//                        'type' => 'select',
+//                        'options' => ['option1' => 'Option 1', 'option2' => 'Option 2'],
+//                    ]
+                ]
+            ],
+
+            'language' => [
+                'label' => __t('Language', 'User'),
+                'column' => 2,
+                'filters' => [
+                    'language_id' => [
+                        'label' => __t('Language', 'User'),
+                        'type' => 'relation',
+                        'relation' => [
+                            'model' => \Modules\Core\Models\Language::class,
+                            'key_column' => 'id',
+                            'display_column' => 'name',
+                        ],
+                        'multiple' => true,
+                        'operator' => 'whereIn',
+                    ],
+//                    'language_id' => [
+//                        'label' => __t('Language', 'User'),
+//                        'type' => 'select',
+//                        'options' => [1 => 'Option 1', 'option2' => 'Option 2'],
+//                    ]
                 ]
             ],
 
             // Column 2
             'dates' => [
-                'label' => __t('Date', 'User'),
+                'label' => __t('Created', 'User'),
                 'column' => 2,
                 'filters' => [
                     'created_at' => [
                         'label' => __t('Created At', 'User'),
-                        'type' => 'date',
+                        'type' => 'datepicker',
+                        'mode' => 'range',
+                        'presets' => 'today yesterday thisWeek last7Days thisMonth yearToDate',
+                        'operator' => 'date_between',
+                        'formats' => [
+                            'en' => 'm/d/Y',
+                            'de' => 'd.m.Y',
+                        ]
                     ],
                 ]
             ],

@@ -47,7 +47,12 @@ priority: 0
                     <flux:badge.close wire:click="clearSelection" class="cursor-pointer"/>
                 </flux:badge>
             @elseif($this->showSearch)
-                <livewire:web.search.base-search :searchFields="$this->searchFields" :initialFilters="$this->filters" :availableFilters="$this->availableFilters"/>
+                <livewire:web.search.base-search
+                    :searchFields="$this->searchFields"
+                    :availableFilters="$this->availableFilters"
+                    :searchFilters="$this->searchFilters"
+                    :panelFilters="$this->panelFilters"
+                />
             @endif
 
         </x-slot:toolbarCenter>
