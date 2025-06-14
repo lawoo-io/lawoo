@@ -74,7 +74,7 @@ priority: 0
     </flux:dropdown>
 </flux:header>
 
-<flux:main>
+<flux:main class="!p-6">
     {{ $slot }}
 </flux:main>
 

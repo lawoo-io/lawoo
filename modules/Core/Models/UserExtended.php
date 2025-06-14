@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Modules\Core\Database\Factories\UserFactory;
+use Modules\Core\Models\Traits\ClearsCacheOnSave;
 use Modules\Core\Models\Traits\HasRoles;
 
 class UserExtended extends User implements MustVerifyEmail
 {
-    use HasRoles, SoftDeletes;
+    use HasRoles, SoftDeletes, ClearsCacheOnSave;
 
     protected $table = 'users';
 

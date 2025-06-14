@@ -2,11 +2,10 @@
 
 namespace Modules\Web\Http\Livewire\List;
 
-use App\Models\User;
-use Flux\Flux;
-use FluxPro\FluxPro;
 use Illuminate\Database\Eloquent\Builder;
-use Livewire\Attributes\Computed;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -48,19 +47,26 @@ class BaseListView extends Component
     public array $sortColumns = ['id'];
 
     /**
+     * Search configuration
+     */
+    public bool $showSearch = true;
+
+    /**
      * Searchable Fields
      */
     public array $searchFields = [];
 
     /**
-     * Filter configuration
+     * Searchable fields
      */
-    public array $filters = [];
+    #[Url(as: 's', keep: true)]
+    public array $searchFilters = [];
 
     /**
-     * Only for external search events
+     * Filtered fields
      */
-    public string $search = '';
+    #[Url(as: 'f', keep: true)]
+    public array $panelFilters = [];
 
     #[Url]
     public string $sortBy = 'id';
@@ -71,7 +77,7 @@ class BaseListView extends Component
     /**
      * Pagination
      */
-    public int $perPage = 15;
+    public int $perPage = 100;
     public bool $hasMorePages = false;
 
     /**
@@ -92,8 +98,25 @@ class BaseListView extends Component
      */
     public $query = null;
 
+    /**
+     * Cache configuration in minutes
+     */
+    public bool $cacheEnabled = false;
+    public array $cacheTags = [];
+    public int $cacheDuration = 120;
+
     // Loading States
     public bool $isLoading = true;
+
+    /**
+     * Form view route
+     */
+    public string $formViewRoute = '';
+
+    public function boot(): void
+    {
+        $this->searchFields = ['id' => __t('ID', 'Web')];
+    }
 
     public function mount(): void {
         $this->moduleName = $this->moduleName ?? $this->guessModuleName();
@@ -175,9 +198,10 @@ class BaseListView extends Component
             $selectFields = $this->getSelectFields();
 
             return $repository->getFilteredData([
-                'search' => $this->search,
-                'search_fields' => $this->searchFields, // <- Übergabe an Repository
-                'filters' => $this->filters,
+                'search_filters_active' => $this->searchFilters,
+                'panel_filters_active' => $this->panelFilters,
+                'search_fields' => $this->searchFields,
+                'available_filters' => $this->availableFilters,
                 'sort' => [$this->sortBy, $this->sortDirection],
                 'select' => $selectFields,
             ]);
@@ -194,9 +218,7 @@ class BaseListView extends Component
     {
         $baseFields = ['id'];
 
-        $visibleFields = $this->visibleColumns;
-
-        return array_unique(array_merge($baseFields, $visibleFields));
+        return array_unique(array_merge($baseFields, array_keys($this->getAvailableColumns())));
     }
 
     protected function resolveRepository()
@@ -214,6 +236,11 @@ class BaseListView extends Component
         return null;
     }
 
+    protected function getModuleInstance(): Model
+    {
+        return app("Modules\\Core\\Models\\{$this->modelClass}");
+    }
+
     protected function guessModuleName(): ?string
     {
         // Versuche Modulname aus Component-Namespace zu ermitteln
@@ -227,18 +254,11 @@ class BaseListView extends Component
         return null;
     }
 
-    // Event Handlers with Livewire 3 attributes
-    #[On('search-updated')]
-    public function updateSearch(string $query): void
+    #[On('filters-updated')]
+    public function updateAllFilters(array $searchFilters, array $panelFilters): void
     {
-        $this->search = $query;
-        $this->resetPage();
-    }
-
-    #[On('filter-changed')]
-    public function updateFilter(array $filters): void
-    {
-        $this->filters = $filters;
+        $this->searchFilters = $searchFilters;
+        $this->panelFilters = $panelFilters;
         $this->resetPage();
     }
 
@@ -337,14 +357,83 @@ class BaseListView extends Component
         $result = $this->resolveRepository()->delete($this->selected, $this->selectedAllRecords, $this->excludedIds);
     }
 
-    public function render()
+    /**
+     * Generates a human-readable cache key based on the current component state.
+     */
+    private function generateCacheKey(): string
+    {
+        $keyParts = [];
+
+        // Add model identifier
+        $keyParts[] = str_replace('\\', '_', $this->modelClass);
+
+        // Add sorting state
+        $keyParts[] = "sort_{$this->sortBy}_{$this->sortDirection}";
+
+        // Add search filters
+        if (!empty($this->searchFilters)) {
+            // Sort filters by key to ensure consistent key order
+            ksort($this->searchFilters);
+            $filterStrings = [];
+            foreach ($this->searchFilters as $key => $values) {
+                $filterStrings[] = "{$key}:" . implode(',', $values);
+            }
+            $keyParts[] = 'search_' . implode('|', $filterStrings);
+        }
+
+        // Add panel filters
+        if (!empty($this->panelFilters)) {
+            ksort($this->panelFilters);
+            $filterStrings = [];
+            foreach ($this->panelFilters as $key => $values) {
+                $values = is_array($values) ? implode(',', array_keys($values)) : $values;
+                $filterStrings[] = "{$key}:{$values}";
+            }
+            $keyParts[] = 'panel_' . implode('|', $filterStrings);
+        }
+
+        // Sanitize and join all parts
+        $rawKey = implode('.', $keyParts);
+        return 'listview:' . preg_replace('/[^A-Za-z0-9\._\-:]/', '', $rawKey);
+    }
+
+    public function prepareData()
     {
         $query = $this->loadData();
 
-        return view($this->view, [
-            'data' => $query->simplePaginate($this->perPage),
-        ]);
+        if (!$query) return false;
+
+        $baseCacheKey = $this->generateCacheKey();
+        $currentPage = Paginator::resolveCurrentPage('page');
+        $pageSpecificCacheKey = "{$baseCacheKey}.page.{$currentPage}.{$this->perPage}";
+
+        if($this->cacheEnabled && !empty($this->cacheTags)){
+            $data = Cache::tags($this->cacheTags)->remember($pageSpecificCacheKey, now()->addMinutes($this->cacheDuration), function () use ($query) {
+                return $query->simplePaginate($this->perPage);
+            });
+            return $data;
+        }
+
+        return $query->simplePaginate($this->perPage);
     }
 
+    public function openRecord($id)
+    {
+        if ($this->formViewRoute) {
+            $url = route($this->formViewRoute, [$this->keyField => $id]);
+            $this->redirect($url, navigate: true);
+        }
+    }
 
+    public function render()
+    {
+        $data = $this->prepareData();
+        if (!$data) {
+            return view($this->view, ['data' => new Paginator([], $this->perPage)]);
+        }
+
+        return view($this->view, [
+            'data' => $data,
+        ]);
+    }
 }

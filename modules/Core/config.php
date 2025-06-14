@@ -13,11 +13,23 @@ return [
         'de' => 'Deutsch',
     ],
 
+    'date_formats' => [
+        'en' => 'm/d/Y',
+        'de' => 'd.m.Y',
+    ],
+
     /**
      * Cookie for column settings
      */
 
     'cookie_settings_days' => 90,
+
+    /**
+     * Cache duration by List, Kanban
+     * minutes
+     */
+
+    'cache_duration' => 120,
 
     /**
      * Modules base_path

@@ -3,6 +3,7 @@
 namespace Modules\Web\Http\Livewire\Nav;
 
 
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Modules\Core\Models\Navigation;
 
@@ -13,7 +14,11 @@ class NavLeft extends Component
 
     public function mount()
     {
-        $this->navlist = Navigation::query()->mainNavigation()->active()->ordered()->get();
+        $cacheTags = ['table:navigations'];
+        $cacheKey = 'livewire:nav_left_navigation_level_0';
+        $this->navlist = Cache::tags($cacheTags)->remember($cacheKey, now()->addDay(), function () {
+            return Navigation::with('children')->mainNavigation()->active()->ordered()->get();
+        });
     }
 
     public function render()

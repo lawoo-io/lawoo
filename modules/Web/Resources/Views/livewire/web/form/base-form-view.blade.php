@@ -1,0 +1,10 @@
+{{--
+name: 'livewire_base_form_view',
+base: 1,
+active: 1,
+override_name: '',
+priority: 0
+--}}
+<div>
+
+</div>

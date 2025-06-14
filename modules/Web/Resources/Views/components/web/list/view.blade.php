@@ -40,7 +40,7 @@ priority: 0
     </div>
 
     <!-- Table Section -->
-    <flux:table class="border-t mb-2">
+    <flux:table class="border-t dark:border-t-gray-600 mb-2">
         <!-- Table Header -->
         <flux:table.columns>
             @isset($columnts)

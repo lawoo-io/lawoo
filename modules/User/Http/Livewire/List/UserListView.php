@@ -3,6 +3,7 @@
 namespace Modules\User\Http\Livewire\List;
 
 use Flux\Flux;
+use Illuminate\Pagination\Paginator;
 use Modules\Web\Http\Livewire\List\BaseListView;
 
 class UserListView extends BaseListView
@@ -14,15 +15,20 @@ class UserListView extends BaseListView
 
     public array $sortColumns = ['id', 'is_active'];
 
-    public array $searchFields = ['name', 'email'];
-
-    public int $perPage = 1;
+    public int $perPage = 100;
 
     public array $defaultColumns = ['name', 'email'];
 
+    public bool $cacheEnabled = true;
+
+    public array $cacheTags = ['table:users'];
+
+    public array $availableFilters = [];
+
+    public string $formViewRoute = 'lawoo.users.lists.view';
+
     public function getAvailableColumns(): array
     {
-//        return parent::getAvailableColumns();
         return [
             'id' => [
                 'label' => __t('ID', 'User')
@@ -49,6 +55,83 @@ class UserListView extends BaseListView
     public function boot(): void
     {
         $this->title = __t('Users', 'User');
+        $this->searchFields = ['name' => __t('Name', 'Web'), 'email' => __t('Email', 'Web')];
+
+        $this->availableFilters = [
+            // Column 1
+            'account' => [
+                'label' => __t('Filter', 'User'),
+                'column' => 1,
+                'filters' => [
+                    'is_active' => [
+                        'label' => __t('Active', 'User'),
+                        'type' => 'boolean',
+                    ],
+                    'is_super_admin' => [
+                        'label' => __t('Super Admin', 'User'),
+                        'type' => 'boolean',
+                    ],
+//                    'select_test' => [
+//                        'label' => __t('Test', 'User'),
+//                        'type' => 'select',
+//                        'options' => ['option1' => 'Option 1', 'option2' => 'Option 2'],
+//                    ]
+                ]
+            ],
+
+            'language' => [
+                'label' => __t('Language', 'User'),
+                'column' => 2,
+                'filters' => [
+                    'language_id' => [
+                        'label' => __t('Language', 'User'),
+                        'type' => 'relation',
+                        'relation' => [
+                            'model' => \Modules\Core\Models\Language::class,
+                            'key_column' => 'id',
+                            'display_column' => 'name',
+                        ],
+                        'multiple' => true,
+                        'operator' => 'whereIn',
+                    ],
+                    'created_at' => [
+                        'label' => __t('Created At', 'User'),
+                        'type' => 'datepicker',
+                        'mode' => 'range',
+                        'presets' => 'today yesterday thisWeek last7Days thisMonth yearToDate',
+                        'operator' => 'date_between',
+                        'formats' => [
+                            'en' => 'm/d/Y',
+                            'de' => 'd.m.Y',
+                        ]
+                    ],
+//                    'language_id' => [
+//                        'label' => __t('Language', 'User'),
+//                        'type' => 'select',
+//                        'options' => [1 => 'Option 1', 'option2' => 'Option 2'],
+//                    ]
+                ]
+            ],
+
+            // Column 2
+//            'dates' => [
+//                'label' => __t('Created', 'User'),
+//                'column' => 2,
+//                'filters' => [
+//                    'created_at' => [
+//                        'label' => __t('Created At', 'User'),
+//                        'type' => 'datepicker',
+//                        'mode' => 'range',
+//                        'presets' => 'today yesterday thisWeek last7Days thisMonth yearToDate',
+//                        'operator' => 'date_between',
+//                        'formats' => [
+//                            'en' => 'm/d/Y',
+//                            'de' => 'd.m.Y',
+//                        ]
+//                    ],
+//                ]
+//            ],
+        ];
     }
 
     public function delete(): void
@@ -64,12 +147,15 @@ class UserListView extends BaseListView
 
     public function render()
     {
-        $query = $this->loadData();
+        $data = $this->prepareData();
+        if (!$data) {
+            return view($this->view, ['data' => new Paginator([], $this->perPage)]);
+        }
 
         $userList = view('livewire.user.list.user-list');
 
         return view($this->view, [
-            'data' => $query->simplePaginate($this->perPage),
+            'data' => $data,
             'actions' => $userList->renderSections()['actions'] ?? '',
         ]);
     }
