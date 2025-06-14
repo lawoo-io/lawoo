@@ -33,6 +33,11 @@ class Language extends BaseModel
         'is_default' => 'boolean'
     ];
 
+    protected array $cacheKeysToClear = [
+        'languages.active',
+        'languages.is_default',
+    ];
+
     protected static $cacheKey = 'languages.active';
     protected static $defaultCacheKey = 'languages.default';
 
@@ -43,36 +48,10 @@ class Language extends BaseModel
     {
         parent::boot();
 
-        // Validierung und Cache-Management bei Änderungen
+        // Validierung bei Änderungen
         static::saving(function ($language) {
             $language->validateDefaultLanguage();
         });
-
-        static::saved(function ($language) {
-            $language->clearCache();
-        });
-
-        static::deleted(function ($language) {
-            $language->clearCache();
-        });
-    }
-
-    /**
-     * Scope: Nur aktive Sprachen
-     */
-    #[Scope]
-    protected function active(Builder $query): void
-    {
-        $query->where('is_active', true);
-    }
-
-    /**
-     * Scope: Inaktive Sprachen
-     */
-    #[Scope]
-    protected function inactive(Builder $query): void
-    {
-        $query->where('is_active', false);
     }
 
     /**

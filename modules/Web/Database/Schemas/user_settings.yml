@@ -1,0 +1,14 @@
+user_settings:
+  base: 1
+  fields:
+    id: id
+    name: string=100
+    data: json
+    user_id: foreignId.constrained.nullOnDelete.index
+    key: string=256.index
+    default: boolean.default=0
+    public: boolean.default=0.index
+    is_active: boolean.default=1.index
+    sequence: integer.default=10
+    created_at: timestamp.useCurrent
+    updated_at: timestamp.nullable

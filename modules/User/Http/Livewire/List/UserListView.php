@@ -3,6 +3,7 @@
 namespace Modules\User\Http\Livewire\List;
 
 use Flux\Flux;
+use Illuminate\Pagination\Paginator;
 use Modules\Web\Http\Livewire\List\BaseListView;
 
 class UserListView extends BaseListView
@@ -17,6 +18,14 @@ class UserListView extends BaseListView
     public int $perPage = 100;
 
     public array $defaultColumns = ['name', 'email'];
+
+    public bool $cacheEnabled = true;
+
+    public array $cacheTags = ['table:users'];
+
+    public array $availableFilters = [];
+
+    public string $formViewRoute = 'lawoo.users.lists.view';
 
     public function getAvailableColumns(): array
     {
@@ -85,19 +94,6 @@ class UserListView extends BaseListView
                         'multiple' => true,
                         'operator' => 'whereIn',
                     ],
-//                    'language_id' => [
-//                        'label' => __t('Language', 'User'),
-//                        'type' => 'select',
-//                        'options' => [1 => 'Option 1', 'option2' => 'Option 2'],
-//                    ]
-                ]
-            ],
-
-            // Column 2
-            'dates' => [
-                'label' => __t('Created', 'User'),
-                'column' => 2,
-                'filters' => [
                     'created_at' => [
                         'label' => __t('Created At', 'User'),
                         'type' => 'datepicker',
@@ -109,8 +105,32 @@ class UserListView extends BaseListView
                             'de' => 'd.m.Y',
                         ]
                     ],
+//                    'language_id' => [
+//                        'label' => __t('Language', 'User'),
+//                        'type' => 'select',
+//                        'options' => [1 => 'Option 1', 'option2' => 'Option 2'],
+//                    ]
                 ]
             ],
+
+            // Column 2
+//            'dates' => [
+//                'label' => __t('Created', 'User'),
+//                'column' => 2,
+//                'filters' => [
+//                    'created_at' => [
+//                        'label' => __t('Created At', 'User'),
+//                        'type' => 'datepicker',
+//                        'mode' => 'range',
+//                        'presets' => 'today yesterday thisWeek last7Days thisMonth yearToDate',
+//                        'operator' => 'date_between',
+//                        'formats' => [
+//                            'en' => 'm/d/Y',
+//                            'de' => 'd.m.Y',
+//                        ]
+//                    ],
+//                ]
+//            ],
         ];
     }
 
@@ -127,12 +147,15 @@ class UserListView extends BaseListView
 
     public function render()
     {
-        $query = $this->loadData();
+        $data = $this->prepareData();
+        if (!$data) {
+            return view($this->view, ['data' => new Paginator([], $this->perPage)]);
+        }
 
         $userList = view('livewire.user.list.user-list');
 
         return view($this->view, [
-            'data' => $query->simplePaginate($this->perPage),
+            'data' => $data,
             'actions' => $userList->renderSections()['actions'] ?? '',
         ]);
     }

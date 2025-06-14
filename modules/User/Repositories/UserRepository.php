@@ -2,8 +2,6 @@
 
 namespace Modules\User\Repositories;
 
-use App\Models\User;
-use Flux\Flux;
 use Modules\Core\Abstracts\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Models\UserExtended;

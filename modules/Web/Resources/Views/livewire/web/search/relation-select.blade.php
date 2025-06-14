@@ -31,7 +31,8 @@ priority: 0
         :multiple="$multiple"
         :placeholder="$placeholder"
         searchable="search"
-        size="xs"
+        size="sm"
+        class="mb-1"
     >
         @foreach($this->options as $optionValue => $optionLabel)
             <flux:select.option :value="$optionValue">{{ $optionLabel }}</flux:select.option>

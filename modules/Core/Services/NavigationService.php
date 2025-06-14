@@ -128,7 +128,7 @@ class NavigationService
         }
 
         // Always update these fields (not user-modifiable)
-        $alwaysUpdate = ['middleware', 'icon', 'group_name', 'group_order', 'level'];
+        $alwaysUpdate = ['route', 'middleware', 'icon', 'group_name', 'group_order', 'level'];
         foreach ($alwaysUpdate as $field) {
             if (isset($config[$field]) && $navigation->{$field} !== $config[$field]) {
                 $updates[$field] = $config[$field];

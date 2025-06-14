@@ -12,8 +12,10 @@ priority: 0
     'presets'
 ])
 <flux:date-picker wire:model.model.live="panelFilters.{{$key}}"
-                  :badge="$label"
+                  :placeholder="$label"
                   :mode="$mode"
                   :presets="$presets"
-                  locale="{{ auth()->user()->language->code }}" size="xs"
+                  locale="{{ auth()->user()->language->code }}"
+                  size="sm"
+                  class="mb-1"
 />

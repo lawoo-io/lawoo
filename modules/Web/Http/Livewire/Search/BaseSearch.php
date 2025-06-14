@@ -3,6 +3,7 @@
 namespace Modules\Web\Http\Livewire\Search;
 
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 class BaseSearch extends Component
@@ -66,7 +67,6 @@ class BaseSearch extends Component
         $this->panelFilters = $panelFilters;
 
         $this->flattenAvailableFilters();
-//        dd($this->flatAvailableFilters);
     }
 
     /**
@@ -280,6 +280,25 @@ class BaseSearch extends Component
 
         if (empty($this->panelFilters[$key])) {
             unset($this->panelFilters[$key]);
+        }
+
+        $this->updateRecord();
+    }
+
+    #[On('apply-saved-filter')]
+    public function applySavedFilter(array $filters): void
+    {
+        $this->searchFilters = $filters['searchFilters'] ?? [];
+        $this->panelFilters = $filters['panelFilters'] ?? [];
+
+        foreach ($this->flatAvailableFilters as $key => $filter) {
+            if ($filter['type'] === 'relation') {
+                $valueToDispatch = $this->panelFilters[$key] ?? null;
+                $this->dispatch('set-relation-value',
+                    filterKey: $key,
+                    value: $valueToDispatch
+                );
+            }
         }
 
         $this->updateRecord();

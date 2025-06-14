@@ -31,6 +31,18 @@ return [
                 'description' => 'Can update own appearance',
                 'resource' => 'appearance',
                 'action' => 'change',
+            ],
+            'web.search.save_for_all' => [
+                'name' => 'Save for All',
+                'description' => 'Can save filter for all users',
+                'resource' => 'search',
+                'action' => 'save',
+            ],
+            'web.search.delete_public' => [
+                'name' => 'Delete Public Search',
+                'description' => 'Can delete public search settings.',
+                'resource' => 'search',
+                'action' => 'delete',
             ]
         ],
     ],

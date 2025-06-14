@@ -3,6 +3,9 @@
 namespace Modules\Web\Http\Livewire\List;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -95,8 +98,20 @@ class BaseListView extends Component
      */
     public $query = null;
 
+    /**
+     * Cache configuration in minutes
+     */
+    public bool $cacheEnabled = false;
+    public array $cacheTags = [];
+    public int $cacheDuration = 120;
+
     // Loading States
     public bool $isLoading = true;
+
+    /**
+     * Form view route
+     */
+    public string $formViewRoute = '';
 
     public function boot(): void
     {
@@ -203,9 +218,7 @@ class BaseListView extends Component
     {
         $baseFields = ['id'];
 
-        $visibleFields = $this->visibleColumns;
-
-        return array_unique(array_merge($baseFields, $visibleFields));
+        return array_unique(array_merge($baseFields, array_keys($this->getAvailableColumns())));
     }
 
     protected function resolveRepository()
@@ -221,6 +234,11 @@ class BaseListView extends Component
         }
 
         return null;
+    }
+
+    protected function getModuleInstance(): Model
+    {
+        return app("Modules\\Core\\Models\\{$this->modelClass}");
     }
 
     protected function guessModuleName(): ?string
@@ -243,13 +261,6 @@ class BaseListView extends Component
         $this->panelFilters = $panelFilters;
         $this->resetPage();
     }
-
-//    #[On('filters-updated')]
-//    public function updateFilters(array $filters): void
-//    {
-//        $this->filters = $filters;
-//        $this->resetPage();
-//    }
 
     public function sort(string $sortBy, ?string $direction = null): void
     {
@@ -346,12 +357,83 @@ class BaseListView extends Component
         $result = $this->resolveRepository()->delete($this->selected, $this->selectedAllRecords, $this->excludedIds);
     }
 
-    public function render()
+    /**
+     * Generates a human-readable cache key based on the current component state.
+     */
+    private function generateCacheKey(): string
+    {
+        $keyParts = [];
+
+        // Add model identifier
+        $keyParts[] = str_replace('\\', '_', $this->modelClass);
+
+        // Add sorting state
+        $keyParts[] = "sort_{$this->sortBy}_{$this->sortDirection}";
+
+        // Add search filters
+        if (!empty($this->searchFilters)) {
+            // Sort filters by key to ensure consistent key order
+            ksort($this->searchFilters);
+            $filterStrings = [];
+            foreach ($this->searchFilters as $key => $values) {
+                $filterStrings[] = "{$key}:" . implode(',', $values);
+            }
+            $keyParts[] = 'search_' . implode('|', $filterStrings);
+        }
+
+        // Add panel filters
+        if (!empty($this->panelFilters)) {
+            ksort($this->panelFilters);
+            $filterStrings = [];
+            foreach ($this->panelFilters as $key => $values) {
+                $values = is_array($values) ? implode(',', array_keys($values)) : $values;
+                $filterStrings[] = "{$key}:{$values}";
+            }
+            $keyParts[] = 'panel_' . implode('|', $filterStrings);
+        }
+
+        // Sanitize and join all parts
+        $rawKey = implode('.', $keyParts);
+        return 'listview:' . preg_replace('/[^A-Za-z0-9\._\-:]/', '', $rawKey);
+    }
+
+    public function prepareData()
     {
         $query = $this->loadData();
 
+        if (!$query) return false;
+
+        $baseCacheKey = $this->generateCacheKey();
+        $currentPage = Paginator::resolveCurrentPage('page');
+        $pageSpecificCacheKey = "{$baseCacheKey}.page.{$currentPage}.{$this->perPage}";
+
+        if($this->cacheEnabled && !empty($this->cacheTags)){
+            $data = Cache::tags($this->cacheTags)->remember($pageSpecificCacheKey, now()->addMinutes($this->cacheDuration), function () use ($query) {
+                return $query->simplePaginate($this->perPage);
+            });
+            return $data;
+        }
+
+        return $query->simplePaginate($this->perPage);
+    }
+
+    public function openRecord($id)
+    {
+        if ($this->formViewRoute) {
+            $url = route($this->formViewRoute, [$this->keyField => $id]);
+            $this->redirect($url, navigate: true);
+        }
+    }
+
+    public function render()
+    {
+        $data = $this->prepareData();
+        if (!$data) {
+            return view($this->view, ['data' => new Paginator([], $this->perPage)]);
+        }
+
         return view($this->view, [
-            'data' => $query->simplePaginate($this->perPage),
+            'data' => $data,
         ]);
     }
 }

@@ -25,6 +25,13 @@ return [
     'cookie_settings_days' => 90,
 
     /**
+     * Cache duration by List, Kanban
+     * minutes
+     */
+
+    'cache_duration' => 120,
+
+    /**
      * Modules base_path
      */
     'modules_base_path' => base_path('modules'),

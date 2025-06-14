@@ -26,6 +26,8 @@ priority: 0
     @livewire('web.search.relation-select', [
             'filterKey' => $key,
             'filterConfig' => $filter,
-            'currentValue' => $panelFilters[$key] ?? null,
+            'selected' => $panelFilters[$key] ?? null,
+            'placeholder' => $filter['label'],
+            'lazy' => false,
         ], key('relation-filter-' . $key))
 @endif

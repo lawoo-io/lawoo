@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Core\Models\Traits\ClearsCacheOnSave;
 use Modules\Core\Models\Traits\TranslatableModel;
 
 class Navigation extends BaseModel
 {
 
-    use TranslatableModel;
+    use TranslatableModel, ClearsCacheOnSave;
 
     protected $translatable = ['name', 'group'];
     public static string $translationIdentifier = 'key';
@@ -65,12 +66,6 @@ class Navigation extends BaseModel
     public function mainNavigation(Builder $query): Builder
     {
         return $query->where('level', 0);
-    }
-
-    #[Scope]
-    public function active(Builder $query): Builder
-    {
-        return $query->where('is_active', true);
     }
 
     #[Scope]

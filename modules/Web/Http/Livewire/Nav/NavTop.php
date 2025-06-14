@@ -2,6 +2,7 @@
 
 namespace Modules\Web\Http\Livewire\Nav;
 
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Modules\Core\Models\Navigation;
 
@@ -19,7 +20,16 @@ class NavTop extends Component
     {
         $currentRoute = request()->route()->getName();
 
-        $currentNav = Navigation::where('route', $currentRoute)->where('level', 0)->first();
+        $explodeRoute = explode('.', $currentRoute);
+
+        $keyRoute = count($explodeRoute) > 2 ? $explodeRoute[0] . '.' . $explodeRoute[1] . '.' . $explodeRoute[2] : $explodeRoute[0];
+
+        $cacheTags = ['table:navigations'];
+        $cacheKey = 'livewire:nav_top_navigation_level_1.'.$keyRoute;
+
+        $currentNav = Cache::tags($cacheTags)->remember($cacheKey, now()->addDay(), function () use ($keyRoute) {
+            return Navigation::with('children')->where('route', $keyRoute)->where('level', 0)->first();
+        });
 
         if($currentNav && $currentNav->level == 0) {
             $this->subNavList = $currentNav->children;

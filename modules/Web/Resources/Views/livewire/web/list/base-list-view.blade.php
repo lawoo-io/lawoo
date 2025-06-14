@@ -107,7 +107,11 @@ priority: 0
 
         <x-slot:body>
             @foreach($data as $item)
-                <flux:table.row wire:key="{{ $item->{$this->keyField} }}">
+                <flux:table.row wire:key="{{ $item->{$this->keyField} }}"
+                                href="{{ route($this->formViewRoute, [$item['id']]) }}"
+                                class="{{ $this->formViewRoute ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700' : '' }}"
+                                wire:navigate
+                >
                     @if($this->checkboxes)
                         <flux:table.cell>
                             <flux:checkbox

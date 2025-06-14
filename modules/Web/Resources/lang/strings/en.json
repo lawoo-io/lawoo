@@ -50,5 +50,12 @@
     "no": "no",
     "to": "to",
     "in": "in",
-    "not in": "not in"
+    "not in": "not in",
+    "Custom Search": "Custom Search",
+    "Save current filters?": "Save current filters?",
+    "Name...": "Name...",
+    "Public for all Users?": "Public for all Users?",
+    "Set as default": "Set as default",
+    "Really delete?": "Really delete?",
+    "A default filter for this view already exists.": "A default filter for this view already exists."
 }

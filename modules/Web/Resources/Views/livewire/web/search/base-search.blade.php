@@ -112,14 +112,14 @@ priority: 0
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            class="absolute right-0 top-full w-full lg:min-w-[50rem] mt-1 z-20 rounded-lg shadow-lg border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-700 focus:outline-none"
+            class="absolute right-0 top-full w-full lg:min-w-[50rem] mt-1 py-4 z-20 rounded-lg shadow-lg border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-700 focus:outline-none"
             style="display: none;"
         >
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-2">
                 <div class="space-y-4 md:border-r dark:border-r-gray-600 px-4">
                     @foreach($availableFilters as $groupName => $groupData)
                         @if(($groupData['column'] ?? 1) === 1)
-                            <flux:menu.search.group heading="{{ $groupData['label'] }}" class="!border-b-0 !pl-0">
+                            <flux:menu.search.group heading="{{ $groupData['label'] }}" class="!border-b-0 !pl-0 mb-1">
                                 @foreach($groupData['filters'] as $key => $filter)
                                     <div>
                                         <x-web.search.types
@@ -138,7 +138,7 @@ priority: 0
                 <div class="space-y-4 md:border-r dark:border-r-gray-600 pr-4">
                     @foreach($availableFilters as $groupName => $groupData)
                         @if(($groupData['column'] ?? 1) === 2)
-                            <flux:menu.search.group heading="{{ $groupData['label'] }}">
+                            <flux:menu.search.group heading="{{ $groupData['label'] }}" class="mb-1">
                                 @foreach($groupData['filters'] as $key => $filter)
                                     <x-web.search.types x-if="open"
                                         :key="$key"
@@ -152,11 +152,7 @@ priority: 0
                 </div>
 
                 <div class="space-y-2">
-                    <flux:menu.group heading="Support">
-                        <flux:menu.item>FAQ</flux:menu.item>
-                        <flux:menu.item>Kontakt</flux:menu.item>
-                        <flux:menu.item>Helpdesk</flux:menu.item>
-                    </flux:menu.group>
+                    <livewire:web.search.custom-search :panelFilters="$this->panelFilters" :searchFilters="$this->searchFilters" />
                 </div>
             </div>
         </div>

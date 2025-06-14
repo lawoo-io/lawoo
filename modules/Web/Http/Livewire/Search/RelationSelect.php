@@ -2,8 +2,9 @@
 
 namespace Modules\Web\Http\Livewire\Search;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
 class RelationSelect extends Component
@@ -12,7 +13,9 @@ class RelationSelect extends Component
     public string $filterKey;
     public array $filterConfig;
 
-    // --- Interne Eigenschaften
+    #[Reactive]
+    public $selected = null;
+
     public array $options = [];
     public $selection = null;
     public bool $multiple;
@@ -23,7 +26,14 @@ class RelationSelect extends Component
     public int $totalCount = 0;
     public bool $hasMore = false;
 
-    public function mount($filterKey, $filterConfig, $currentValue = null)
+    public function updatedSelected($value): void
+    {
+        $this->initialCurrentValues();
+
+        $this->selection = $this->selected ? array_values($this->selected) : null;
+    }
+
+    public function mount($filterKey, $filterConfig)
     {
         $this->filterKey = $filterKey;
         $this->filterConfig = $filterConfig;
@@ -33,8 +43,9 @@ class RelationSelect extends Component
         $this->keyColumn = $this->filterConfig['relation']['key_column'] ?? 'id';
         $this->displayColumn = $this->filterConfig['relation']['display_column'];
 
-        if ($currentValue) {
-            $this->selection = array_values($currentValue);
+        if ($this->selected) {
+            $this->initialCurrentValues();
+            $this->selection = array_values($this->selected);
         } else {
             $this->selection = null;
         }
@@ -42,30 +53,80 @@ class RelationSelect extends Component
         $this->loadData();
     }
 
+    public function initialCurrentValues(): void
+    {
+        if (empty($this->selected)) {
+            return;
+        }
+
+        $optionIds = array_keys($this->options);
+
+        $missingIds = array_diff($this->selected, $optionIds);
+
+        if (empty($missingIds)) {
+            return;
+        }
+
+        $modelClass = $this->filterConfig['relation']['model'];
+
+        $missingOptions = $modelClass::query()
+            ->whereIn($this->keyColumn, $missingIds)
+            ->pluck($this->displayColumn, $this->keyColumn)
+            ->toArray();
+
+        $this->options = $this->options + $missingOptions;
+    }
+
     public function loadData(): void
     {
         $modelClass = $this->filterConfig['relation']['model'];
+        $modelInstance = new $modelClass();
+        $cacheTags = [$modelInstance->getCacheTag()];
 
-        $totalCountQuery = $modelClass::query()
-            ->where('is_active', true);
+        $modelSlug = str_replace('\\', '_', $modelClass);
+        $cacheKey = "livewire.data-loader.{$modelSlug}.{$this->displayColumn}.limit-{$this->limit}";
 
-        $this->totalCount = $totalCountQuery->count();
+        $cachedData = Cache::tags($cacheTags)->remember($cacheKey, now()->addDay(), function () use ($modelClass) {
+            $query = $modelClass::query()->where('is_active', true);
+
+            $totalCount = $query->clone()->count();
+
+            $options = $query->limit($this->limit)
+                ->pluck($this->displayColumn, $this->keyColumn)
+                ->toArray();
+
+            return [
+                'totalCount' => $totalCount,
+                'options' => $options,
+            ];
+        });
+
+        $this->totalCount = $cachedData['totalCount'];
+        $this->options = $cachedData['options'];
         $this->hasMore = ($this->totalCount > $this->limit);
-
-        $this->options = $totalCountQuery->limit($this->limit)
-            ->pluck($this->displayColumn, $this->keyColumn)
-            ->toArray();
     }
 
     public function search(string $searchTerm = '')
     {
         $modelClass = $this->filterConfig['relation']['model'];
+        $modelInstance = new $modelClass();
 
-        $this->options = $modelClass::query()
-            ->where($this->displayColumn, 'ilike', '%' . $searchTerm . '%')
-            ->limit($this->limit)
-            ->pluck($this->displayColumn, $this->keyColumn)
-            ->toArray();
+        $cacheTags = [$modelInstance->getCacheTag()];
+
+        $modelSlug = str_replace('\\', '_', $modelClass);
+        $searchTermSlug = strtolower(preg_replace('/[^A-Za-z0-9\-]/', '', $searchTerm));
+
+        $cacheKey = "livewire:search:{$modelSlug}:{$this->displayColumn}:q:{$searchTermSlug}:limit-{$this->limit}";
+
+        $searchResults = Cache::tags($cacheTags)
+            ->remember($cacheKey, now()->addMinutes(10), function () use ($modelClass, $searchTerm) {
+                return $modelClass::query()
+                    ->where($this->displayColumn, 'ilike', '%' . $searchTerm . '%')
+                    ->limit($this->limit)
+                    ->pluck($this->displayColumn, $this->keyColumn)
+                    ->toArray();
+            });
+        $this->options = $searchResults + $this->options;
     }
 
     public function updatedSelection(): void
@@ -92,6 +153,18 @@ class RelationSelect extends Component
         if ($this->filterKey === $filterKey) {
             $this->selection = $this->multiple ? [] : null;
         }
+    }
+
+    #[On('set-relation-value')]
+    public function setValue(string $filterKey, $value): void
+    {
+        if ($this->filterKey !== $filterKey || !$value) {
+            return;
+        }
+
+        $this->selected = $value;
+        $this->initialCurrentValues();
+        $this->selection = array_values($this->selected);
     }
 
     public function render()
