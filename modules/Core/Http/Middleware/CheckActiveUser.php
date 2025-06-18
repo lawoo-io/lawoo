@@ -30,18 +30,17 @@ class CheckActiveUser
 
         $user = auth()->user();
 
-        if (method_exists($user, 'is_active') && !$user->is_active) {
+        if (!$user->is_active) {
             auth()->logout();
-
             if ($request->expectsJson()) {
                 return response()->json([
-                    'message' => 'Your account has been deactivated',
+                    'message' => __('Your account has been deactivated.'),
                     'error' => 'account_deactivated'
                 ], Response::HTTP_FORBIDDEN);
             }
 
             return redirect()->route('login')
-                ->withErrors(['email' => 'Your account has been deactivated.']);
+                ->withErrors(['email' => __('Your account has been deactivated.')]);
         }
 
         return $next($request);

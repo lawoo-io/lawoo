@@ -10,7 +10,6 @@ class UserListView extends BaseListView
 {
     public string $title = 'Users';
     public ?string $moduleName = 'User';
-//    public string $view = 'livewire.user.list.user-list-view';
     public ?string $modelClass = 'User';
 
     public array $sortColumns = ['id', 'is_active'];
@@ -19,13 +18,17 @@ class UserListView extends BaseListView
 
     public array $defaultColumns = ['name', 'email'];
 
-    public bool $cacheEnabled = true;
+    public bool $cacheEnabled = false;
 
     public array $cacheTags = ['table:users'];
 
     public array $availableFilters = [];
 
     public string $formViewRoute = 'lawoo.users.lists.view';
+
+    public bool $showSearch = true;
+
+    public bool $checkboxes = true;
 
     public function getAvailableColumns(): array
     {
@@ -37,7 +40,8 @@ class UserListView extends BaseListView
                 'label' => __t('Name', 'User')
             ],
             'email' => [
-                'label' => __t('Email', 'User')
+                'label' => __t('Email', 'User'),
+                'clicked' => true,
             ],
             'is_active' => [
                 'label' => __t('Active', 'User'),

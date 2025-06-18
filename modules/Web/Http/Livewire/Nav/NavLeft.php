@@ -4,6 +4,7 @@ namespace Modules\Web\Http\Livewire\Nav;
 
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Modules\Core\Models\Navigation;
 

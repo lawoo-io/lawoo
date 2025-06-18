@@ -30,7 +30,7 @@ class Role extends BaseModel
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(UserOld::class, 'user_roles')
+        return $this->belongsToMany(UserExtended::class, 'user_roles')
             ->withPivot(['assigned_by', 'expires_at'])
             ->withTimestamps();
     }
@@ -50,6 +50,7 @@ class Role extends BaseModel
     {
         return $query->where('is_system', false);
     }
+
 
     public function scopeActive($query)
     {

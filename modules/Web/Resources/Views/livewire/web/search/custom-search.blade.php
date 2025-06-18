@@ -16,11 +16,9 @@ priority: 0
                             <span class="justify-end">{{ $item['name'] }}</span>
                         </div>
                     </flux:button>
-                    @if($item['public'] === true && auth()->user()->can('web.search.delete_public'))
                     <flux:button size="sm" class="cursor-pointer" wire:click="removeSearch('{{ $item['id'] }}', '{{ $item['public'] }}')" wire:confirm="{{ __t('Really delete?', 'Web') }}">
                         <flux:icon.trash class="size-3 text-gray-500"/>
                     </flux:button>
-                    @endif
                 </flux:button.group>
             @endforeach
         </flux:navlist>

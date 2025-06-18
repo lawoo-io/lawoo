@@ -16,5 +16,13 @@
     "Test": "Test",
     "Language": "Language",
     "Created": "Created",
-    "User": "User"
+    "User": "User",
+    "Super-Admin": "Super-Admin",
+    "Roles": "Roles",
+    "Reset password": "Reset password",
+    "Send verification Email": "Send verification Email",
+    "Activated": "Activated",
+    "Unactive": "Unactive",
+    "Profile Settings": "Profile Settings",
+    "You can't delete yourself!": "You can't delete yourself!"
 }

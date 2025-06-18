@@ -9,7 +9,7 @@ priority: 0
     <x-web.list.view>
         <x-slot:toolbar>
             <flux:heading level="1" size="l">
-                {{ $this->title }}
+                <livewire:web.breadcrumbs.breadcrumbs :pageTitle="$this->title" />
             </flux:heading>
         </x-slot:toolbar>
 
@@ -108,9 +108,7 @@ priority: 0
         <x-slot:body>
             @foreach($data as $item)
                 <flux:table.row wire:key="{{ $item->{$this->keyField} }}"
-                                href="{{ route($this->formViewRoute, [$item['id']]) }}"
                                 class="{{ $this->formViewRoute ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700' : '' }}"
-                                wire:navigate
                 >
                     @if($this->checkboxes)
                         <flux:table.cell>
@@ -118,12 +116,13 @@ priority: 0
                                 wire:model.live="selected"
                                 value="{{ $item->id }}"
                                 :key="'list-' . $item->id"
+                                class="z-10"
                             />
                         </flux:table.cell>
                     @endif
                     @foreach($this->availableColumns as $column => $options)
                         @if(in_array($column, $this->visibleColumns))
-                        <flux:table.cell>
+                        <flux:table.cell :href="!isset($options['clicked']) || $options['clicked'] === true ? route($this->formViewRoute, [$item['id']]) : false" wire:navigate>
                             @if($options['type'] ?? false)
                                 <x-web.list.types :type="$options['type']" :value="$item->{$column}"/>
                             @else
@@ -132,6 +131,9 @@ priority: 0
                         </flux:table.cell>
                         @endif
                     @endforeach
+                        <flux:table.column align="right">
+                            {{ $columnActions ?? '' }}
+                        </flux:table.column>
                 </flux:table.row>
             @endforeach
         </x-slot:body>
