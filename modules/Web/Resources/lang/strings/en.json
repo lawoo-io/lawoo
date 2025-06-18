@@ -57,5 +57,7 @@
     "Public for all Users?": "Public for all Users?",
     "Set as default": "Set as default",
     "Really delete?": "Really delete?",
-    "A default filter for this view already exists.": "A default filter for this view already exists."
+    "A default filter for this view already exists.": "A default filter for this view already exists.",
+    "Updated successfully": "Updated successfully",
+    "--Please select--": "--Please select--"
 }

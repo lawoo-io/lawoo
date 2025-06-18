@@ -6,7 +6,7 @@ return [
     'user.users' => [
         'name' => 'Users',
         'route' => 'lawoo.users.lists',
-        'middleware' => 'permission:user.users.show',
+        'middleware' => 'user.users.show',
         'level' => 0,
         'icon' => 'users',
         'sort_order' => 9900,
@@ -18,7 +18,7 @@ return [
         'parent' => 'user.users',
         'name' => 'User Lists',
         'route' => 'lawoo.users.lists',
-        'middleware' => 'permission:user.users.show',
+        'middleware' => 'user.users.show',
         'level' => 1,
         'icon' => null,
         'sort_order' => 100,

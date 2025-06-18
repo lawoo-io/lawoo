@@ -30,7 +30,7 @@ priority: 0
                @endisset
             </div>
 
-            <!-- Right Toolbar - NO SEARCH, only external components -->
+            <!-- Right Toolbar -->
             @isset($actions)
             <div class="toolbar-right flex items-center">
                 {{ $actions }}

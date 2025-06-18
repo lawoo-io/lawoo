@@ -59,19 +59,19 @@ class BaseListView extends Component
     /**
      * Searchable fields
      */
-    #[Url(as: 's', keep: true)]
+    #[Url(as: 's', keep: true, history: true)]
     public array $searchFilters = [];
 
     /**
      * Filtered fields
      */
-    #[Url(as: 'f', keep: true)]
+    #[Url(as: 'f', keep: true, history: true)]
     public array $panelFilters = [];
 
-    #[Url]
+    #[Url(history: true)]
     public string $sortBy = 'id';
 
-    #[Url]
+    #[Url(history: true)]
     public string $sortDirection = 'asc';
 
     /**
@@ -116,6 +116,11 @@ class BaseListView extends Component
     public function boot(): void
     {
         $this->searchFields = ['id' => __t('ID', 'Web')];
+    }
+
+    public function updatedSelected(): void
+    {
+        $stopPropagation = true;
     }
 
     public function mount(): void {
@@ -381,18 +386,20 @@ class BaseListView extends Component
             $keyParts[] = 'search_' . implode('|', $filterStrings);
         }
 
-        // Add panel filters
         if (!empty($this->panelFilters)) {
             ksort($this->panelFilters);
             $filterStrings = [];
-            foreach ($this->panelFilters as $key => $values) {
-                $values = is_array($values) ? implode(',', array_keys($values)) : $values;
-                $filterStrings[] = "{$key}:{$values}";
+            foreach ($this->panelFilters as $key => $value) {
+                $stringifiedValue = $value;
+                if (is_array($value)) {
+                    ksort($value);
+                    $stringifiedValue = http_build_query($value);
+                }
+                $filterStrings[] = "{$key}:{$stringifiedValue}";
             }
             $keyParts[] = 'panel_' . implode('|', $filterStrings);
         }
 
-        // Sanitize and join all parts
         $rawKey = implode('.', $keyParts);
         return 'listview:' . preg_replace('/[^A-Za-z0-9\._\-:]/', '', $rawKey);
     }

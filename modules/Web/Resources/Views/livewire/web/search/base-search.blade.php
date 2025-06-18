@@ -126,7 +126,6 @@ priority: 0
                                             :key="$key"
                                             :filter="$filter"
                                             :panelFilters="$panelFilters"
-                                            x-data:open="open"
                                         />
                                     </div>
                                 @endforeach

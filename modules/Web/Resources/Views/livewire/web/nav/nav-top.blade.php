@@ -12,7 +12,7 @@ priority: 0
             @if(!$level1Nav->hasChildren())
                 <flux:navbar.item
                     :icon="$level1Nav->icon ?: null"
-                    :href="route($level1Nav->route)"
+                    href="{{ route($level1Nav->route) }}"
                     :current="request()->routeIs($level1Nav->route) || request()->routeIs($level1Nav->route . '.*')"
                     wire:navigate
                 >

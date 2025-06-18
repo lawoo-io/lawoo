@@ -33,7 +33,7 @@ abstract class BaseRepository
      * @param $id
      * @return Model|null
      */
-    public function find($id): ?Model
+    public function find(int $id): ?Model
     {
         return $this->model->find($id);
     }
@@ -47,6 +47,14 @@ abstract class BaseRepository
         return $this->model->create($data);
     }
 
+    public function update(int $id, array $data): Model
+    {
+        $model = $this->model->find($id);
+        $model->fill($data);
+        $model->save();
+        return $model;
+    }
+
     /**
      * @param array $params
      * @return Builder
@@ -55,19 +63,13 @@ abstract class BaseRepository
     {
         $query = $this->model->newQuery();
 
-        // NEU: Getrennte Aufrufe
         if (!empty($params['search_filters_active'])) {
             $this->applySearchFilters($query, $params['search_filters_active']);
         }
 
-
         if (!empty($params['panel_filters_active']) && !empty($params['available_filters'])) {
             $this->applyPanelFilters($query, $params['panel_filters_active'], $params['available_filters']);
         }
-
-//        if (!empty($params['panel_filters_active'])) {
-//            $this->applyPanelFilters($query, $params['panel_filters_active'], $params['available_filters'] ?? []);
-//        }
 
         // Sorting
         if (!empty($params['sort'])) {

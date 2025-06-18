@@ -92,6 +92,11 @@ class CoreServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
         /**
+         * Load json translation
+         */
+        $this->loadJsonTranslationsFrom(__DIR__.'/../Resources/lang');
+
+        /**
          * Merge Config
          */
         $this->mergeConfigFrom(__DIR__ . '/../config.php', 'app');

@@ -2,8 +2,11 @@
 
 namespace Modules\User\Repositories;
 
+use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Abstracts\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Core\Models\Language;
+use Modules\Core\Models\Role;
 use Modules\Core\Models\UserExtended;
 
 class UserRepository extends BaseRepository
@@ -11,8 +14,14 @@ class UserRepository extends BaseRepository
     public function __construct()
     {
         parent::__construct(new UserExtended());
-
     }
+
+    public function find(int $id): ?Model
+    {
+        return $this->model->with(['roles'])->find($id);
+    }
+
+
 
 //     protected function loadRelationships(Builder $query): void
 //     {
@@ -61,6 +70,16 @@ class UserRepository extends BaseRepository
         return $this->model->where('is_active', true)->get();
     }
 
+    public function getRoleOptions(): array
+    {
+        return Role::all()->select('name', 'description', 'id')->toArray();
+    }
+
+    public function getLanguageOptions(): array
+    {
+        return Language::all()->pluck('name', 'id')->toArray();
+    }
+
     public function getUsersByRole(string $roleSlug): \Illuminate\Database\Eloquent\Collection
     {
         return $this->model->whereHas('roles', function($q) use ($roleSlug) {
@@ -78,5 +97,6 @@ class UserRepository extends BaseRepository
     {
         $this->authorize('user.users.delete');
         parent::delete($ids, $all, $excludedIds);
+        $this->model->clearModelCache();
     }
 }
