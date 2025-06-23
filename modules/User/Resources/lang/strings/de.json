@@ -24,5 +24,8 @@
     "Activated": "Aktiviert",
     "Unactive": "Inaktiv",
     "Profile Settings": "Profileinstellungen",
-    "You can't delete yourself!": "Du kannst dich nicht selbst löschen!"
+    "You can't delete yourself!": "Du kannst dich nicht selbst löschen!",
+    "Remove": "",
+    "You can't delete Super Admins!": "",
+    "Delete": ""
 }

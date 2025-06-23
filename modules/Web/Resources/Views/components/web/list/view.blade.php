@@ -67,20 +67,6 @@ priority: 0
             @endif
         </flux:table.rows>
     </flux:table>
-    <!-- Empty State -->
-    @isset($notFoundMessage)
-    <div class="empty-state">
-        <flux:card>
-            <div class="text-center py-12">
-                <flux:icon.document-magnifying-glass variant="outline" class="mx-auto h-12 w-12 text-zinc-400" />
-
-                <flux:heading size="lg" class="mt-4">
-                    {{ $notFoundMessage }}
-                </flux:heading>
-            </div>
-        </flux:card>
-    </div>
-    @endif
 
     <!-- Footer Section with Pagination -->
     <div class="toolbar-right flex justify-end">

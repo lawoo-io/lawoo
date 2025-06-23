@@ -59,5 +59,6 @@
     "Really delete?": "Wirklich löschen?",
     "A default filter for this view already exists.": "Ein Standardfilter für diese Ansicht existiert bereits.",
     "Updated successfully": "Erfolgreich aktualisiert",
-    "--Please select--": "--Bitte auswählen--"
+    "--Please select--": "--Bitte auswählen--",
+    "Kanban View": ""
 }

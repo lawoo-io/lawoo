@@ -2,6 +2,7 @@
 
 namespace Modules\User\Http\Controllers;
 
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\View\View;
 use Modules\Core\Abstracts\BaseController;
 
@@ -9,13 +10,14 @@ class UserController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware('permission:user.users.show')->only('lists', 'view');
+        $this->middleware('permission:user.users.show')->only('records', 'view');
         $this->middleware('permission:user.users.create')->only('create');
     }
 
-    public function lists(): View
+    public function records(): View
     {
-        return view('modules.user.users.lists');
+        $viewType = Cookie::get('User_view_type_' . auth()->id());
+        return view('modules.user.users.records', compact('viewType'));
     }
 
     public function view(): View

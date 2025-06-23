@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\User\Http\Livewire\form;
+namespace Modules\User\Http\Livewire\Form;
 
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;

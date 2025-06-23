@@ -22,7 +22,13 @@ class BaseListView extends Component
     public ?string $moduleName = null;
     public ?string $modelClass = null;
     protected $repository = null;
+
+    /**
+     * @var string Listview
+     */
     public string $view = 'livewire.web.list.base-list-view';
+
+    public string $viewType = 'list';
 
     /**
      * Key field for Livewire
@@ -59,19 +65,19 @@ class BaseListView extends Component
     /**
      * Searchable fields
      */
-    #[Url(as: 's', keep: true, history: true)]
+    #[Url(as: 's', keep: true )]
     public array $searchFilters = [];
 
     /**
      * Filtered fields
      */
-    #[Url(as: 'f', keep: true, history: true)]
+    #[Url(as: 'f', keep: true )]
     public array $panelFilters = [];
 
-    #[Url(history: true)]
+    #[Url]
     public string $sortBy = 'id';
 
-    #[Url(history: true)]
+    #[Url]
     public string $sortDirection = 'asc';
 
     /**
@@ -140,6 +146,27 @@ class BaseListView extends Component
         $cookieKey = 'per_page_' . $this->moduleName . '_' . $this->modelClass;
         $cookieValue = request()->cookie($cookieKey);
         $this->perPage = $cookieValue ?? $this->perPage;
+        $this->initViewType();
+    }
+
+    protected function initViewType(): void
+    {
+        $cookieKey = $this->modelClass . '_view_type_' . auth()->id();
+        $cookieValue = request()->cookie($cookieKey);
+        if (!$cookieValue) {
+            $this->setViewType('list');
+        } else {
+            $this->viewType = $cookieValue;
+        }
+    }
+
+    public function setViewType(string $viewType, bool $refresh = false): void
+    {
+        $cookieKey = $this->modelClass . '_view_type_' . auth()->id();
+        cookie()->queue(cookie($cookieKey, $viewType, 60 * 24 * config('app.cookie_settings_days')));
+        $this->viewType = $viewType;
+
+        $this->redirect(route('lawoo.users.records'), navigate: true);
     }
 
     public function updatedPerPage($value): void
@@ -359,7 +386,7 @@ class BaseListView extends Component
 
     public function delete(): void
     {
-        $result = $this->resolveRepository()->delete($this->selected, $this->selectedAllRecords, $this->excludedIds);
+        $this->resolveRepository()->delete($this->selected, $this->selectedAllRecords, $this->excludedIds);
     }
 
     /**

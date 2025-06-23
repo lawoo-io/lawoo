@@ -5,7 +5,7 @@ return [
 
     'user.users' => [
         'name' => 'Users',
-        'route' => 'lawoo.users.lists',
+        'route' => 'lawoo.users.records',
         'middleware' => 'user.users.show',
         'level' => 0,
         'icon' => 'users',
@@ -17,7 +17,7 @@ return [
     'user.users.lists' => [
         'parent' => 'user.users',
         'name' => 'User Lists',
-        'route' => 'lawoo.users.lists',
+        'route' => 'lawoo.users.records',
         'middleware' => 'user.users.show',
         'level' => 1,
         'icon' => null,

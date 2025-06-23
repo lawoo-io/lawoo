@@ -11,9 +11,11 @@ priority: 0
     @include('modules.web.partials.head')
 </head>
 <body class="min-h-screen bg-white dark:bg-zinc-800 test">
-<flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+<flux:sidebar id="sidebar" sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
     <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
-    <a href="{{ route('lawoo.dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+    <flux:icon.chevron-left class="cursor-pointer !absolute right-1 mt-2 size-4 text-gray-400 hover:text-gray-700" size="xs"/>
+
+    <a href="{{ route('lawoo.dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse " wire:navigate>
         <x-web.svg.logo-sidebar class="size-10" />
     </a>
 

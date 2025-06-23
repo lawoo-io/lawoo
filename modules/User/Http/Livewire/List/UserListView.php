@@ -4,6 +4,7 @@ namespace Modules\User\Http\Livewire\List;
 
 use Flux\Flux;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
 use Modules\Web\Http\Livewire\List\BaseListView;
 
 class UserListView extends BaseListView
@@ -24,44 +25,32 @@ class UserListView extends BaseListView
 
     public array $availableFilters = [];
 
-    public string $formViewRoute = 'lawoo.users.lists.view';
+    public string $formViewRoute = 'lawoo.users.records.view';
 
     public bool $showSearch = true;
 
     public bool $checkboxes = true;
 
-    public function getAvailableColumns(): array
-    {
-        return [
-            'id' => [
-                'label' => __t('ID', 'User')
-            ],
-            'name' => [
-                'label' => __t('Name', 'User')
-            ],
-            'email' => [
-                'label' => __t('Email', 'User'),
-                'clicked' => true,
-            ],
-            'is_active' => [
-                'label' => __t('Active', 'User'),
-                'type' => 'switch'
-            ],
-            'created_at' => [
-                'label' => __t('Created At', 'User')
-            ],
-            'updated_at' => [
-                'label' => __t('Updated At', 'User')
-            ],
-        ];
-    }
 
     public function boot(): void
     {
         $this->title = __t('Users', 'User');
-        $this->searchFields = ['name' => __t('Name', 'Web'), 'email' => __t('Email', 'Web')];
+        $this->searchFields = $this->setSearchFields();
+        $this->availableFilters = $this->setAvailableFilters();
+    }
 
-        $this->availableFilters = [
+
+    public static function setSearchFields(): array
+    {
+        return [
+            'name' => __t('Name', 'User'),
+            'email' => __t('Email', 'User')
+        ];
+    }
+
+    public static function setAvailableFilters(): array
+    {
+        return  [
             // Column 1
             'account' => [
                 'label' => __t('Filter', 'User'),
@@ -138,6 +127,32 @@ class UserListView extends BaseListView
         ];
     }
 
+    public function getAvailableColumns(): array
+    {
+        return [
+            'id' => [
+                'label' => __t('ID', 'User')
+            ],
+            'name' => [
+                'label' => __t('Name', 'User')
+            ],
+            'email' => [
+                'label' => __t('Email', 'User'),
+                'clicked' => true,
+            ],
+            'is_active' => [
+                'label' => __t('Active', 'User'),
+                'type' => 'switch'
+            ],
+            'created_at' => [
+                'label' => __t('Created At', 'User')
+            ],
+            'updated_at' => [
+                'label' => __t('Updated At', 'User')
+            ],
+        ];
+    }
+
     public function delete(): void
     {
         $this->excludedIds = [auth()->id()];
@@ -158,9 +173,12 @@ class UserListView extends BaseListView
 
         $userList = view('livewire.user.list.user-list');
 
+        View::share('livewireComponent', $this);
+
         return view($this->view, [
             'data' => $data,
             'actions' => $userList->renderSections()['actions'] ?? '',
+            'viewButtons' => $userList->renderSections()['viewButtons'] ?? '',
         ]);
     }
 

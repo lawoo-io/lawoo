@@ -12,4 +12,20 @@ priority: 0
             {{ __t('Send message', 'User') }}
         </flux:menu.item>
     @endsection
+
+    @section('viewButtons')
+        <flux:button size="xs"
+            :variant="$livewireComponent->viewType === 'list' ? 'primary' : 'outline'"
+            icon="queue-list"
+            class="cursor-pointer"
+            wire:click="setViewType('list', true)"
+        />
+        <flux:button
+            size="xs"
+            :variant="$livewireComponent->viewType === 'kanban' ? 'primary' : 'outline'"
+            icon="rectangle-group"
+            class="cursor-pointer"
+            wire:click="setViewType('kanban', true)"
+        />
+    @endsection
 </div>

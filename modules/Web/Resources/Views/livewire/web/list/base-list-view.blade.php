@@ -30,7 +30,7 @@ priority: 0
                         </button>
                     @endif
                         @isset($header)
-                            {{ $header }}
+                            {!! $header !!}
                         @endisset
                         <flux:dropdown position="bottom" align="end" class="ml-2">
                             <flux:button size="xs" icon="cog-6-tooth" class="cursor-pointer"/>
@@ -58,7 +58,12 @@ priority: 0
         </x-slot:toolbarCenter>
 
         <x-slot:actions>
-            <flux:input wire:model.live.debounce.1s="perPage" class="!w-12" size="xs"/>
+            @isset($viewButtons)
+                <div class="mr-3">
+                    {!! $viewButtons !!}
+                </div>
+            @endisset
+            <flux:input wire:model.live.debounce.2s="perPage" class="!w-12" size="xs"/>
             @if($data->hasPages())
                 <flux:pagination :paginator="$data" class="!border-none !py-0 ml-2" />
             @endif
