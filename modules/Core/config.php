@@ -19,6 +19,11 @@ return [
     ],
 
     /**
+     * Settings cache duration in days
+     */
+    'settings_cache_duration' => 90,
+
+    /**
      * Cookie for column settings
      */
 
@@ -40,6 +45,8 @@ return [
      * Translate scan configuration
      */
     'scan_directories' => [
+        'Data',
+        'Models',
         'Resources/Views',
         'Http',
         'Services',

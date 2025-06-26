@@ -60,5 +60,14 @@
     "A default filter for this view already exists.": "A default filter for this view already exists.",
     "Updated successfully": "Updated successfully",
     "--Please select--": "--Please select--",
-    "Kanban View": "Kanban View"
+    "Kanban View": "Kanban View",
+    "System Settings": "System Settings",
+    "Manage your system settings": "Manage your system settings",
+    "Setting not found": "Setting not found",
+    "Roles": "Roles",
+    "Description": "Description",
+    "Module": "Module",
+    "System": "System",
+    "Slug": "Slug",
+    "Permissions": "Permissions"
 }

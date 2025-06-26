@@ -46,13 +46,15 @@ class DbModel extends Model
      * @param bool $changed Created or updated model instance
      * @return int $id Model ID
      */
-    public static function setChanged(string $name, bool $changed, int $moduleId): int {
+    public static function setChanged(string $name, bool $changed, int $moduleId, int $sequence = 0): int {
         $dbModel = self::firstOrCreate(['name' => $name]);
+        $dbModel->sequence = $sequence;
 
         if ($dbModel->changed !== $changed) {
             $dbModel->changed = $changed;
-            $dbModel->save();
         }
+
+        $dbModel->save();
 
         $dbModel->modules()->syncWithoutDetaching($moduleId);
 

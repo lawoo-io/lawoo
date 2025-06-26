@@ -15,7 +15,7 @@ class Navigation extends BaseModel
 
     use TranslatableModel, ClearsCacheOnSave;
 
-    protected $translatable = ['name', 'group'];
+    protected array $translatable = ['name', 'group'];
     public static string $translationIdentifier = 'key';
 
     protected $fillable = [
@@ -137,6 +137,35 @@ class Navigation extends BaseModel
     public function hasChildren(): bool
     {
         return $this->children()->exists();
+    }
+
+    public function isNavigationActive(): bool
+    {
+        if (request()->routeIs($this->route) || request()->routeIs($this->route . '.*')) {
+            return true;
+        }
+
+        if (!empty($this->children)) {
+            foreach ($this->children as $child) {
+                if ($child->isNavigationActive()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function getMainNavigation(): ?Navigation
+    {
+        if ($this->isMainNavigation()) {
+            return $this;
+        } elseif ($this->parent->isMainNavigation()) {
+            return $this->parent;
+        } elseif ($this->parent->parent->isMainNavigation()) {
+            return $this->parent->parent;
+        }
+        return null;
     }
 
 }

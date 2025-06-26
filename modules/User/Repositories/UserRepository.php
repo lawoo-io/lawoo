@@ -72,7 +72,13 @@ class UserRepository extends BaseRepository
 
     public function getRoleOptions(): array
     {
-        return Role::all()->select('name', 'description', 'id')->toArray();
+        return Role::all()->map(function($role){
+            return [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description,
+            ];
+        })->toArray();
     }
 
     public function getLanguageOptions(): array

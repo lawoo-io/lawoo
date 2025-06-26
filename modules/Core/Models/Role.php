@@ -5,10 +5,13 @@ namespace Modules\Core\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Core\Models\Traits\TranslatableModel;
 
 class Role extends BaseModel
 {
-    use SoftDeletes;
+    use TranslatableModel, SoftDeletes;
+
+    protected array $translatable = ['name', 'description'];
 
     protected $fillable = [
         'name',

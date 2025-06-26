@@ -9,27 +9,28 @@ priority: 0
     'field',
     'options'
 ])
-@if (isset($options['mode']) && $options['mode'] === 'cards')
-    <div class="{{ $options['class'] }}">
-        <flux:label wire:dirty.class="!text-yellow-500" wire:target="data.{{ $field }}" class="pb-1">{{ $options['label'] }}</flux:label>
-        <flux:checkbox.group :variant="$options['mode']">
-            @foreach($options['options'] as $option)
-                <flux:checkbox
-                    wire:model="data.{{ $field }}"
-                    :value="$option['id']"
-                    :label="$option['name']"
-                    :description="$option['description']"
-                />
-            @endforeach
-        </flux:checkbox.group>
-    </div>
-@else
-    <div class="{{ $options['class'] }}">
-        <flux:checkbox.group >
-            <flux:label wire:dirty.class="!text-yellow-500" wire:target="data.{{ $field }}" class="pb-1">{{ $options['label'] }}</flux:label>
-            @foreach($options['options'] as $option)
-                <flux:checkbox :value="$option['id']" wire:model="data.{{ $field }}" :label="$option['name']"/>
-            @endforeach
-        </flux:checkbox.group>
-    </div>
+@if(isset($options['label']))
+    <flux:label wire:dirty.class="!text-yellow-500" wire:target="data.{{ $field }}">{{ $options['label'] }}</flux:label>
 @endif
+<div class="{{ $options['class'] }}">
+
+    @foreach($options['options'] as $group => $items)
+        <div class="{{ $options['group_class'] ? $options['group_class'] : false }}">
+            <flux:checkbox.group wire:model="data.{{ $field }}" :label="$group"  >
+                @foreach($items as $item)
+                    <div class="flex items-center">
+                        <flux:checkbox :label="$item['name']" :value="$item['id']" />
+                        @if (isset($item['description']))
+                            <flux:tooltip toggleable>
+                                <flux:button icon="information-circle" size="sm" variant="ghost" />
+                                <flux:tooltip.content class="max-w-[20rem] space-y-2">
+                                    {{ $item['description'] }}
+                                </flux:tooltip.content>
+                            </flux:tooltip>
+                        @endif
+                    </div>
+                @endforeach
+            </flux:checkbox.group>
+        </div>
+    @endforeach
+</div>

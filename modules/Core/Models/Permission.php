@@ -4,9 +4,16 @@ namespace Modules\Core\Models;
 
 use Modules\Core\Abstracts\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Modules\Core\Models\Traits\ClearsCacheOnSave;
+use Modules\Core\Models\Traits\TranslatableModel;
 
 class Permission extends BaseModel
 {
+
+    use TranslatableModel, ClearsCacheOnSave;
+
+    protected $translatable = ['name', 'description'];
+
     protected $fillable = [
         'name',
         'slug',

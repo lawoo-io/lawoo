@@ -60,5 +60,14 @@
     "A default filter for this view already exists.": "Ein Standardfilter für diese Ansicht existiert bereits.",
     "Updated successfully": "Erfolgreich aktualisiert",
     "--Please select--": "--Bitte auswählen--",
-    "Kanban View": ""
+    "Kanban View": "Kanban-Ansicht",
+    "System Settings": "Systemeinstellungen",
+    "Manage your system settings": "Verwalten Sie Ihre Systemeinstellungen",
+    "Setting not found": "Einstellung nicht gefunden",
+    "Roles": "Rollen",
+    "Description": "Beschreibung",
+    "Module": "Modul",
+    "System": "System",
+    "Slug": "Slug",
+    "Permissions": "Berechtigungen"
 }

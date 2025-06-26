@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('changed')->default(false);
             $table->boolean('migrated')->default(false);
             $table->boolean('removed')->default(false);
+            $table->smallInteger('sequence')->default(0);
             $table->timestamps();
         });
 

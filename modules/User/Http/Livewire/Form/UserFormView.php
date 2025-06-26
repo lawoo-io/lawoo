@@ -6,11 +6,18 @@ use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use Modules\Web\Http\Livewire\Form\BaseFormView;
-use function Laravel\Prompts\clear;
 
 class UserFormView extends BaseFormView
 {
     protected $repositoryClass = "Modules\\User\\Repositories\\UserRepository";
+
+    public string $permissionForEdit = 'user.users.edit';
+
+    public string $permissionForDeleting = 'user.users.delete';
+
+    public string $recordsRoute = 'lawoo.users.records';
+
+    public bool $showRightContent = true;
 
     public function setFields(): void
     {
@@ -19,33 +26,33 @@ class UserFormView extends BaseFormView
             'name' => [
                 'type' => 'input',
                 'label' => __t('Name', 'User'),
-                'class' => 'md:col-span-6',
+                'class' => 'lg:col-span-6',
             ],
             'email' => [
                 'type' => 'input',
                 'label' => __t('Email', 'User'),
-                'class' => 'md:col-span-6',
+                'class' => 'lg:col-span-6',
             ],
             'language_id' => [
                 'type' => 'select',
                 'label' => __t('Language', 'User'),
-                'class' => 'md:col-span-6',
+                'class' => 'lg:col-span-6',
                 'options' => $this->getLanguageOptions(),
             ],
             'is_super_admin' => [
                 'type' => 'switch',
 //                'mode' => 'inline',
                 'label' => __t('Super-Admin', 'User'),
-                'class' => 'md:col-span-6',
+                'class' => 'lg:col-span-6',
                 'disabled' => $this->id === auth()->id(),
             ],
             'tabs' => [
                 'tab_first' => [
                     'label' => __t('Roles', 'User'),
-                    'class' => 'md:col-span-6',
+                    'class' => 'lg:col-span-6',
                     'fields' => [
                         'roles' => [
-                            'type' => 'checkbox_group',
+                            'type' => 'checkbox',
                             'mode' => 'cards',
                             'label' => __t('Roles', 'User'),
                             'class' => 'md:col-span-12',
@@ -72,7 +79,7 @@ class UserFormView extends BaseFormView
     protected function loadData(): void
     {
         $record = $this->resolveRepository()->find($this->id);
-        $this->data = $record->toArray();
+        $this->data = $record->attributesToArray();
         $this->data['roles'] = $record->roles->pluck('id')->toArray();
     }
 
@@ -122,11 +129,9 @@ class UserFormView extends BaseFormView
     {
         if ($this->id === auth()->id()) {
             Flux::toast(text: __t("You can't delete yourself!", "User"), variant: 'danger');
-            return;
+            return false;
         }
         parent::delete();
-
-        return $this->redirect(route('lawoo.users.lists'), navigate: true);
     }
 
     public function render()

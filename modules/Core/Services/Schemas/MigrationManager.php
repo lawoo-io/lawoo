@@ -3,13 +3,10 @@
 namespace Modules\Core\Services\Schemas;
 
 use Illuminate\Support\Facades\Artisan;
-use Modules\Core\Models\DbField;
 use Modules\Core\Models\DbModel;
 use Modules\Core\Models\MigrationFile;
 use Modules\Core\Models\Module;
 use Modules\Core\Models\ModuleUiTranslation;
-use Modules\Core\Models\YamlFile;
-use Modules\Core\Services\TranslationImporter;
 
 class MigrationManager
 {
@@ -20,15 +17,15 @@ class MigrationManager
 
         $dbModels = DbModel::where('changed', true)->whereHas('modules', function($table) use ($module) {
             $table->where('module_id', $module->id);
-        })->get();
+        })->orderBy('sequence')->get();
 
         $stubPathCreate = base_path() . '/modules/Core/Database/Stubs/migrate_create.stub';
         $stubPathUpdate = base_path() . '/modules/Core/Database/Stubs/migrate_change.stub';
 
         $outputdir = base_path() . "/modules/$moduleName/Database/Migrations";
 
+        $count = 0;
         foreach ($dbModels as $dbModel) {
-
             if ($dbModel->new) {
                 $stubPath = $stubPathCreate;
                 $tableMode = 'create';
@@ -41,7 +38,7 @@ class MigrationManager
             MigrationFile::deleteBeforeCreate($dbModel->id);
 
             // create new migration file
-            $migrationPath = static::generateMigrationFileFromStub($dbModel->name, $stubPath, $outputdir, $dbModel->dbFields, $tableMode);
+            $migrationPath = static::generateMigrationFileFromStub($dbModel->name, $stubPath, $outputdir, $dbModel->dbFields, $tableMode, $count);
 
             if (!$migrationPath) return;
 
@@ -53,7 +50,10 @@ class MigrationManager
 
             $dbModel->setMigrateOff();
             $dbModel->dbFields()->each(fn ($field) => $field->setMigrateOff());
-            static::removeFields($dbModel->dbFields, $module->id);        }
+            static::removeFields($dbModel->dbFields, $module->id);
+
+            $count++;
+        }
     }
 
 
@@ -72,12 +72,13 @@ class MigrationManager
         $dbModels = DbModel::with(['migrationFiles', 'dbFields', 'yamlFiles'])
             ->whereHas('modules', function($table) use ($module) {
                 $table->where('module_id', $module->id);
-            })->get();
+            })->orderBy('sequence', 'desc')->get();
 
         foreach ($dbModels as $dbModel) {
 
             // migration reset, delete migration files
-            foreach ($dbModel->migrationFiles->where('module_id', $module->id) as $migrationFile) {
+            $migrationFiles = $dbModel->migrationFiles->where('module_id', $module->id);
+            foreach ($migrationFiles as $migrationFile) {
                 Artisan::call('migrate:reset', ['--path' => $migrationFile->path]);
                 $migrationFile->delete();
             }
@@ -116,11 +117,13 @@ class MigrationManager
             $migrationFile->migrated = true;
             $migrationFile->save();
         } catch (\Exception $e) {
+            echo 'Migrate ERROR: ' . $migrationFile->path . "\n";
+            echo "Please check LOG\n";
             logger()->error("Error: " . $e->getMessage());
         }
     }
 
-    public static function generateMigrationFileFromStub(string $table, string $stubPath, string $outputDir, object $dbFields, string $tableMode): string {
+    public static function generateMigrationFileFromStub(string $table, string $stubPath, string $outputDir, object $dbFields, string $tableMode, int $count): string {
 
         $stub = file_get_contents($stubPath);
         $fields = [];
@@ -161,7 +164,7 @@ class MigrationManager
         );
 
         $timestamp = date('Y_m_d_His');
-        $fileName = "{$timestamp}_{$tableMode}_{$table}_table.php";
+        $fileName = "{$timestamp}_{$count}_{$tableMode}_{$table}_table.php";
         $path = rtrim($outputDir, '/') . '/' . $fileName;
 
         if (!is_dir($outputDir)) {

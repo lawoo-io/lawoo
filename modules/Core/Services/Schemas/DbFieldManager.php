@@ -21,10 +21,10 @@ class DbFieldManager
             $yamlFiles = $dbModel->yamlFiles()->orderBy('file_modified_at', 'asc')->get();
 
             $models = [];
-
             foreach ($yamlFiles as $yamlFile) {
                 $parsed = Yaml::parseFile($yamlFile->path);
 
+                $models = [];
                 foreach ($parsed as $table => $data) {
                     $models[$table] = $data['fields'];
                     foreach ($data['fields'] as $field => $params) {
@@ -36,7 +36,6 @@ class DbFieldManager
             // create or update fields
             foreach ($models as $key => $fields) {
                 if ($key === $dbModel->name) {
-//                    DbField::createOrUpdate($dbModel->id, $fields, $dbModel->name, $module->id);
                     static::createOrUpdate($dbModel->id, $fields, $dbModel->name, $module->id);
                 }
             }
@@ -44,7 +43,7 @@ class DbFieldManager
             // set fields to remove
             foreach ($models as $key => $fields) {
                 if ($key === $dbModel->name) {
-                    $dbFields = DbField::where('module_id', $module->id)->get();
+                    $dbFields = DbField::where('db_model_id', $dbModel->id)->get();
                     static::setToRemove($dbFields, $fields);
                 }
             }

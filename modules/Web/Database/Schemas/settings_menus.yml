@@ -1,0 +1,14 @@
+settings_menus:
+  base: 1
+  sequence: 0
+  fields:
+    id: id
+    name: string=100.unique
+    description: string.nullable
+    is_active: boolean.default=1
+    sequence: smallInteger.default=10
+    module_name: string=100.nullable
+    icon: string=50.nullable
+    middleware: string=100.nullable
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable

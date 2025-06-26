@@ -10,6 +10,7 @@ use Modules\Core\Services\Resources\ResourceBuild;
 use Modules\Core\Services\Schemas\DbFieldManager;
 use Modules\Core\Services\Schemas\MigrationManager;
 use Modules\Core\Services\Schemas\SchemaChecker;
+use Modules\Core\Services\SettingSynchronizerService;
 use Modules\Core\Services\TranslationImporter;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
@@ -96,6 +97,11 @@ class ModulesUpdateCommand extends Command
              */
             $importer = app(TranslationImporter::class);
             $importer->importModuleTranslations($module);
+
+            /**
+             * Sync settings
+             */
+            SettingSynchronizerService::run($module);
 
         } catch (\RuntimeException $e) {
             $this->error("❌ " . $e->getMessage());

@@ -55,6 +55,21 @@ class BaseFormView extends Component
      */
     public bool $showRightContent = false;
 
+    /**
+     * @var string
+     */
+    public string $permissionForEdit = '';
+
+    /**
+     * @var string
+     */
+    public string $permissionForDeleting = '';
+
+    /**
+     * @var string
+     */
+    public string $recordsRoute = '';
+
     public function mount(): void
     {
         $this->id = request()->route('id');
@@ -69,7 +84,7 @@ class BaseFormView extends Component
     protected function loadData(): void
     {
         $record = $this->resolveRepository()->find($this->id);
-        $this->data = $record->toArray();
+        $this->data = $record->attributesToArray();
     }
 
     public function setRules(): void
@@ -80,9 +95,11 @@ class BaseFormView extends Component
     public function save(): void
     {
         $result = false;
-        $this->validate($this->rules);
+        if($this->rules) $this->validate($this->rules);
 
-        if($this->id !== 'new') $result = $this->update();
+        if($this->id !== 'new') {
+            $result = $this->update();
+        }
 
         if($result){
             Flux::toast(text: __t('Updated successfully', 'Web'), variant: 'success');
@@ -91,6 +108,10 @@ class BaseFormView extends Component
 
     protected function update(): ?Model
     {
+        if ($this->permissionForEdit !== '') {
+            $this->resolveRepository()->authorize($this->permissionForEdit);
+        }
+
         return $this->resolveRepository()->update($this->id, $this->data);
     }
 
@@ -129,8 +150,13 @@ class BaseFormView extends Component
 
     public function delete()
     {
+        if ($this->permissionForDeleting !== '') {
+            $this->resolveRepository()->authorize($this->permissionForDeleting);
+        }
+
         $ids = [$this->id];
         $this->resolveRepository()->delete($ids);
+        $this->redirect(route($this->recordsRoute), navigate: true);
     }
 
     public function render()

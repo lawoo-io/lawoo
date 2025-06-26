@@ -11,6 +11,7 @@ use Modules\Core\Models\Navigation;
 class NavLeft extends Component
 {
     public object $navlist;
+
     public ?int $activeMainNavId = null;
 
     public function mount()

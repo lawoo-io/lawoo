@@ -8,6 +8,7 @@ use Modules\Core\Models\Module;
 use Modules\Core\Services\Modules\ModuleRemover;
 use Modules\Core\Services\RBACCleanupService;
 use Modules\Core\Services\Schemas\MigrationManager;
+use Modules\Core\Services\SettingSynchronizerService;
 
 class ModulesRemoveCommand extends Command
 {
@@ -68,5 +69,12 @@ class ModulesRemoveCommand extends Command
          * Remove Navigation
          */
         Artisan::call('lawoo:nav:remove ' . $name . ' --force');
+        Artisan::call('cache:clear');
+
+        if($this->option('remove-db')){
+            SettingSynchronizerService::removeModuleSettings($name, true);
+        } else {
+            SettingSynchronizerService::removeModuleSettings($name);
+        }
     }
 }

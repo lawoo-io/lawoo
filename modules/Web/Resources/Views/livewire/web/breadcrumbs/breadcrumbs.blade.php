@@ -6,7 +6,9 @@ override_name: '',
 priority: 0
 --}}
 <flux:breadcrumbs>
-    <flux:breadcrumbs.item href="/lawoo" icon="home" wire:navigate/>
+    <flux:breadcrumbs.item href="/lawoo" wire:navigate>
+        <flux:icon.home class="size-4"/>
+    </flux:breadcrumbs.item>
     @if(count($this->breadcrumbs) > 2)
         <flux:breadcrumbs.item>
             <flux:dropdown>

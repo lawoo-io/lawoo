@@ -16,6 +16,8 @@ trait ClearsCacheOnSave
     {
         static::saved(fn ($model) => $model->clearModelCache());
         static::deleted(fn ($model) => $model->clearModelCache());
+        static::updated(fn ($model) => $model->clearModelCache());
+        static::created(fn ($model) => $model->clearModelCache());
     }
 
     /**
