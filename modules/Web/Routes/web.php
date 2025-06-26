@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Web\Http\Controllers\ProfileController;
+use Modules\Web\Http\Controllers\RolesController;
+use Modules\Web\Http\Controllers\SettingsController;
 use Modules\Web\Http\Controllers\VerifyEmailController;
 
 Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->name('lawoo.')->group(function () {
@@ -17,6 +19,15 @@ Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->name('lawoo.
         Route::get('/form', [ProfileController::class, 'profile'])->name('form');
         Route::get('/password', [ProfileController::class, 'password'])->name('password');
         Route::get('/appearance', [ProfileController::class, 'appearance'])->name('appearance');
+    });
+
+    // Settings
+    Route::middleware(['web', 'auth'])->prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::prefix('roles')->name('roles.')->group(function () {
+            Route::get('/', [RolesController::class, 'records'])->name('records');
+            Route::get('/{id}', [RolesController::class, 'view'])->name('records.view');
+        });
     });
 
 });

@@ -31,7 +31,7 @@ priority: 0
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+    <div class="grid lg:grid-cols-6 gap-4">
         {{ $slot }}
     </div>
 </div>

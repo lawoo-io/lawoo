@@ -13,7 +13,7 @@ priority: 0
             <flux:navlist.item
                 :icon="$nav->icon ?: null"
                 href="{{ route($nav->route) }}"
-                :current="request()->routeIs($nav->route) || request()->routeIs($nav->route . '.*')"
+                :current="$nav->isNavigationActive()"
                 wire:navigate
             >
                 {{ $nav->name }}

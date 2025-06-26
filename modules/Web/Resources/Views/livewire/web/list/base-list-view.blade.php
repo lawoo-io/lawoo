@@ -127,7 +127,7 @@ priority: 0
                     @endif
                     @foreach($this->availableColumns as $column => $options)
                         @if(in_array($column, $this->visibleColumns))
-                        <flux:table.cell :href="!isset($options['clicked']) || $options['clicked'] === true ? route($this->formViewRoute, [$item['id']]) : false" wire:navigate>
+                        <flux:table.cell :href="$this->formViewRoute && !isset($options['clicked']) || $this->formViewRoute && $options['clicked'] === true ? route($this->formViewRoute, [$item['id']]) : false" wire:navigate>
                             @if($options['type'] ?? false)
                                 <x-web.list.types :type="$options['type']" :value="$item->{$column}"/>
                             @else

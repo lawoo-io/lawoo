@@ -28,20 +28,29 @@ priority: 0
                     @isset($actions)
                         {!! $actions !!}
                     @endisset
-                    <flux:menu.item wire:click="delete" wire:confirm="{{ __t('Are you sure you want to delete the selected items?', 'Web') }}" class="size-8 cursor-pointer">
-                        <flux:icon.trash class="size-4 mr-2 text-red-600" />
-                        {{ __t('Remove', 'Web') }}
-                    </flux:menu.item>
+                    @if ($this->permissionForDeleting)
+                        @can($this->permissionForDeleting)
+                            <flux:menu.item wire:click="delete" wire:confirm="{{ __t('Are you sure you want to delete the selected items?', 'Web') }}" class="size-8 cursor-pointer">
+                                <flux:icon.trash class="size-4 mr-2 text-red-600" />
+                                {{ __t('Remove', 'Web') }}
+                            </flux:menu.item>
+                        @endcan
+                    @else
+                        <flux:menu.item wire:click="delete" wire:confirm="{{ __t('Are you sure you want to delete the selected items?', 'Web') }}" class="size-8 cursor-pointer">
+                            <flux:icon.trash class="size-4 mr-2 text-red-600" />
+                            {{ __t('Remove', 'Web') }}
+                        </flux:menu.item>
+                    @endif
                 </flux:menu>
             </flux:dropdown>
         </x-slot:actions>
 
         <!-- Erste Spalte: nimmt 12 oder 8 Spalten ein, je nach Sichtbarkeit der zweiten -->
-        <div class="md:col-span-{{ $showRightContent ? '8' : '12' }} border dark:border-gray-600 rounded-lg p-4">
-            <form wire:submit.prevent="save" class="grid grid-cols-1 md:grid-cols-12 gap-4 ">
+        <div class="lg:col-span-{{ $showRightContent ? '4' : '6' }} border dark:border-gray-600 rounded-lg p-4">
+            <form wire:submit.prevent="save" class="grid grid-cols-1 lg:grid-cols-12 gap-4 ">
                 @csrf
                 @if(isset($formTopLeft) || isset($formTopRight))
-                <div class="flex md:justify-between items-center pb-4 border-b dark:border-b-gray-600 md:col-span-12">
+                <div class="flex md:justify-between items-center pb-4 border-b dark:border-b-gray-600 lg:col-span-12">
                     @isset($formTopLeft)
                     <div>
                         {!! $formTopLeft !!}
@@ -58,7 +67,7 @@ priority: 0
                     @if ($field !== 'tabs' && $field !== 'tab_*')
                         <x-web.form.types :field="$field" :options="$options"/>
                     @elseif($field === 'tabs')
-                        <flux:tab.group class="mt-2 md:col-span-12">
+                        <flux:tab.group class="mt-2 lg:col-span-12">
                             <flux:tabs>
                                 @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
                                     <flux:tab :name="$tabKey" class="cursor-pointer" :icon="$tabOptions['icon'] ?? false">{{ $tabOptions['label'] }}</flux:tab>
@@ -74,8 +83,8 @@ priority: 0
                         </flux:tab.group>
                     @endif
                 @endforeach
-                <div class="md:col-span-6">
-                    <flux:button type="submit" variant="primary" disabled wire:dirty.attr.remove="disabled" class="cursor-pointer">{{ __t('Save', 'Web') }}</flux:button>
+                <div class="lg:col-span-12">
+                    <flux:button type="submit" size="sm" variant="primary" disabled wire:dirty.attr.remove="disabled" class="cursor-pointer">{{ __t('Save', 'Web') }}</flux:button>
                 </div>
             </form>
 
@@ -83,9 +92,73 @@ priority: 0
 
         <!-- Zweite Spalte: Optional -->
         @if ($showRightContent)
-        <div class="hidden md:block md:col-span-4 border p-4 rounded-md">
-            <h2 class="text-xl font-bold mb-2">Fenster 2</h2>
-            <p>Wird nur angezeigt, wenn gewünscht.</p>
+        <div class="lg:col-span-2">
+            <div class="w-full border rounded-lg mb-4 dark:border-gray-600">
+                <flux:navbar class="w-full border-b dark:border-b-gray-600 !py-1.5">
+                    <flux:navbar.item :current="true" href="#" class="ml-2 data-current:after:hidden">Message</flux:navbar.item>
+                    <flux:navbar.item href="#">Note</flux:navbar.item>
+                </flux:navbar>
+                <input
+                    placeholder="Type a message..."
+                    type="text"
+                    class="px-4 py-2 text-sm w-full focus-visible:outline-none focus-visible:ring-0 mb-1"
+                >
+{{--                <flux:editor row="auto"--}}
+{{--                             class="!border-0 !rounded-none !shadow-none **:data-[slot=content]:min-h-[50px]!">--}}
+{{--                    <flux:editor.toolbar class="h-9">--}}
+{{--                        <flux:editor.heading/>--}}
+{{--                        <flux:editor.separator/>--}}
+{{--                        <flux:editor.bold />--}}
+{{--                        <flux:editor.italic />--}}
+{{--                        <flux:editor.strike />--}}
+{{--                        <flux:editor.separator />--}}
+{{--                        <flux:editor.bullet />--}}
+{{--                        <flux:editor.ordered />--}}
+{{--                        <flux:editor.separator />--}}
+{{--                        <flux:editor.link />--}}
+{{--                        <flux:editor.separator />--}}
+{{--                        <flux:editor.align />--}}
+{{--                    </flux:editor.toolbar>--}}
+{{--                    <flux:editor.content />--}}
+{{--                </flux:editor>--}}
+{{--                <div class="p-4">--}}
+{{--                    <flux:button size="xs" variant="primary">Send</flux:button>--}}
+{{--                    <flux:button size="xs" variant="ghost">Cancel</flux:button>--}}
+{{--                </div>--}}
+            </div>
+
+            <!-- History -->
+            <div class="p-4 rounded-lg border dark:border-gray-600">
+                <div class="flex flex-row sm:items-center gap-2">
+                    <div>
+                        <flux:avatar src="https://randomuser.me/api/portraits/men/1.jpg" size="xs" class="shrink-0" />
+                    </div>
+                    <div class="flex flex-col gap-0.5 sm:gap-2 sm:flex-row sm:items-center">
+                        <div class="flex items-center gap-2">
+                            <flux:heading>John Doe</flux:heading>
+                            <flux:icon.envelope class="size-4.5 text-gray-500 dark:text-gray-200"/>
+{{--                            <flux:badge color="lime" size="sm" icon="check-badge" inset="top bottom">Moderator</flux:badge>--}}
+                        </div>
+                        <flux:text class="text-sm">2 days ago</flux:text>
+                    </div>
+                </div>
+                <div class="min-h-2 sm:min-h-1"></div>
+                <div class="pl-8">
+                    <flux:text variant="strong">
+                        <p>
+                            I hope you’re doing well.
+                        </p>
+                        <p>
+                            I’m reaching out to ask for more information regarding [brief topic, e.g., the upcoming project meeting or product details].
+                            Could you please provide me with the relevant details or documents?
+                        </p>
+                        <p>
+                            Looking forward to your response.
+                        </p>
+                    </flux:text>
+                    <div class="min-h-2"></div>
+                </div>
+            </div>
         </div>
         @endif
     </x-web.form.view>

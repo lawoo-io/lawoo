@@ -17,6 +17,7 @@ return new class extends Migration
             $table->timestamp('file_modified_at');
             $table->string('file_hash', 64);
             $table->foreignId('module_id')->constrained()->cascadeOnDelete();
+            $table->smallInteger('sequence')->default(0);
             $table->timestamps();
         });
 

@@ -99,6 +99,7 @@ priority: 0
             @endforeach
         </div>
     @endif
+    @if ($this->availableFilters)
     <div x-data="{ open: false }" class="ml-auto">
         <flux:button @click="open = !open" size="xs" class="cursor-pointer">
             <flux:icon.chevron-down class="mt-0.5 size-2.5"/>
@@ -156,4 +157,5 @@ priority: 0
             </div>
         </div>
     </div>
+    @endif
 </div>

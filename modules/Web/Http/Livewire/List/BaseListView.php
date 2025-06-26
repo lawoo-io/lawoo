@@ -71,6 +71,8 @@ class BaseListView extends Component
     /**
      * Filtered fields
      */
+    public array $availableFilters = [];
+
     #[Url(as: 'f', keep: true )]
     public array $panelFilters = [];
 
@@ -121,7 +123,8 @@ class BaseListView extends Component
 
     public function boot(): void
     {
-        $this->searchFields = ['id' => __t('ID', 'Web')];
+        $this->searchFields = $this->setSearchFields();
+        $this->availableFilters = $this->setAvailableFilters();
     }
 
     public function updatedSelected(): void
@@ -149,6 +152,16 @@ class BaseListView extends Component
         $this->initViewType();
     }
 
+    public static function setSearchFields(): array
+    {
+        return ['id' => __t('ID', 'Web')];
+    }
+
+    public static function setAvailableFilters(): array
+    {
+        return [];
+    }
+
     protected function initViewType(): void
     {
         $cookieKey = $this->modelClass . '_view_type_' . auth()->id();
@@ -163,7 +176,7 @@ class BaseListView extends Component
     public function setViewType(string $viewType, bool $refresh = false): void
     {
         $cookieKey = $this->modelClass . '_view_type_' . auth()->id();
-        cookie()->queue(cookie($cookieKey, $viewType, 60 * 24 * config('app.cookie_settings_days')));
+        cookie()->queue(cookie($cookieKey, $viewType, 60 * 24 * settings('cache_view_settings_days')));
         $this->viewType = $viewType;
 
         $this->redirect(route('lawoo.users.records'), navigate: true);
@@ -185,7 +198,7 @@ class BaseListView extends Component
         $this->perPage = $value;
 
         $cookieKey = 'per_page_' . $this->moduleName . '_' . $this->modelClass;
-        cookie()->queue(cookie($cookieKey, $value, 60 * 24 * config('app.cookie_settings_days')));
+        cookie()->queue(cookie($cookieKey, $value, 60 * 24 * settings('cache_view_settings_days')));
     }
 
     public function getAvailableColumns(): array
@@ -207,7 +220,7 @@ class BaseListView extends Component
 
         // Set cookies
         $cookieKey = 'table_columns_' . $this->moduleName . '_' . $this->modelClass;
-        cookie()->queue($cookieKey, json_encode($this->visibleColumns), 60 * 24 * config('app.cookie_settings_days'));
+        cookie()->queue($cookieKey, json_encode($this->visibleColumns), 60 * 24 * settings('cache_view_settings_days'));
     }
 
     public function isVisible(string $column): bool

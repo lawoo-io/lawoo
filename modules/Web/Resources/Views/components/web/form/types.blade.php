@@ -13,6 +13,8 @@ priority: 0
     <x-web.form.types.input :field="$field" :options="$options"/>
 @elseif($options['type'] === 'switch')
     <x-web.form.types.switch :field="$field" :options="$options"/>
+@elseif($options['type'] === 'checkbox')
+    <x-web.form.types.checkbox :field="$field" :options="$options"/>
 @elseif($options['type'] === 'checkbox_group')
     <x-web.form.types.checkbox-group :field="$field" :options="$options"/>
 @elseif($options['type'] === 'select')

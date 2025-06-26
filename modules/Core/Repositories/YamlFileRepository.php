@@ -27,10 +27,9 @@ class YamlFileRepository extends BaseRepository
      * @param int $moduleId    ID of the associated module
      * @return YamlFile|int    Returns the YamlFile model or 0 if nothing changed
      */
-    public function getOrCreate(object $file, int $moduleId): YamlFile|int
+    public function getOrCreate(object $file, int $moduleId, int $sequence = 0): YamlFile|int
     {
         $path = str_replace(base_path() . '/', '', $file->getPathname());
-
         $yamlFile = $this->model->where('path', $path)->first();
 
         $changed = false;
@@ -40,11 +39,13 @@ class YamlFileRepository extends BaseRepository
             $yamlFile->file_modified_at = now()->setTimestamp($file->getMTime());
             $yamlFile->file_hash = hash_file('md5', $file->getPathname());
             $yamlFile->module_id = $moduleId;
+            $yamlFile->sequence = $sequence;
             $yamlFile->save();
             $changed = true;
         } elseif ($yamlFile->file_modified_at < $file->getMTime() || $yamlFile->file_hash !== hash_file('md5', $file->getPathname())) {
             $yamlFile->file_modified_at = now()->setTimestamp($file->getMTime());
             $yamlFile->file_hash = hash_file('md5', $file->getPathname());
+            $yamlFile->sequence = $sequence;
             $yamlFile->save();
             $changed = true;
         }

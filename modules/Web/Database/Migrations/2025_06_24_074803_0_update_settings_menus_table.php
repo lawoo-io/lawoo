@@ -11,17 +11,15 @@ return new class extends Migration
     **/
     public function up(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->dropColumn('module');
-            $table->string('group');
+        Schema::table('settings_menus', function (Blueprint $table) {
+            $table->string('icon', 50)->nullable();
         });
     }
 
     public function down(): void
     {
-        Schema::table('settings', function (Blueprint $table) {
-            $table->string('module');
-            $table->dropColumn('group');
+        Schema::table('settings_menus', function (Blueprint $table) {
+            $table->dropColumn('icon');
         });
     }
 };

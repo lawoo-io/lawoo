@@ -19,7 +19,7 @@ class UserListView extends BaseListView
 
     public array $defaultColumns = ['name', 'email'];
 
-    public bool $cacheEnabled = false;
+    public bool $cacheEnabled = true;
 
     public array $cacheTags = ['table:users'];
 
@@ -35,8 +35,7 @@ class UserListView extends BaseListView
     public function boot(): void
     {
         $this->title = __t('Users', 'User');
-        $this->searchFields = $this->setSearchFields();
-        $this->availableFilters = $this->setAvailableFilters();
+        parent::boot();
     }
 
 

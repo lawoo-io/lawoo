@@ -1,6 +1,42 @@
 <?php
 
 return [
+    'web.settings' => [
+        'name' => 'Settings',
+        'route' => 'lawoo.settings.index',
+        'middleware' => 'web.settings.show',
+        'level' => 0,
+        'icon' => 'cog',
+        'sort_order' => 10000,
+        'group' => null
+    ],
+    'web.settings.view' => [
+        'parent' => 'web.settings',
+        'name' => 'Settings',
+        'route' => 'lawoo.settings.index',
+        'middleware' => 'web.settings.show',
+        'level' => 1,
+        'icon' => null,
+        'sort_order' => 100,
+    ],
+    'web.settings.roles_permissions' => [
+        'parent' => 'web.settings',
+        'name' => 'Roles Permissions',
+        'route' => false,
+        'middleware' => 'web.settings.roles_permissions.show',
+        'level' => 1,
+        'icon' => null,
+        'sort_order' => 200,
+    ],
+    'web.settings.roles' => [
+        'parent' => 'web.settings.roles_permissions',
+        'name' => 'Roles',
+        'route' => 'lawoo.settings.roles.records',
+        'middleware' => 'web.settings.roles_permissions.show',
+        'level' => 2,
+        'icon' => null,
+        'sort_order' => 100
+    ]
 //    'web.users' => [
 //        'name' => 'Users',
 //        'route' => 'lawoo.users.index',

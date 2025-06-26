@@ -325,7 +325,7 @@ abstract class BaseRepository
      * @param array $excludedIds
      * @return void
      */
-    protected function delete(array $ids = [], bool $all = false, array $excludedIds = []): void
+    public function delete(array $ids = [], bool $all = false, array $excludedIds = []): void
     {
         $count = 0;
         try {
@@ -347,7 +347,7 @@ abstract class BaseRepository
      * @param $permission
      * @return void
      */
-    protected function authorize($permission)
+    public function authorize($permission)
     {
         if (!auth()->user()?->can($permission)) {
             throw new AuthorizationException();

@@ -1,10 +1,11 @@
 settings:
   base: 1
+  sequence: 10
   fields:
     id: id
-    name: string=100.unique
     value: string.nullable
-    group: string
-    isActive: boolean.default=1
-    module_id: foreignId.constrained.nullOnDelete
-    sequence: integer.default=10
+    settings_menu_id: foreignId.constrained.onDelete=cascade
+    key: string.unique.index
+    module_name: string=100.nullable
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable

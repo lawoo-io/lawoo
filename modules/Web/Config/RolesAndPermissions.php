@@ -43,6 +43,30 @@ return [
                 'description' => 'Can delete public search settings.',
                 'resource' => 'search',
                 'action' => 'delete',
+            ],
+            'web.settings.show' => [
+                'name' => 'Show Settings',
+                'description' => 'Can show settings',
+                'resource' => 'settings',
+                'action' => 'show',
+            ],
+            'web.settings.roles_permissions.show' => [
+                'name' => 'Show Roles Permissions',
+                'description' => 'Can show roles permissions',
+                'resource' => 'roles_permissions',
+                'action' => 'show',
+            ],
+            'web.settings.roles_permissions.edit' => [
+                'name' => 'Edit Roles and Permissions',
+                'description' => 'Can edit roles and permissions',
+                'resource' => 'roles',
+                'action' => 'edit',
+            ],
+            'web.settings.roles.delete' => [
+                'name' => 'Delete Roles',
+                'description' => 'Can delete roles',
+                'resource' => 'roles',
+                'action' => 'delete',
             ]
         ],
     ],

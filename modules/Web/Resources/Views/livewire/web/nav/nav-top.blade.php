@@ -14,13 +14,20 @@ priority: 0
                     :icon="$level1Nav->icon ?: null"
                     href="{{ route($level1Nav->route) }}"
                     :current="request()->routeIs($level1Nav->route) || request()->routeIs($level1Nav->route . '.*')"
+                    class="data-current:after:hidden"
                     wire:navigate
                 >
                     {{ $level1Nav->name }}
                 </flux:navbar.item>
             @else
                 <flux:dropdown>
-                    <flux:navbar.item icon:trailing="chevron-down">{{ $level1Nav->name }}</flux:navbar.item>
+                    <flux:navbar.item
+                        icon:trailing="chevron-down"
+                        :current="$level1Nav->isNavigationActive()"
+                        class="data-current:after:hidden"
+                    >
+                        {{ $level1Nav->name }}
+                    </flux:navbar.item>
                     <flux:navmenu>
                         @foreach($level1Nav->children as $level2Nav)
                             <flux:navbar.item

@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id('id');
-            $table->string('name', 100)->unique();
             $table->string('value')->nullable();
-            $table->string('group');
-            $table->boolean('isActive')->default('1');
-            $table->foreignId('module_id')->constrained()->nullOnDelete();
-            $table->integer('sequence')->default('10');
+            $table->foreignId('settings_menu_id')->constrained()->nullOnDelete();
+            $table->string('key')->unique()->index();
+            $table->string('module_name', 100)->nullable();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

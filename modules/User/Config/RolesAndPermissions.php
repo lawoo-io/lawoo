@@ -31,6 +31,12 @@ return [
                 'description' => 'Delete user.',
                 'resource' => 'users',
                 'action' => 'delete',
+            ],
+            'user.settings.show' => [
+                'name' => 'Show User Settings',
+                'description' => 'Manage user settings.',
+                'resource' => 'settings',
+                'action' => 'show',
             ]
         ]
     ],

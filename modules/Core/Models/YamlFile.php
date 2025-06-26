@@ -40,13 +40,17 @@ class YamlFile extends Model
 
         $yamlFileRepository = app(YamlFileRepository::class);
 
-        $yamlFile = $yamlFileRepository->getOrCreate($file, $module->id);
+        $table = array_key_first($parsed);
+        $data = $parsed[$table];
+        if (array_key_exists('sequence', $data)) $sequence = $data['sequence']; else $sequence = 0;
+
+        $yamlFile = $yamlFileRepository->getOrCreate($file, $module->id, $sequence);
         if (!$yamlFile) return 0;
 
         $ids = [];
 
         foreach ($parsed as $name => $value) {
-            $ids[] = DbModel::setChanged($name, true, $module->id);
+            $ids[] = DbModel::setChanged($name, true, $module->id, $sequence);
         }
 
         $yamlFile->dbModels()->syncWithoutDetaching($ids);
