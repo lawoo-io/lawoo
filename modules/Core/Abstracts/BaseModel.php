@@ -39,7 +39,7 @@ abstract class BaseModel extends Model
      * Scope: Only inactive records
      */
     #[Scope]
-    protected function inactive(Builder $query): void
+    protected function archived(Builder $query): void
     {
         $query->where('is_active', false);
     }

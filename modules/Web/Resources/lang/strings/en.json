@@ -69,5 +69,18 @@
     "Module": "Module",
     "System": "System",
     "Slug": "Slug",
-    "Permissions": "Permissions"
+    "Permissions": "Permissions",
+    "Message": "Message",
+    "Note": "Note",
+    "Send": "Send",
+    "Cancel": "Cancel",
+    "Type a message...": "Type a message...",
+    "Type a note...": "Type a note...",
+    "More": "More",
+    "Type a subject...": "Type a subject...",
+    "Type a title...": "Type a title...",
+    "Write something...": "Write something...",
+    "Title toggle": "Title toggle",
+    "Successfully sent": "Successfully sent",
+    "Successfully created": "Successfully created"
 }

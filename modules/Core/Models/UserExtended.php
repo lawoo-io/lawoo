@@ -5,15 +5,18 @@ namespace Modules\Core\Models;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Modules\Core\Database\Factories\UserFactory;
 use Modules\Core\Models\Traits\ClearsCacheOnSave;
+use Modules\Core\Models\Traits\HasMessages;
 use Modules\Core\Models\Traits\HasRoles;
+use Modules\Core\Models\Traits\TrackableModel;
 
 class UserExtended extends User implements MustVerifyEmail
 {
-    use HasRoles, SoftDeletes, ClearsCacheOnSave;
+    use HasRoles, SoftDeletes, ClearsCacheOnSave, HasMessages, TrackableModel;
 
     protected $table = 'users';
 
@@ -23,7 +26,34 @@ class UserExtended extends User implements MustVerifyEmail
         'password',
         'is_super_admin',
         'is_active',
+        'language_id'
     ];
+
+    protected $trackable = [
+        'name',
+        'email',
+        'language_id'
+    ];
+
+    protected $trackableFields = [
+        'name' => 'Name',
+        'email' => 'Email Address',
+        'language_id' => [
+            'type' => 'belongsTo',
+            'relationship' => 'language',
+            'display_field' => 'name',
+            'label' => 'Language'
+        ],
+        'roles' => [
+            'type' => 'belongsToMany',
+            'relationship' => 'roles',
+            'display_field' => 'name',
+            'label' => 'Roles'
+        ]
+    ];
+
+    protected $trackCreation = true;
+    protected $trackDeletion = true;
 
     protected function casts(): array
     {
@@ -32,6 +62,13 @@ class UserExtended extends User implements MustVerifyEmail
             'is_active' => 'boolean',
             'last_permission_check' => 'datetime',
         ]);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')  // ← Explizite Keys
+        ->withPivot(['assigned_by', 'expires_at'])
+            ->withTimestamps();
     }
 
     /**

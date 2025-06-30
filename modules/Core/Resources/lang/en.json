@@ -1,3 +1,16 @@
 {
-    "Your account has been deactivated.": "Your account has been deactivated."
+    "Your account has been deactivated.": "Your account has been deactivated.",
+    ":field changed from \":old\" to \":new\"": ":field changed from \":old\" to \":new\"",
+    ":field updated": ":field updated",
+    ":fields updated": ":fields updated",
+    ":count fields updated": ":count fields updated",
+    "Yes": "Yes",
+    "No": "No",
+    "(empty)": "(empty)",
+    "Removed: ": "Removed: ",
+    "Added: ": "Added: ",
+    "updated": "updated",
+    "Email Address": "Email Address",
+    "Language": "Language",
+    "Roles": "Roles"
 }

@@ -5,7 +5,9 @@ namespace Modules\User\Http\Livewire\Form;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
+use Modules\Core\Models\UserExtended;
 use Modules\Web\Http\Livewire\Form\BaseFormView;
+use PhpParser\Builder\Class_;
 
 class UserFormView extends BaseFormView
 {
@@ -87,6 +89,7 @@ class UserFormView extends BaseFormView
     {
         $model = parent::update();
         if($model) {
+            $model->trackBelongsToManySync('roles', $this->data['roles']);
             $model->roles()->sync($this->data['roles']);
         }
 

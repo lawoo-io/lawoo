@@ -4,12 +4,8 @@ namespace Modules\Web\Http\Livewire\Breadcrumbs;
 
 
 use Illuminate\Support\Facades\Route;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Reactive;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Breadcrumbs extends Component
@@ -75,33 +71,6 @@ class Breadcrumbs extends Component
 
             // Name für den Breadcrumb bestimmen
             $name = ucwords(str_replace(['-', '_'], ' ', $segment)); // Standard: "users" -> "Users"
-
-            // Versuch, dynamische Namen für IDs aufzulösen (z.B. user/1 -> "Max Mustermann")
-            try {
-                // Route-Matching benötigt den absoluten Pfad ohne Query-Parameter
-                $route = Route::getRoutes()->match(Request::create($absoluteSegmentPath));
-                $parameters = $route->parameters();
-
-                foreach ($parameters as $paramName => $paramValue) {
-                    if ((string)$paramValue === (string)$segment) {
-                        if ($paramName === 'user' && class_exists(\App\Models\User::class)) {
-                            $user = \App\Models\User::find($paramValue);
-                            if ($user && $user->name) {
-                                $name = $user->name;
-                            }
-                        } elseif ($paramName === 'role' && class_exists(\App\Models\Role::class)) {
-                            $role = \App\make(\App\Models\Role::class)->find($paramValue);
-                            if ($role && $role->name) {
-                                $name = $role->name;
-                            }
-                        }
-                        // TODO: Weitere Modelle hier hinzufügen (z.B. 'product', 'order')
-                        break;
-                    }
-                }
-            } catch (NotFoundHttpException $e) {
-                // Route nicht gefunden, Standardnamen verwenden
-            }
 
             // Die URL für den Breadcrumb muss den gesamten Query-String der aktuellen Seite enthalten.
             $breadcrumbLinkUrl = url($absoluteSegmentPath) . $queryString;

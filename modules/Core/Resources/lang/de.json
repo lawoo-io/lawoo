@@ -1,3 +1,16 @@
 {
-    "Your account has been deactivated.": "Dein Benutzerkonto ist deaktiviert."
+    "Your account has been deactivated.": "Dein Benutzerkonto ist deaktiviert.",
+    ":field changed from \":old\" to \":new\"": ":field geändert von \":old\" zu \":new\"",
+    ":field updated": ":field aktualisiert",
+    ":fields updated": ":fields aktualisiert",
+    ":count fields updated": ":count Felder aktualisiert",
+    "Yes": "Ja",
+    "No": "Nein",
+    "(empty)": "(leer)",
+    "Removed: ": "Entfernt: ",
+    "Added: ": "Hinzugefügt: ",
+    "updated": "aktualisiert",
+    "Email Address": "E-Mail Adresse",
+    "Language": "Sprache",
+    "Roles": "Rollen"
 }
