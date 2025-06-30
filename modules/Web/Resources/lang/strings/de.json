@@ -69,5 +69,18 @@
     "Module": "Modul",
     "System": "System",
     "Slug": "Slug",
-    "Permissions": "Berechtigungen"
+    "Permissions": "Berechtigungen",
+    "Message": "Nachricht",
+    "Note": "Notiz",
+    "Send": "Senden",
+    "Cancel": "Abbrechen",
+    "Type a message...": "Nachricht eingeben...",
+    "Type a note...": "Notiz eingeben...",
+    "More": "Mehr",
+    "Type a subject...": "Betreff eingeben...",
+    "Type a title...": "Titel eingeben...",
+    "Write something...": "Etwas schreiben...",
+    "Title toggle": "Titel ein-\/ausblenden",
+    "Successfully sent": "Erfolgreich gesendet",
+    "Successfully created": "Successfully created"
 }

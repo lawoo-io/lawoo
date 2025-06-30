@@ -63,6 +63,7 @@ class RoleFormView extends BaseFormView
             $model->permissions()->sync($this->data['permissions']);
         }
 
+
         return $model;
     }
 

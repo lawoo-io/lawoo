@@ -6,6 +6,8 @@ use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Modules\Core\Models\UserExtended;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
 class BaseFormView extends Component
 {
@@ -70,6 +72,12 @@ class BaseFormView extends Component
      */
     public string $recordsRoute = '';
 
+    public bool $showMessages = true;
+
+    public ?Model $messagesModel = null;
+
+    public Model $record;
+
     public function mount(): void
     {
         $this->id = request()->route('id');
@@ -79,12 +87,25 @@ class BaseFormView extends Component
         $this->setFields();
         $this->setRules();
         $this->initializeFields();
+        $this->getMessageModel();
     }
 
     protected function loadData(): void
     {
-        $record = $this->resolveRepository()->find($this->id);
-        $this->data = $record->attributesToArray();
+        $this->record = $this->getRecord();
+        $this->data = $this->record->attributesToArray();
+    }
+
+    public function getMessageModel(): void
+    {
+        if ($this->showMessages) {
+             $this->messagesModel = $this->resolveRepository()->find($this->id);
+        }
+    }
+
+    protected function getRecord(): Model
+    {
+        return $this->resolveRepository()->find($this->id);
     }
 
     public function setRules(): void
@@ -104,6 +125,8 @@ class BaseFormView extends Component
         if($result){
             Flux::toast(text: __t('Updated successfully', 'Web'), variant: 'success');
         }
+
+        $this->dispatch('load-messages');
     }
 
     protected function update(): ?Model
