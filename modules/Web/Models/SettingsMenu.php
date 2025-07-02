@@ -16,7 +16,7 @@ use Modules\Core\Models\Traits\TranslatableModel;
 
 class SettingsMenu extends BaseModel
 {
-    use TranslatableModel, ClearsCacheOnSave;
+    use TranslatableModel;
 
     /**
      * Translatable fields

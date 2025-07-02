@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Modules\Core\Models\Language;
 use Modules\Core\Models\Role;
 use Modules\Core\Models\UserExtended;
+use Modules\Web\Models\Company;
 
 class UserRepository extends BaseRepository
 {
@@ -84,6 +85,17 @@ class UserRepository extends BaseRepository
     public function getLanguageOptions(): array
     {
         return Language::all()->pluck('name', 'id')->toArray();
+    }
+
+    public function getCompanyOptions(): array
+    {
+        return Company::all()->map(function($company){
+            return [
+                'id' => $company->id,
+                'name' => $company->name,
+                'description' => $company->zip . ' ' . $company->city . ($company->country ? ', ' . $company->country->name : ''),
+            ];
+        })->toArray();
     }
 
     public function getUsersByRole(string $roleSlug): \Illuminate\Database\Eloquent\Collection

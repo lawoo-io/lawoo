@@ -3,10 +3,11 @@
 namespace Modules\Web\Http\Livewire\Form;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Web\Repositories\RoleRepository;
 
 class RoleFormView extends BaseFormView
 {
-    protected $repositoryClass = "Modules\\Web\\Repositories\\RoleRepository";
+    protected string $repositoryClass = RoleRepository::class;
 
     public string $permissionForEdit = 'web.settings.roles_permissions.edit';
 

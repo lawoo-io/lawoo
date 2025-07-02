@@ -25,7 +25,9 @@
     "Unactive": "Inaktiv",
     "Profile Settings": "Profileinstellungen",
     "You can't delete yourself!": "Du kannst dich nicht selbst löschen!",
-    "Remove": "",
-    "You can't delete Super Admins!": "",
-    "Delete": ""
+    "Remove": "Entfernen",
+    "You can't delete Super Admins!": "Du kannst Super-Admins nicht löschen!",
+    "Delete": "Löschen",
+    "Create user": "Benutzer erstellen",
+    "Companies": "Unternehmen"
 }

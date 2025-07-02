@@ -21,7 +21,11 @@ class BaseListView extends Component
     public string $title = 'List View';
     public ?string $moduleName = null;
     public ?string $modelClass = null;
-    protected $repository = null;
+
+    /**
+     * @var string
+     */
+    protected string $repositoryClass = '';
 
     /**
      * @var string Listview
@@ -120,6 +124,11 @@ class BaseListView extends Component
      * Form view route
      */
     public string $formViewRoute = '';
+
+    /**
+     * @var string
+     */
+    public string $createViewRoute = '';
 
     public function boot(): void
     {
@@ -268,14 +277,8 @@ class BaseListView extends Component
 
     protected function resolveRepository()
     {
-        if (!$this->modelClass || !$this->moduleName) {
-            return null;
-        }
-
-        $repositoryClass = "Modules\\{$this->moduleName}\\Repositories\\{$this->modelClass}Repository";
-
-        if (class_exists($repositoryClass)) {
-            return new $repositoryClass();
+        if (class_exists($this->repositoryClass)) {
+            return new $this->repositoryClass();
         }
 
         return null;

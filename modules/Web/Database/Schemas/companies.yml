@@ -1,0 +1,16 @@
+companies:
+  base: 1
+  sequence: 10
+  fields:
+    id: id
+    name: string=150.unique.index
+    street: string.nullable
+    street_2: string.nullable
+    zip: string=20.nullable
+    city: string.nullable
+    country_id: foreignId.nullable.constrained.nullOnDelete
+    parent_id: foreignId.nullable.constrained=companies.nullOnDelete
+    is_active: boolean.default=1
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable
+    deleted_at: timestamp.nullable

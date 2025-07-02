@@ -16,7 +16,6 @@ use Modules\Core\Models\Traits\ClearsCacheOnSave;
 
 class Setting extends BaseModel
 {
-    use ClearsCacheOnSave;
 
     /**
     * The database table name.

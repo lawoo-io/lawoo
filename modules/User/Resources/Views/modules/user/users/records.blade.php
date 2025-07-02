@@ -11,5 +11,4 @@ priority: 0
     @else
     <livewire:user.list.user-list-view />
     @endif
-{{--        <livewire:user.list.user-list-view />--}}
 </x-web.layouts.sidebar>

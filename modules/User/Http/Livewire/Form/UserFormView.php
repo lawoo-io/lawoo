@@ -5,13 +5,12 @@ namespace Modules\User\Http\Livewire\Form;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
-use Modules\Core\Models\UserExtended;
+use Modules\User\Repositories\UserRepository;
 use Modules\Web\Http\Livewire\Form\BaseFormView;
-use PhpParser\Builder\Class_;
 
 class UserFormView extends BaseFormView
 {
-    protected $repositoryClass = "Modules\\User\\Repositories\\UserRepository";
+    protected string $repositoryClass = UserRepository::class;
 
     public string $permissionForEdit = 'user.users.edit';
 
@@ -20,6 +19,8 @@ class UserFormView extends BaseFormView
     public string $recordsRoute = 'lawoo.users.records';
 
     public bool $showRightContent = true;
+
+    public bool $showMessages = true;
 
     public function setFields(): void
     {
@@ -51,7 +52,7 @@ class UserFormView extends BaseFormView
             'tabs' => [
                 'tab_first' => [
                     'label' => __t('Roles', 'User'),
-                    'class' => 'lg:col-span-6',
+                    'class' => 'w-full',
                     'fields' => [
                         'roles' => [
                             'type' => 'checkbox',
@@ -63,8 +64,17 @@ class UserFormView extends BaseFormView
                     ]
                 ],
                 'tab_second' => [
-                    'label' => 'Tab 2',
-                    'fields' => []
+                    'label' => __t('Companies', 'User'),
+                    'class' => 'w-full',
+                    'fields' => [
+                        'companies' => [
+                            'type' => 'checkbox',
+                            'mode' => 'cards',
+                            'label' => __t('Companies', 'User'),
+                            'class' => 'md:col-span-12',
+                            'options' => $this->getCompanyOptions(),
+                        ]
+                    ]
                 ]
             ]
         ];
@@ -80,9 +90,11 @@ class UserFormView extends BaseFormView
 
     protected function loadData(): void
     {
-        $record = $this->resolveRepository()->find($this->id);
-        $this->data = $record->attributesToArray();
-        $this->data['roles'] = $record->roles->pluck('id')->toArray();
+        parent::loadData();
+        if ($this->record){
+            $this->data['roles'] = $this->record->roles->pluck('id')->toArray();
+            $this->data['companies'] = $this->record->companies->pluck('id')->toArray();
+        }
     }
 
     protected function update(): ?Model
@@ -91,6 +103,11 @@ class UserFormView extends BaseFormView
         if($model) {
             $model->trackBelongsToManySync('roles', $this->data['roles']);
             $model->roles()->sync($this->data['roles']);
+
+            $model->trackBelongsToManySync('companies', $this->data['companies']);
+            $model->companies()->sync($this->data['companies']);
+
+            $this->dispatch('companies-refresh');
         }
 
         return $model;
@@ -116,14 +133,21 @@ class UserFormView extends BaseFormView
         return $this->resolveRepository()->getLanguageOptions();
     }
 
+    protected function getCompanyOptions(): array
+    {
+        return $this->resolveRepository()->getCompanyOptions();
+    }
+
     public function prepareViewOptions(): array
     {
         $options = parent::prepareViewOptions();
 
-        $userFormView = view('livewire.user.form.user-form-view', ['data' => $this->data]);
-        $options['formTopLeft'] = $userFormView->renderSections()['formTopLeft'] ?? null;
-        $options['formTopRight'] = $userFormView->renderSections()['formTopRight'] ?? null;
-        $options['headerCenter'] = $userFormView->renderSections()['headerCenter'] ?? null;
+        if ($this->id) {
+            $userFormView = view('livewire.user.form.user-form-view', ['data' => $this->data]);
+            $options['formTopLeft'] = $userFormView->renderSections()['formTopLeft'] ?? null;
+            $options['formTopRight'] = $userFormView->renderSections()['formTopRight'] ?? null;
+            $options['headerCenter'] = $userFormView->renderSections()['headerCenter'] ?? null;
+        }
 
         return $options;
     }

@@ -4,10 +4,9 @@ namespace Modules\Web\Http\Livewire\Form;
 
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;
-use Livewire\Attributes\Validate;
+use Livewire\Attributes\Title;
 use Livewire\Component;
-use Modules\Core\Models\UserExtended;
-use PhpParser\Node\Expr\AssignOp\Mod;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaseFormView extends Component
 {
@@ -24,7 +23,7 @@ class BaseFormView extends Component
     /**
      * @Var string
      */
-    protected $repositoryClass = '';
+    protected string $repositoryClass = '';
 
     /**
      * @var string
@@ -33,9 +32,9 @@ class BaseFormView extends Component
 
     /**
      * From URL
-     * @var int
+     * @var
      */
-    public int $id;
+    public $id;
 
     /**
      * @var array
@@ -72,40 +71,77 @@ class BaseFormView extends Component
      */
     public string $recordsRoute = '';
 
-    public bool $showMessages = true;
+    /**
+     * @var string
+     */
+    public string $recordRoute = '';
 
+    /**
+     * @var bool
+     */
+    public bool $showMessages = false;
+
+    /**
+     * @var Model|null
+     */
     public ?Model $messagesModel = null;
 
-    public Model $record;
+    /**
+     * @var
+     */
+    public $record;
 
-    public function mount(): void
+    /**
+     * @var string
+     */
+    public string $pageTitle = '';
+
+    /**
+     * @var string
+     */
+    public string $type = '';
+
+    public function mount(string $type = 'edit'): void
     {
+        $this->type = $type;
         $this->id = request()->route('id');
 
-        $this->loadData();
+        if ($this->type === 'create') {
+            $this->pageTitle = __t('Create', 'Web');
+        }
 
         $this->setFields();
+        $this->loadData();
         $this->setRules();
         $this->initializeFields();
         $this->getMessageModel();
+
     }
 
     protected function loadData(): void
     {
-        $this->record = $this->getRecord();
-        $this->data = $this->record->attributesToArray();
+        if ($this->id) {
+            $this->record = $this->getRecord();
+            if (!$this->record) {
+                throw new NotFoundHttpException();
+            }
+            $this->data = $this->record->attributesToArray();
+            $this->pageTitle = $this->data[array_key_first($this->fields)];
+            $this->js("document.title = " . json_encode($this->pageTitle));
+        }
     }
 
     public function getMessageModel(): void
     {
-        if ($this->showMessages) {
+        if ($this->showMessages && $this->id) {
              $this->messagesModel = $this->resolveRepository()->find($this->id);
         }
     }
 
-    protected function getRecord(): Model
+    protected function getRecord()
     {
-        return $this->resolveRepository()->find($this->id);
+        if($this->id) return $this->resolveRepository()->find($this->id);
+        return null;
     }
 
     public function setRules(): void
@@ -118,15 +154,16 @@ class BaseFormView extends Component
         $result = false;
         if($this->rules) $this->validate($this->rules);
 
-        if($this->id !== 'new') {
+        if($this->type === 'edit') {
             $result = $this->update();
+            $this->dispatch('load-messages');
+        } elseif($this->type === 'create') {
+            $this->createRecord();
         }
 
         if($result){
             Flux::toast(text: __t('Updated successfully', 'Web'), variant: 'success');
         }
-
-        $this->dispatch('load-messages');
     }
 
     protected function update(): ?Model
@@ -136,6 +173,14 @@ class BaseFormView extends Component
         }
 
         return $this->resolveRepository()->update($this->id, $this->data);
+    }
+
+    public function createRecord(): void
+    {
+        $id = $this->resolveRepository()->create($this->data);
+        if ($this->recordRoute){
+            $this->redirectRoute($this->recordRoute, ['id' => $id], navigate: true);
+        }
     }
 
     public function setFields(): void
@@ -154,7 +199,7 @@ class BaseFormView extends Component
     {
         foreach ($this->fields as $field => $options) {
             if (!isset($this->data[$field])) {
-                $this->data[$field] = null;
+                $this->data[$field] = $options['default'] ?? null;
             }
         }
     }
@@ -171,7 +216,7 @@ class BaseFormView extends Component
         return [];
     }
 
-    public function delete()
+    public function deleteRecord(): void
     {
         if ($this->permissionForDeleting !== '') {
             $this->resolveRepository()->authorize($this->permissionForDeleting);
@@ -179,6 +224,11 @@ class BaseFormView extends Component
 
         $ids = [$this->id];
         $this->resolveRepository()->delete($ids);
+    }
+
+    public function delete()
+    {
+        $this->deleteRecord();
         $this->redirect(route($this->recordsRoute), navigate: true);
     }
 

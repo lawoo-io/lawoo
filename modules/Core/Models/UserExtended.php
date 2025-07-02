@@ -13,6 +13,7 @@ use Modules\Core\Models\Traits\ClearsCacheOnSave;
 use Modules\Core\Models\Traits\HasMessages;
 use Modules\Core\Models\Traits\HasRoles;
 use Modules\Core\Models\Traits\TrackableModel;
+use Modules\Web\Models\Company;
 
 class UserExtended extends User implements MustVerifyEmail
 {
@@ -69,6 +70,11 @@ class UserExtended extends User implements MustVerifyEmail
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')  // ← Explizite Keys
         ->withPivot(['assigned_by', 'expires_at'])
             ->withTimestamps();
+    }
+
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'user_companies', 'user_id', 'company_id');
     }
 
     /**

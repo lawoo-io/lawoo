@@ -67,6 +67,48 @@ return [
                 'description' => 'Can delete roles',
                 'resource' => 'roles',
                 'action' => 'delete',
+            ],
+            'web.settings.company.show' => [
+                'name' => 'Show Companies',
+                'description' => 'Can show companies',
+                'resource' => 'companies',
+                'action' => 'show',
+            ],
+            'web.settings.company.create' => [
+                'name' => 'Create Company',
+                'description' => 'Can create companies',
+                'resource' => 'companies',
+                'action' => 'create',
+            ],
+            'web.settings.company.edit' => [
+                'name' => 'Edit Companies',
+                'description' => 'Can edit companies',
+                'resource' => 'companies',
+                'action' => 'edit',
+            ],
+            'web.settings.company.delete' => [
+                'name' => 'Delete Companies',
+                'description' => 'Can delete companies',
+                'resource' => 'companies',
+                'action' => 'delete',
+            ],
+            'web.settings.country_language.show' => [
+                'name' => 'Show Countries and Languages',
+                'description' => 'Can show countries and languages',
+                'resource' => 'countries',
+                'action' => 'show',
+            ],
+            'web.settings.country_language.edit' => [
+                'name' => 'Edit Countries and Languages',
+                'description' => 'Can edit countries and languages',
+                'resource' => 'countries',
+                'action' => 'edit',
+            ],
+            'web.settings.country_language.create' => [
+                'name' => 'Create Countries and Languages',
+                'description' => 'Can create countries and languages',
+                'resource' => 'countries',
+                'action' => 'create',
             ]
         ],
     ],

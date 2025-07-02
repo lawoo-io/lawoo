@@ -5,6 +5,7 @@ namespace Modules\User\Http\Livewire\List;
 use Flux\Flux;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
+use Modules\User\Repositories\UserRepository;
 use Modules\Web\Http\Livewire\List\BaseListView;
 
 class UserListView extends BaseListView
@@ -12,6 +13,8 @@ class UserListView extends BaseListView
     public string $title = 'Users';
     public ?string $moduleName = 'User';
     public ?string $modelClass = 'User';
+
+    protected string $repositoryClass = UserRepository::class;
 
     public array $sortColumns = ['id', 'is_active'];
 
@@ -31,6 +34,7 @@ class UserListView extends BaseListView
 
     public bool $checkboxes = true;
 
+    public string $createViewRoute = 'lawoo.users.records.create';
 
     public function boot(): void
     {

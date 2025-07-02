@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\View;
 use Livewire\Component;
 use Modules\Core\Models\UserExtended;
 use Modules\User\Http\Livewire\List\UserListView;
+use Modules\User\Repositories\UserRepository;
 use Modules\Web\Http\Livewire\Kanban\BaseKanbanView;
 
 class UserKanbanView extends BaseKanbanView
 {
     public ?string $moduleName = 'User';
     public ?string $modelClass = 'User';
+    protected string $repositoryClass = UserRepository::class;
     public array $availableFilters = [];
     public string $formViewRoute = 'lawoo.users.records.view';
 

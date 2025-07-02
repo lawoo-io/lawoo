@@ -41,6 +41,8 @@ priority: 0
 
     <flux:spacer />
 
+    <livewire:web.widgets.company-widget/>
+
     <flux:dropdown position="top" align="end">
         <flux:profile
             :initials="auth()->user()->initials()"
