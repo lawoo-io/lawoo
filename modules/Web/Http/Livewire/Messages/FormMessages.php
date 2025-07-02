@@ -30,7 +30,7 @@ class FormMessages extends Component
     /**
      * @var array
      */
-    public $messages = null;
+    public $messages = [];
 
     /**
      * @var int
@@ -54,7 +54,9 @@ class FormMessages extends Component
 
     public function mount(): void
     {
-        $this->loadData();
+        if($this->messagesModel){
+            $this->loadData();
+        }
     }
 
     #[On('load-messages')]
@@ -73,7 +75,6 @@ class FormMessages extends Component
 
     public function loadMore(): void
     {
-        $this->js('console.log("Test load more");');
         $newMessages = $this->messagesModel
             ->activeMessages()
             ->with(['user'])

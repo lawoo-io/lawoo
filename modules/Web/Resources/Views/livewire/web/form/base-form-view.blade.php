@@ -9,7 +9,7 @@ priority: 0
     <x-web.form.view>
         <x-slot:toolbar>
             <flux:heading level="1" size="xl">
-                <livewire:web.breadcrumbs.breadcrumbs :pageTitle="$this->data['name']" />
+                <livewire:web.breadcrumbs.breadcrumbs :pageTitle="$this->pageTitle" />
             </flux:heading>
         </x-slot:toolbar>
 
@@ -46,11 +46,11 @@ priority: 0
         </x-slot:actions>
 
         <!-- Erste Spalte: nimmt 12 oder 8 Spalten ein, je nach Sichtbarkeit der zweiten -->
-        <div class="lg:col-span-{{ $showRightContent ? '4' : '6' }} ">
-            <form wire:submit.prevent="save" class="grid grid-cols-1 lg:grid-cols-12 gap-4 border dark:border-gray-600 rounded-lg p-4">
+        <div class="flex-1 max-w-{{ $this->showMessages && $this->id ? '2/3' : 'full' }} ">
+            <form wire:submit.prevent="save" class="border dark:border-gray-600 rounded-lg p-4">
                 @csrf
                 @if(isset($formTopLeft) || isset($formTopRight))
-                <div class="flex md:justify-between items-center pb-4 border-b dark:border-b-gray-600 lg:col-span-12">
+                <div class="flex md:justify-between items-center pb-4 border-b dark:border-b-gray-600 lg:col-span-12 mb-3">
                     @isset($formTopLeft)
                     <div>
                         {!! $formTopLeft !!}
@@ -63,36 +63,44 @@ priority: 0
                     @endisset
                 </div>
                 @endif
-                @foreach($this->fields as $field => $options)
-                    @if ($field !== 'tabs' && $field !== 'tab_*')
-                        <x-web.form.types :field="$field" :options="$options"/>
-                    @elseif($field === 'tabs')
-                        <flux:tab.group class="mt-2 lg:col-span-12">
-                            <flux:tabs>
-                                @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
-                                    <flux:tab :name="$tabKey" class="cursor-pointer" :icon="$tabOptions['icon'] ?? false">{{ $tabOptions['label'] }}</flux:tab>
-                                @endforeach
-                            </flux:tabs>
-                            @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
-                                <flux:tab.panel :name="$tabKey" class="md:col-span-12">
-                                    @foreach($tabOptions['fields'] as $field => $options)
-                                        <x-web.form.types :field="$field" :options="$options"/>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                    @foreach($this->fields as $field => $options)
+                        @if ($field !== 'tabs' && $field !== 'tab_*')
+                            <x-web.form.types :field="$field" :options="$options"/>
+                        @elseif($field === 'tabs')
+                            <flux:tab.group class="mt-2 lg:col-span-12">
+                                <flux:tabs>
+                                    @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
+                                        <flux:tab :name="$tabKey" class="cursor-pointer" :icon="$tabOptions['icon'] ?? false">{{ $tabOptions['label'] }}</flux:tab>
                                     @endforeach
-                                </flux:tab.panel>
-                            @endforeach
-                        </flux:tab.group>
-                    @endif
-                @endforeach
-                <div class="lg:col-span-12">
-                    <flux:button type="submit" size="sm" variant="primary" disabled wire:dirty.attr.remove="disabled" class="cursor-pointer">{{ __t('Save', 'Web') }}</flux:button>
+                                </flux:tabs>
+                                @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
+                                    <flux:tab.panel :name="$tabKey" class="md:col-span-12">
+                                        @foreach($tabOptions['fields'] as $field => $options)
+                                            <x-web.form.types :field="$field" :options="$options"/>
+                                        @endforeach
+                                    </flux:tab.panel>
+                                @endforeach
+                            </flux:tab.group>
+                        @endif
+                    @endforeach
+                    <div class="lg:col-span-12">
+                        <flux:button type="submit" size="sm" variant="primary" disabled wire:dirty.attr.remove="disabled" class="cursor-pointer">
+                            @if ($this->type === 'edit')
+                                {{ __t('Save', 'Web') }}
+                            @elseif($this->type === 'create')
+                                {{ __t('Create', 'Web') }}
+                            @endif
+                        </flux:button>
+                    </div>
                 </div>
             </form>
 
         </div>
 
         <!-- Zweite Spalte: Optional -->
-        @if ($showRightContent)
-        <div class="lg:col-span-2 overflow-y-auto h-[85vh]">
+        @if ($this->showMessages && $this->id)
+        <div class="w-1/3 overflow-y-auto h-[85vh]">
             <!-- Message Center -->
             <livewire:web.messages.message-center :messagesModel="$this->messagesModel" />
             <!-- History -->

@@ -10,7 +10,7 @@ class RolesController extends BaseController
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:web.settings.roles_permissions.show')->only(['records']);
+        $this->middleware('permission:web.settings.roles_permissions.show')->only(['records', 'view']);
     }
 
     public function records(): View

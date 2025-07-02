@@ -34,6 +34,7 @@ priority: 0
                                 :icon="$level2Nav->icon ?: null"
                                 :href="route($level2Nav->route)"
                                 :current="request()->routeIs($level2Nav->route)"
+                                class="data-current:after:hidden"
                                 wire:navigate
                             >
                                 {{ $level2Nav->name }}

@@ -8,14 +8,26 @@ use Illuminate\Support\Str;
 class MakeLivewire
 {
 
-    public static function run(string $name, string $module, bool $view = false): array
+    public static function run(string $name, string $module, bool $res = false): array
     {
 
         $componentPath = base_path("modules/{$module}/Http/Livewire/{$name}.php");
-        $viewPath = base_path("modules/{$module}/Resources/Views/livewire/" . Str::kebab($module) . "/" . Str::kebab($name) . ".blade.php");
+
+        if ($res) {
+            $viewPath = base_path("modules/{$module}/Resources/Views/livewire/"
+                . Str::kebab($module) . "/" . Str::kebab($name) . ".blade.php");
+        }
+
+        if (str_contains($name, 'List')){
+            $stubName = 'livewire-list.stub';
+        } elseif (str_contains($name, 'Form')){
+            $stubName = 'livewire-form.stub';
+        } else {
+            $stubName = 'livewire.stub';
+        }
 
         $stubDir = base_path('modules/Core/Console/Stubs');
-        $componentStubPath = "{$stubDir}/livewire.stub";
+        $componentStubPath = "{$stubDir}/{$stubName}";
         $viewStubPath = "{$stubDir}/view.stub";
 
         $messages = '';
@@ -46,7 +58,7 @@ class MakeLivewire
 
 
         // === Create View (optional) ===
-        if ($view) {
+        if ($res) {
             if (!File::exists($viewPath)) {
                 $viewName = 'livewire_' . Str::snake($name);
                 $viewStub = file_get_contents($viewStubPath);

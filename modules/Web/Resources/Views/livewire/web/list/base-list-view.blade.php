@@ -8,9 +8,10 @@ priority: 0
 <div>
     <x-web.list.view>
         <x-slot:toolbar>
-            <flux:heading level="1" size="l">
-                <livewire:web.breadcrumbs.breadcrumbs :pageTitle="$this->title" />
-            </flux:heading>
+            @if($this->createViewRoute)
+            <flux:button href="{{ route($this->createViewRoute) }}" size="xs" icon="plus" tooltip="{{ __t('Create', 'Web') }}" class="cursor-pointer" wire:navigate/>
+            @endif
+            <livewire:web.breadcrumbs.breadcrumbs :pageTitle="$this->title" />
         </x-slot:toolbar>
 
         <x-slot:bulkActions>

@@ -27,5 +27,7 @@
     "You can't delete yourself!": "You can't delete yourself!",
     "Remove": "Remove",
     "You can't delete Super Admins!": "You can't delete Super Admins!",
-    "Delete": "Delete"
+    "Delete": "Delete",
+    "Create user": "Create user",
+    "Companies": "Companies"
 }

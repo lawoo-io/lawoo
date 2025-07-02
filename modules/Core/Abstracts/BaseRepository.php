@@ -64,6 +64,11 @@ abstract class BaseRepository
     {
         $query = $this->model->newQuery();
 
+        // Filter by companies
+        if(in_array('company_id', $this->model->getfillable())) {
+            $this->applycompanyfilters($query);
+        }
+
         if (!empty($params['search_filters_active'])) {
             $this->applySearchFilters($query, $params['search_filters_active']);
         }
@@ -88,6 +93,14 @@ abstract class BaseRepository
         }
 
         return $query;
+    }
+
+    protected function applyCompanyFilters(Builder $query): void
+    {
+        $companyIds = session()->get('company_ids');
+        if (count($companyIds)){
+            $query->whereIn('company_id', $companyIds);
+        }
     }
 
     protected function applySearchFilters(Builder $query, array $filters): void
@@ -157,17 +170,6 @@ abstract class BaseRepository
             }
         }
     }
-
-//    protected function applyPanelFilters(Builder $query, array $filters, array $definitions): void
-//    {
-//        foreach ($filters as $key => $value) {
-//            if (is_array($value)) {
-//                $query->whereIn($key, $value);
-//            } else {
-//                $query->where($key, $value);
-//            }
-//        }
-//    }
 
     protected function applyFilters(Builder $query, array $filters, array $textSearchFields): void
     {

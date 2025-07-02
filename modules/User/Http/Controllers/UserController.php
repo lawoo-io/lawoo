@@ -27,6 +27,6 @@ class UserController extends BaseController
 
     public function create()
     {
-        return false;
+        return view('modules.user.users.create');
     }
 }

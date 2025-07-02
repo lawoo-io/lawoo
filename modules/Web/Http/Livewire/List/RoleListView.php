@@ -2,10 +2,14 @@
 
 namespace Modules\Web\Http\Livewire\List;
 
+use Modules\Web\Repositories\RoleRepository;
+
 class RoleListView extends BaseListView
 {
     public ?string $moduleName = 'Web';
     public ?string $modelClass = 'Role';
+
+    protected string $repositoryClass = RoleRepository::class;
 
     public array $defaultColumns = ['name', 'description'];
 
