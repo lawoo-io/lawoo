@@ -229,7 +229,7 @@ trait TranslatableModel
     /**
      * Check if attribute is translatable
      */
-    protected function isTranslatableAttribute(string $key): bool
+    public function isTranslatableAttribute(string $key): bool
     {
         return in_array($key, $this->getTranslatableAttributes());
     }

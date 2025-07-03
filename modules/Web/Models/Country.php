@@ -26,7 +26,7 @@ class Country extends BaseModel
     /**
      * @var string[]
      */
-    protected $translatable = ['name'];
+    public $translatable = ['name'];
 
     /**
      * The attributes that are mass assignable.

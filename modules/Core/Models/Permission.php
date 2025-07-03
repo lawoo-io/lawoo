@@ -12,7 +12,7 @@ class Permission extends BaseModel
 
     use TranslatableModel, ClearsCacheOnSave;
 
-    protected $translatable = ['name', 'description'];
+    public $translatable = ['name', 'description'];
 
     protected $fillable = [
         'name',

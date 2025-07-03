@@ -15,7 +15,7 @@ class Navigation extends BaseModel
 
     use TranslatableModel, ClearsCacheOnSave;
 
-    protected array $translatable = ['name', 'group'];
+    public array $translatable = ['name', 'group'];
     public static string $translationIdentifier = 'key';
 
     protected $fillable = [

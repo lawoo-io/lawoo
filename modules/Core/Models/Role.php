@@ -11,7 +11,7 @@ class Role extends BaseModel
 {
     use TranslatableModel, SoftDeletes;
 
-    protected array $translatable = ['name', 'description'];
+    public array $translatable = ['name', 'description'];
 
     protected $fillable = [
         'name',

@@ -22,6 +22,8 @@ class UserFormView extends BaseFormView
 
     public bool $showMessages = true;
 
+    public bool $isVerified = false;
+
     public function setFields(): void
     {
 
@@ -92,6 +94,9 @@ class UserFormView extends BaseFormView
     {
         parent::loadData();
         if ($this->record){
+            if ($this->record->email_verified_at){
+                $this->isVerified = true;
+            }
             $this->data['roles'] = $this->record->roles->pluck('id')->toArray();
             $this->data['companies'] = $this->record->companies->pluck('id')->toArray();
         }

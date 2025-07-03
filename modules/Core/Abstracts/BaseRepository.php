@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\App;
+use Modules\Core\Models\Language;
 
 
 abstract class BaseRepository
@@ -30,6 +32,11 @@ abstract class BaseRepository
         return $this->model->all();
     }
 
+    public function getTranslatableFields(): array
+    {
+        return $this->model->translatable ?? [];
+    }
+
     /**
      * @param $id
      * @return Model|null
@@ -48,11 +55,38 @@ abstract class BaseRepository
         return $this->model->create($data);
     }
 
-    public function update(int $id, array $data): Model
+    public function update(int $id, array $data, string $locale): Model
     {
+        $defaultLocale = Language::getDefault()->first()->code;
+
+        $normalData = [];
+        $translations = [];
+
         $model = $this->model->find($id);
-        $model->fill($data);
+
+        foreach ($data as $field => $value) {
+            if ($model->isTranslatableAttribute($field)) {
+                if ($locale === $defaultLocale) {
+                    $normalData[$field] = $value;
+                } else {
+                    $translations[$locale][$field] = $value;
+                }
+                continue;
+            }
+
+            $normalData[$field] = $value;
+        }
+
+        $model->fill($normalData);
         $model->save();
+
+        // Nur Non-Default Translations speichern
+        foreach ($translations as $locale => $translatedData) {
+            foreach ($translatedData as $field => $value) {
+                $model->lang($locale)->$field = $value;
+            }
+        }
+
         return $model;
     }
 

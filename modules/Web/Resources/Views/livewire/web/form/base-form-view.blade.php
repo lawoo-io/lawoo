@@ -22,6 +22,7 @@ priority: 0
         </x-slot:toolbarCenter>
 
         <x-slot:actions>
+
             <flux:dropdown position="bottom" align="end" class="ml-2">
                 <flux:button size="xs" icon="cog-6-tooth" class="cursor-pointer"/>
                 <flux:menu>
@@ -84,15 +85,16 @@ priority: 0
                             </flux:tab.group>
                         @endif
                     @endforeach
-                    <div class="lg:col-span-12">
-                        <flux:button type="submit" size="sm" variant="primary" disabled wire:dirty.attr.remove="disabled" class="cursor-pointer">
-                            @if ($this->type === 'edit')
-                                {{ __t('Save', 'Web') }}
-                            @elseif($this->type === 'create')
-                                {{ __t('Create', 'Web') }}
-                            @endif
-                        </flux:button>
-                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-4">
+                    <flux:button type="submit" size="sm" variant="primary" disabled wire:dirty.attr.remove="disabled" class="cursor-pointer">
+                        @if ($this->type === 'edit')
+                            {{ __t('Save', 'Web') }}
+                        @elseif($this->type === 'create')
+                            {{ __t('Create', 'Web') }}
+                        @endif
+                    </flux:button>
                 </div>
             </form>
 

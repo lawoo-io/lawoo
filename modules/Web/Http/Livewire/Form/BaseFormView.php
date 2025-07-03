@@ -6,6 +6,7 @@ use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Modules\Core\Models\Language;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BaseFormView extends Component
@@ -96,6 +97,14 @@ class BaseFormView extends Component
      */
     public string $pageTitle = '';
 
+    public array $locales = [];
+
+    public string $locale = '';
+
+    public string $defaultLocale = '';
+
+    public array $translatableFields = [];
+
     /**
      * @var string
      */
@@ -115,6 +124,8 @@ class BaseFormView extends Component
         $this->setRules();
         $this->initializeFields();
         $this->getMessageModel();
+        $this->getLocales();
+        $this->getTranslatableFields();
 
     }
 
@@ -125,7 +136,11 @@ class BaseFormView extends Component
             if (!$this->record) {
                 throw new NotFoundHttpException();
             }
-            $this->data = $this->record->attributesToArray();
+            $result = [];
+            foreach ($this->fields as $field => $options) {
+                $result[$field] = $this->record->$field;
+            }
+            $this->data = $result;
             $this->pageTitle = $this->data[array_key_first($this->fields)];
             $this->js("document.title = " . json_encode($this->pageTitle));
         }
@@ -142,6 +157,30 @@ class BaseFormView extends Component
     {
         if($this->id) return $this->resolveRepository()->find($this->id);
         return null;
+    }
+
+    protected function getTranslatableFields(): void
+    {
+        $this->translatableFields = $this->resolveRepository()->getTranslatableFields();
+    }
+
+    protected function getLocales(): void
+    {
+        $this->locales = Language::active()->pluck('name', 'code')->toArray();
+        $this->locale = config('app.locale');
+        $this->defaultLocale = Language::getDefault()->first()->code;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
+        foreach ($this->translatableFields as $field) {
+            if ($this->locale !== config('app.locale')) {
+                $this->data[$field] = $this->record->lang($this->locale)->$field;
+            } else {
+                $this->data[$field] = $this->record->$field;
+            }
+        }
     }
 
     public function setRules(): void
@@ -172,7 +211,7 @@ class BaseFormView extends Component
             $this->resolveRepository()->authorize($this->permissionForEdit);
         }
 
-        return $this->resolveRepository()->update($this->id, $this->data);
+        return $this->resolveRepository()->update($this->id, $this->data, $this->locale);
     }
 
     public function createRecord(): void
