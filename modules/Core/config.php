@@ -5,7 +5,7 @@ return [
      * Available languages
      */
 
-    'locale' => 'de',
+    'locale' => 'en',
     'fallback_locale' => 'en',
 
     'locales' => [

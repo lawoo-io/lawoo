@@ -22,7 +22,7 @@ class SettingsMenu extends BaseModel
      * Translatable fields
      * @var string[]
      */
-    protected $translatable = ['name', 'description'];
+    public $translatable = ['name', 'description'];
 
     public static string $translationIdentifier = 'name';
 

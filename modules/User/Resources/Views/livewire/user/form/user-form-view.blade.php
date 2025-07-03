@@ -6,7 +6,7 @@ override_name: '',
 priority: 0
 --}}
 @section('formTopLeft')
-    @if (!$livewireComponent->data['email_verified_at'])
+    @if (!$livewireComponent->isVerified)
         <flux:button
             variant="primary"
             size="sm"
@@ -20,7 +20,7 @@ priority: 0
 @endsection
 
 @section('formTopRight')
-    @if ($livewireComponent->data['email_verified_at'])
+    @if ($livewireComponent->isVerified)
         <flux:badge color="green">{{ __t('Activated', 'User') }}</flux:badge>
     @else
         <flux:badge color="red">{{ __t('Unactive', 'User') }}</flux:badge>

@@ -70,9 +70,9 @@ class RoleFormView extends BaseFormView
 
     protected function loadData(): void
     {
-        $record = $this->resolveRepository()->find($this->id);
-        $this->data = $record->attributesToArray();
-        $this->data['permissions'] = $record->permissions->sortBy('slug')->pluck('id')->toArray();
+        parent::loadData();
+        if ($this->record)
+            $this->data['permissions'] = $this->record->permissions->sortBy('slug')->pluck('id')->toArray();
     }
 
     protected function permissionOptions(): array
