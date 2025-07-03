@@ -28,7 +28,7 @@ priority: 0
 @endsection
 
 @section('headerCenter')
-    @if($livewireComponent->id === auth()->id())
+    @if(intval($livewireComponent->id) === auth()->id())
         <flux:button variant="filled" href="/lawoo/profile/form" size="sm" icon="cog" wire:navigate>{{ __t('Profile Settings', 'User') }}</flux:button>
     @endif
 @endsection

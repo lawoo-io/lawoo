@@ -55,11 +55,11 @@ class CompanyWidget extends Component
 
     protected function setSelected(): void
     {
-        $this->selected = session()->get('company_ids');
+        $this->selected = session()->get('company_ids', []);
         if (!count($this->selected) && count($this->companies)) {
             $this->selected = [array_key_first($this->companies),];
             session()->put('company_ids', $this->selected);
-            $this->selected = session()->get('company_ids');
+            $this->selected = session()->get('company_ids', []);
         }
     }
 
