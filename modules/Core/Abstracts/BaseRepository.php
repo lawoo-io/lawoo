@@ -64,8 +64,10 @@ abstract class BaseRepository
 
         $model = $this->model->find($id);
 
+        $translatable = $model->translatable ?? false;
+
         foreach ($data as $field => $value) {
-            if ($model->isTranslatableAttribute($field)) {
+            if ($translatable && $model->isTranslatableAttribute($field)) {
                 if ($locale === $defaultLocale) {
                     $normalData[$field] = $value;
                 } else {
