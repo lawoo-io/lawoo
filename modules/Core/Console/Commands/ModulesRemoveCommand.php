@@ -51,7 +51,6 @@ class ModulesRemoveCommand extends Command
          */
         $result = ModuleRemover::run($name);
 
-
         /**
          * Remove DB tables
          */

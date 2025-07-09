@@ -1,5 +1,6 @@
 user_settings:
   base: 1
+  sequence: 10
   fields:
     id: id
     name: string=100

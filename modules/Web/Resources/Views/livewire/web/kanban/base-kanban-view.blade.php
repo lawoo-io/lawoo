@@ -70,7 +70,7 @@ priority: 0
         </x-slot:actions>
 
         @if ($this->type === 'default')
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
                 @foreach($data as $item)
                     <div class="relative p-3 border dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700" wire:key="{{ $item['id'] }}">
                         {{-- Navigierbarer Hauptbereich --}}
@@ -81,10 +81,10 @@ priority: 0
                             </a>
                         @endif
 
-                        @if($this->availableColumns)
+                        @if($this->availableColumns && $this->availableOptions)
                             <div class="pointer-events-auto z-10 absolute top-1 right-1.5">
                                 <flux:dropdown position="bottom" align="end" class="ml-2">
-                                    <flux:button variant="ghost" size="xs" icon="ellipsis-horizontal" inset="top right bottom" />
+                                    <flux:button variant="ghost" size="xs" icon="ellipsis-vertical" inset="top right bottom" />
                                     <flux:menu>
                                         @foreach($this->availableOptions as $function => $options)
                                             <flux:menu.item
@@ -101,21 +101,56 @@ priority: 0
                         @endif
 
                         <div class="relative z-0">
-                            <div class="grid-cols-6">
-                                @foreach($this->availableColumns as $key => $field)
-                                    @if(isset($field['visible']) && $field['visible'])
-                                        <x-web.kanban.types :field="$field" :value="$item[$key]"/>
-                                    @endif
-                                @endforeach
+                            <div class="grid grid-cols-6">
+                                <flux:avatar class="col-span-1 cursor-pointer"/>
+                                <div class="col-span-5">
+                                    @foreach($this->availableColumns as $key => $field)
+                                        @if(isset($field['visible']) && $field['visible'])
+                                            <x-web.kanban.types :field="$field" :value="$item[$key]"/>
+                                        @endif
+                                    @endforeach
 
+                                    @if ($this->availableButtons)
+                                        <div class="flex mt-2 items-center gap-2">
+                                            @foreach($this->availableButtons as $button)
+                                                @if (isset($button['filter']) && $item[$button['filter']['field']] === $button['filter']['value'])
+                                                    <flux:button
+                                                        :variant="$button['variant'] ?? 'outline'"
+                                                        :size="$button['size'] ?? 'sm'"
+                                                        class="cursor-pointer"
+                                                        :wire:click="$button['click'] ? $button['click'] . '(' . $item['id'] . ')' : false"
+                                                        :href="$button['href'] ?? false"
+                                                        :wire:navigate="$button['href'] ?? false"
+                                                    >
+                                                        {{ $button['label'] }}
+                                                    </flux:button>
+                                                @elseif(!isset($button['filter']))
+                                                    <flux:button
+                                                        :variant="$button['variant'] ?? 'outline'"
+                                                        :size="$button['size'] ?? 'sm'"
+                                                        class="cursor-pointer"
+                                                        :wire:click="$button['click'] ? $button['click'] . '(' . $item['id'] . ')' : false"
+                                                        :href="$button['href'] ?? false"
+                                                        :wire:navigate="$button['href'] ?? false"
+                                                    >
+                                                        {{ $button['label'] }}
+                                                    </flux:button>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 @endforeach
             </div>
         @else
 
         @endif
+
+
 
         <x-slot:footer>
             <flux:input wire:model.live.debounce.1s="perPage" class="!w-12" size="xs"/>
@@ -125,4 +160,12 @@ priority: 0
         </x-slot:footer>
 
     </x-web.kanban.view>
+
+    @if($modal)
+        <x-web.utils.modal-view :variant="$modalVariant" :position="$modalPosition" :modalContent="$modalContent"/>
+    @endif
+
+    <!-- Confirm -->
+    <x-web.utils.modal-confirm :confirmData="$confirmData ?? []" />
+    <!-- End confirm -->
 </div>

@@ -121,6 +121,10 @@ class SettingSynchronizerService
      */
     public static function removeModuleSettings(string $moduleName, bool $removeDb = false): void
     {
+        if ($moduleName === 'Web' && $removeDb) {
+            return;
+        }
+
         $settingsMenu = SettingsMenu::where('module_name', $moduleName)->first();
 
         if (!$settingsMenu) {

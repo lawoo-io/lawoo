@@ -1,0 +1,42 @@
+<?php
+
+namespace Modules\{{module}}\Http\Livewire;
+
+use Modules\Web\Http\Livewire\Kanban\KanbanBaseView;
+
+class {{name}} extends KanbanBaseView
+{
+    /**
+    * !Required
+    * @var string
+    */
+    public ?string $moduleName = '{{module}}';
+
+    /**
+     * !Required
+     * @var string
+     */
+    public ?string $modelClass = '';
+
+    /**
+     * !Required
+     * @var string
+     */
+    protected string $repositoryClass = '';
+
+    public function boot(): void
+    {
+        parent::boot();
+        $this->title = __t('Kanban View', 'Web');
+    }
+
+    public function getAvailableOptions(): array
+    {
+        return [];
+    }
+
+    public function getAvailableColumns(): array
+    {
+        return [];
+    }
+}

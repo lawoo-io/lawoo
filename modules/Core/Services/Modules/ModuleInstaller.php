@@ -23,7 +23,7 @@ class ModuleInstaller
             ];
         }
 
-        $path = 'modules' . '/' . $moduleName;
+        $path = config('app.modules_base_path') . '/' . $moduleName;
 
         ClassOverrider::scan($path, $mod);
 

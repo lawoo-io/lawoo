@@ -12,13 +12,16 @@ class ResourceBuild
 
     public static function run (array|string $moduleNames = '*'): array
     {
+        $originalCwd = getcwd();
+        chdir(base_path());
+
         $modules = (array) $moduleNames;
 
         $count = 0;
 
         foreach ($modules as $module) {
 
-            $resourcePath = base_path("modules/{$module}/Resources");
+            $resourcePath = config('app.modules_base_path') . "/{$module}/Resources";
 
             if (!File::isDirectory($resourcePath)) {
                 echo "📁 Resources directory not found for module: {$module}";
@@ -58,6 +61,8 @@ class ResourceBuild
             }
         }
 
+        chdir($originalCwd);
+
         return [
             'type' => 'success',
             'message' => $count . ' files successfully stored.',
@@ -69,13 +74,14 @@ class ResourceBuild
         $moduleNameSlug = strtolower($moduleName);
         $fullPath = $file->getPathname();
 
-        $moduleBasePath = base_path("modules/{$moduleName}/Resources/");
+        $moduleBasePath = config('app.modules_base_path') . '/' . $moduleName . '/Resources';
         $relativePath = Str::after($fullPath, $moduleBasePath);
 
         $pathParts = explode(DIRECTORY_SEPARATOR, $relativePath);
         $typeFolder = strtolower(array_shift($pathParts));
 
         $targetPath = resource_path("{$typeFolder}/{$moduleNameSlug}/" . implode('/', $pathParts));
+
 
         File::ensureDirectoryExists(dirname($targetPath));
         File::copy($fullPath, $targetPath);

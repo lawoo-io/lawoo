@@ -82,6 +82,7 @@ priority: 0
     {{ $slot }}
 </flux:main>
 
+<livewire:web.modal.base-modal-view />
 @fluxScripts
 @persist('toast')
 <flux:toast position="top right" class="mt-12" />

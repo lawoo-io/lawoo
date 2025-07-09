@@ -53,7 +53,7 @@ class UserExtended extends User implements MustVerifyEmail
         ]
     ];
 
-    protected $trackCreation = true;
+//    protected $trackCreation = true;
     protected $trackDeletion = true;
 
     protected function casts(): array

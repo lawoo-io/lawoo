@@ -5,10 +5,10 @@ active: 1,
 override_name: '',
 priority: 0
 --}}
-<div class="flex items-center border border-b-gray-200 dark:border-gray-600 p-1 rounded-md relative w-full lg:min-w-[35rem]">
+<div class="flex items-center flex-wrap border border-b-gray-200 dark:border-gray-600 p-1 rounded-md relative w-full lg:min-w-[35rem]">
     <flux:icon.magnifying-glass class="me-1 text-gray-300 dark:text-gray-600 size-5" />
 
-    <div class="flex flex-wrap  lg:max-w-[45vw] md:max-w-[35vw] w-full gap-1">
+    <div class="flex flex-wrap lg:max-w-[45vw] md:max-w-[35vw] w-full gap-1" style="width: calc(100% - 52px)">
 
         @foreach($panelFilters as $field => $value)
             @if(isset($flatAvailableFilters[$field]))
@@ -80,25 +80,7 @@ priority: 0
         />
     </div>
 
-    @if ($showDropdown && count($this->searchFields) > 0)
-        <div
-            class="absolute w-full min-h-10 border mt-27.5 -ml-1 p-2 rounded-md bg-white  text-sm z-10 shadow-lg shadow-gray-200 dark:bg-gray-700 dark:shadow-gray-800 dark:border-gray-600"
-            wire:mouseleave="resetSelection"
-        >
-            @foreach($this->searchFields as $index => $field)
-                <div
-                    wire:click="addSearchFilter('{{ $index }}')"
-                    wire:mouseenter="setSelection({{ $loop->index }})"
-                    @class([
-                        'cursor-pointer w-full py-1 px-2 rounded-md',
-                        'bg-gray-100 dark:bg-gray-600' => $selectedIndex === $loop->index
-                    ])
-                >
-                    <span>{{ $field['label'] ?? $field }}</span>: {{ $this->search }}
-                </div>
-            @endforeach
-        </div>
-    @endif
+
     @if ($this->availableFilters)
     <div x-data="{ open: false }" class="ml-auto">
         <flux:button @click="open = !open" size="xs" class="cursor-pointer">
@@ -157,5 +139,28 @@ priority: 0
             </div>
         </div>
     </div>
+    @endif
+
+    @if ($showDropdown && count($this->searchFields) > 0)
+        <div class="relative top-2 w-full">
+            <div
+                class="absolute w-full min-h-10 border -ml-1 p-2 rounded-md bg-white  text-sm z-20 shadow-lg shadow-gray-200 dark:bg-gray-700 dark:shadow-gray-800 dark:border-gray-600"
+                wire:mouseleave="resetSelection"
+                style="width: calc(100% + 10px);"
+            >
+                @foreach($this->searchFields as $index => $field)
+                    <div
+                        wire:click="addSearchFilter('{{ $index }}')"
+                        wire:mouseenter="setSelection({{ $loop->index }})"
+                        @class([
+                            'cursor-pointer w-full py-1 px-2 rounded-md',
+                            'bg-gray-100 dark:bg-gray-600' => $selectedIndex === $loop->index
+                        ])
+                    >
+                        <span>{{ $field['label'] ?? $field }}</span>: {{ $this->search }}
+                    </div>
+                @endforeach
+            </div>
+        </div>
     @endif
 </div>
