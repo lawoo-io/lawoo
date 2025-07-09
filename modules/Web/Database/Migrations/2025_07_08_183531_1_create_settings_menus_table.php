@@ -19,7 +19,8 @@ return new class extends Migration
             $table->boolean('is_active')->default('1');
             $table->smallInteger('sequence')->default('10');
             $table->string('module_name', 100)->nullable();
-            $table->boolean('is_base')->default('1');
+            $table->string('icon', 50)->nullable();
+            $table->string('middleware', 100)->nullable();
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
         });

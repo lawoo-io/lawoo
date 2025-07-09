@@ -42,6 +42,7 @@ class ModulesUpdateCommand extends Command
              */
             $module = $this->argument('module');
 
+
             /**
              * Run module updater and display results
              */

@@ -4,7 +4,9 @@ namespace Modules\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Core\Abstracts\BaseModel;
 use Modules\Core\Database\Factories\ModuleCategoryFactory;
+use Modules\Core\Models\Traits\ClearsCacheOnSave;
 
 /**
  * Module category model for categorizing modules in the ERP system.
@@ -15,12 +17,13 @@ use Modules\Core\Database\Factories\ModuleCategoryFactory;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class ModuleCategory extends Model
+class ModuleCategory extends BaseModel
 {
     use HasFactory;
 
     protected $table = 'module_categories';
     protected $fillable = ['name', 'slug'];
+    public $timestamps = false;
 
     /**
      * Get a new factory instance for this model.

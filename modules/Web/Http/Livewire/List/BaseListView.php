@@ -130,6 +130,31 @@ class BaseListView extends Component
      */
     public string $createViewRoute = '';
 
+    /**
+     * @var bool
+     */
+    public bool $modal = false;
+
+    /**
+     * @var string
+     */
+    public string $modalVariant = 'flyout';
+
+    /**
+     * @var string
+     */
+    public string $modalPosition  = 'right';
+
+    /**
+     * @var string
+     */
+    public string $modalContent = '';
+
+    /**
+     * @var array
+     */
+    public array $confirmData = [];
+
     public function boot(): void
     {
         $this->searchFields = $this->setSearchFields();

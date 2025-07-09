@@ -103,5 +103,22 @@
     "Original value": "Originalwert",
     "Translated value": "Übersetzter Wert",
     "Auto created": "Automatisch erstellt",
-    "Removed": "Entfernt"
+    "Removed": "Entfernt",
+    "Install": "Installieren",
+    "Info": "Info",
+    "Update": "Aktualisieren",
+    "Category": "Kategorie",
+    "System Name": "Systemname",
+    "Version": "Version",
+    "Installed version": "Installierte Version",
+    "Author": "Autor",
+    "Website": "Website",
+    "Filter": "Filter",
+    "Installed": "Installiert",
+    "Update is available": "Aktualisierung verfügbar",
+    "Following modules will be removed:": "Folgende Module werden entfernt:",
+    "Do you want to remove this module?": "Möchtest du dieses Modul entfernen?",
+    "Ok": "Ok",
+    "Required Modules Missing": "Benötigte Module fehlen",
+    "Additional required modules will be installed automatically:": "Zur Installation werden weitere benötigte Module automatisch hinzugefügt:"
 }

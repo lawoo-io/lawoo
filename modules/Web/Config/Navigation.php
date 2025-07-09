@@ -1,6 +1,35 @@
 <?php
 
 return [
+    'web.modules' => [
+        'name' => 'Modules',
+        'route' => 'lawoo.modules',
+        'middleware' => 'super-admin',
+        'level' => 0,
+        'icon' => 'squares-plus',
+        'sort_order' => 9900,
+        'group' => null,
+    ],
+    'web.modules.records' => [
+        'parent' => 'web.modules',
+        'name' => 'Modules',
+        'route' => 'lawoo.modules',
+        'middleware' => 'super-admin',
+        'level' => 1,
+        'icon' => null,
+        'sort_order' => 100,
+        'group' => null,
+    ],
+    'web.modules.check' => [
+        'parent' => 'web.modules',
+        'name' => 'Check',
+        'route' => 'lawoo.modules.check',
+        'middleware' => 'super-admin',
+        'level' => 1,
+        'icon' => null,
+        'sort_order' => 200,
+        'group' => null,
+    ],
     'web.settings' => [
         'name' => 'Settings',
         'route' => 'lawoo.settings.index',

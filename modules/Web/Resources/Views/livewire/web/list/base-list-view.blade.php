@@ -151,4 +151,12 @@ priority: 0
             @endif
         </x-slot:footer>
     </x-web.list.view>
+
+    @if($modal)
+        <x-web.utils.modal-view :variant="$modalVariant" :position="$modalPosition" :modalContent="$modalContent"/>
+    @endif
+
+    <!-- Confirm -->
+    <x-web.utils.modal-confirm :confirmData="$confirmData ?? []" />
+    <!-- End confirm -->
 </div>

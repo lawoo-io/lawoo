@@ -103,5 +103,22 @@
     "Original value": "Original value",
     "Translated value": "Translated value",
     "Auto created": "Auto created",
-    "Removed": "Removed"
+    "Removed": "Removed",
+    "Install": "Install",
+    "Info": "Info",
+    "Update": "Update",
+    "Category": "Category",
+    "System Name": "System Name",
+    "Version": "Version",
+    "Installed version": "Installed version",
+    "Author": "Author",
+    "Website": "Website",
+    "Filter": "Filter",
+    "Installed": "Installed",
+    "Update is available": "Update is available",
+    "Following modules will be removed:": "Following modules will be removed:",
+    "Do you want to remove this module?": "Do you want to remove this module?",
+    "Ok": "Ok",
+    "Required Modules Missing": "Required Modules Missing",
+    "Additional required modules will be installed automatically:": "Additional required modules will be installed automatically:"
 }

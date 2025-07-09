@@ -14,7 +14,9 @@ priority: 0
             </div>
             <div class="flex flex-col gap-0.5 sm:gap-2 sm:flex-row sm:items-center">
                 <div class="flex items-center gap-2">
+                    @isset($message['user']['name'])
                     <flux:heading>{{ $message['user']['name'] }}</flux:heading>
+                    @endisset
                     @if ($message['message_type'] === 'audit')
 
                     @elseif($message['message_type'] === 'note')

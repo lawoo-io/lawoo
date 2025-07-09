@@ -19,7 +19,7 @@ class ClassOverrider
         $overrides = [];
 
         // Get all files recursively from the given base path
-        $phpFiles = File::allFiles(base_path($path));
+        $phpFiles = File::allFiles($path);
 
         foreach ($phpFiles as $file) {
             // Only process PHP files

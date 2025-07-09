@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 150)->nullable();
             $table->string('slug', 150)->unique()->nullable();
-            $table->timestamps();
+            $table->boolean('is_active')->default(1);
         });
 
         Schema::create('modules', function (Blueprint $table) {

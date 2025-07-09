@@ -6,7 +6,6 @@ namespace Modules\User\Http\Livewire\Kanban;
 use Flux\Flux;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
-use Livewire\Component;
 use Modules\Core\Models\UserExtended;
 use Modules\User\Http\Livewire\List\UserListView;
 use Modules\User\Repositories\UserRepository;

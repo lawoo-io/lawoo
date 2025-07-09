@@ -22,6 +22,9 @@ return new class extends Migration
             $table->foreignId('country_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('parent_id')->nullable()->constrained('companies')->nullOnDelete();
             $table->boolean('is_active')->default('1');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

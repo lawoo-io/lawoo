@@ -4,6 +4,7 @@ namespace Modules\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Validator;
@@ -40,6 +41,11 @@ class Module extends Model
         'version',
         'version_installed',
     ];
+
+    public function moduleCategory(): BelongsTo
+    {
+        return $this->belongsTo(ModuleCategory::class);
+    }
 
     public function dependencies(): BelongsToMany
     {

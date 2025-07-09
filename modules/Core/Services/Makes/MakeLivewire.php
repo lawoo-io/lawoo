@@ -22,6 +22,8 @@ class MakeLivewire
             $stubName = 'livewire-list.stub';
         } elseif (str_contains($name, 'Form')){
             $stubName = 'livewire-form.stub';
+        } elseif (str_contains($name, 'Kanban')){
+            $stubName = 'livewire-kanban.stub';
         } else {
             $stubName = 'livewire.stub';
         }

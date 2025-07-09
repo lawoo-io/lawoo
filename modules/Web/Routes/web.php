@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Web\Http\Controllers\CompaniesController;
 use Modules\Web\Http\Controllers\CountryController;
 use Modules\Web\Http\Controllers\LanguagesController;
+use Modules\Web\Http\Controllers\ModulesController;
 use Modules\Web\Http\Controllers\ProfileController;
 use Modules\Web\Http\Controllers\RolesController;
 use Modules\Web\Http\Controllers\SettingsController;
@@ -24,6 +25,10 @@ Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->name('lawoo.
         Route::get('/password', [ProfileController::class, 'password'])->name('password');
         Route::get('/appearance', [ProfileController::class, 'appearance'])->name('appearance');
     });
+
+    // Modules
+    Route::get('/modules', [ModulesController::class, 'records'])->name('modules');
+    Route::get('/modules/check', [ModulesController::class, 'check'])->name('modules.check');
 
     // Settings
     Route::middleware(['web', 'auth'])->prefix('settings')->name('settings.')->group(function () {
@@ -53,6 +58,7 @@ Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->name('lawoo.
         // Translations
         Route::get('/translations', [TranslationsController::class, 'records'])->name('translations');
         Route::get('/translations/{id}', [TranslationsController::class, 'view'])->name('translations.view');
+
     });
 
 });

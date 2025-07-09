@@ -109,7 +109,7 @@ return [
                 'description' => 'Can create countries and languages',
                 'resource' => 'countries',
                 'action' => 'create',
-            ]
+            ],
         ],
     ],
 

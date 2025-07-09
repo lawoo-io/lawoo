@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id('id');
             $table->string('value')->nullable();
-            $table->foreignId('settings_menu_id')->constrained()->nullOnDelete();
+            $table->foreignId('settings_menu_id')->constrained()->onDelete('cascade');
             $table->string('key')->unique()->index();
             $table->string('module_name', 100)->nullable();
             $table->timestamp('created_at')->nullable();

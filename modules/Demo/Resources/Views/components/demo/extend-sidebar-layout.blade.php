@@ -18,4 +18,4 @@ priority: 0
 
 <override find="flux:sidebar.toggle" make="attribute-class" add="demo"></override>
 
-<override find="flux:sidebar.toggle" make="attribute-icon" remove="x-mark" add="demo"></override>
+{{--<override find="flux:sidebar.toggle" make="attribute-icon" remove="x-mark" add="demo"></override>--}}
