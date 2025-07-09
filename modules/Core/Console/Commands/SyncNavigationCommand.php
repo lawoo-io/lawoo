@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Console\Command;
 use Modules\Core\Services\NavigationService;
+use Modules\Core\Services\PathService;
 
 class SyncNavigationCommand extends Command
 {
@@ -56,13 +57,13 @@ class SyncNavigationCommand extends Command
 
     private function prepareConfiguration(): array
     {
-        $modulesBasePath = base_path('modules');
+        $specificModule = $this->argument('module');
+        $modulesBasePath = PathService::getByModule($specificModule);
 
         if (!File::exists($modulesBasePath)) {
             throw new \RuntimeException("The modules directory '{$modulesBasePath}' does not exist.");
         }
 
-        $specificModule = $this->argument('module');
         if ($specificModule && !File::isDirectory("{$modulesBasePath}/{$specificModule}")) {
             throw new \RuntimeException("Specific module '{$specificModule}' not found.");
         }

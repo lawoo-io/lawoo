@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Modules\Core\Repositories\ModuleRepository;
 use Modules\Core\Repositories\ModuleViewRepository;
+use Modules\Core\Services\PathService;
 
 class MakeView
 {
@@ -22,15 +23,19 @@ class MakeView
             throw new \RuntimeException("View '$viewName' already exists in the module '$module->system_name'.");
         }
 
+        $modulePath = PathService::getModulePath($moduleName);
+
         if ($component) {
-            $viewPath = base_path("modules/{$moduleName}/Resources/Views/components/" .
-                Str::kebab($moduleName) . "/" . Str::kebab($name) . ".blade.php");
+            $viewPath = $modulePath . "/Resources/Views/components/" .
+                Str::kebab($moduleName) . "/" . Str::kebab($name) . ".blade.php";
         } else {
-            $viewPath = base_path("modules/{$moduleName}/Resources/Views/modules/" .
-                Str::kebab($moduleName) . "/" . Str::kebab($name) . ".blade.php");
+            $viewPath = $modulePath . "/Resources/Views/modules/" .
+                Str::kebab($moduleName) . "/" . Str::kebab($name) . ".blade.php";
         }
 
-        $stubDir = base_path('modules/Core/Console/Stubs');
+        $coreModulePath = PathService::getModulePath('Core');
+
+        $stubDir = $coreModulePath . "/Console/Stubs";
 
         $viewStubPath = "{$stubDir}/view.stub";
 

@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Core\Abstracts\BaseRepository;
 use Modules\Core\Models\Module;
+use Modules\Core\Services\PathService;
 use ReflectionClass;
 
 class ModuleRepository extends BaseRepository
@@ -120,7 +121,7 @@ class ModuleRepository extends BaseRepository
      */
     public function registerLivewireComponents(string $moduleName): void
     {
-        $basePath = base_path("modules/{$moduleName}/Http/Livewire");
+        $basePath = PathService::getModulePath($moduleName) . '/Http/Livewire/';
 
         if (!is_dir($basePath)) return;
 

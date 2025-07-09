@@ -4,6 +4,7 @@ namespace Modules\Core\Services\Modules;
 
 use Illuminate\Support\Facades\File;
 use Modules\Core\Models\Module;
+use Modules\Core\Services\PathService;
 
 class ModuleChecker
 {
@@ -23,7 +24,7 @@ class ModuleChecker
      */
     public static function run(?string $module = null): array
     {
-        $basePath = base_path('modules');
+        $basePath = PathService::getByModule($module);
 
         if ($module) {
             $path = $basePath . '/' . $module;

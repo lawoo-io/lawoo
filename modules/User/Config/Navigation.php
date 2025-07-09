@@ -24,14 +24,4 @@ return [
         'sort_order' => 100,
         'group' => null,
     ],
-//    'user.roles.lists' => [
-//        'parent' => 'user.users',
-//        'name' => 'Roles Lists',
-//        'route' => 'lawoo.users.lists',
-//        'middleware' => 'permission:user.users.show',
-//        'level' => 1,
-//        'icon' => null,
-//        'sort_order' => 100,
-//        'group' => null,
-//    ],
 ];

@@ -3,6 +3,7 @@
 namespace Modules\Core\Services\Makes;
 
 use Illuminate\Support\Facades\File;
+use Modules\Core\Services\PathService;
 
 class MakeModule
 {
@@ -10,9 +11,12 @@ class MakeModule
     public static function run(string $name): array
     {
 
-        $manifestPath = base_path("modules/{$name}/manifest.json");
-        $spPath = base_path("modules/{$name}/Providers/{$name}ServiceProvider.php");
-        $stubDir = base_path('modules/Core/Console/Stubs');
+        $modulePath = config('app.modules_base_path') . '/' . $name;
+        $coreModulePath = PathService::getModulePath('Core');
+
+        $manifestPath = $modulePath . "/manifest.json";
+        $spPath = $modulePath . "/Providers/{$name}ServiceProvider.php";
+        $stubDir = $coreModulePath . "/Console/Stubs";
 
         $manifestStubPath = "{$stubDir}/manifest.stub";
         $spStubPath = "{$stubDir}/service-provider.stub";

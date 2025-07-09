@@ -50,7 +50,7 @@ class NavigationService
      */
     protected function loadModuleConfig(string $moduleName): array
     {
-        $configPath = base_path("modules/{$moduleName}/Config/Navigation.php");
+        $configPath = PathService::getModulePath($moduleName) . '/Config/Navigation.php';
 
         if (!File::exists($configPath)) {
             return [];
@@ -211,21 +211,23 @@ class NavigationService
      */
     public function getAvailableModules(): array
     {
-        $modulesPath = base_path('modules');
+        $modulePaths = PathService::getAllModulePaths();
+
         $modules = [];
+        foreach ($modulePaths as $modulesPath) {
+            if (!File::exists($modulesPath)) {
+                return $modules;
+            }
 
-        if (!File::exists($modulesPath)) {
-            return $modules;
-        }
+            $directories = File::directories($modulesPath);
 
-        $directories = File::directories($modulesPath);
+            foreach ($directories as $directory) {
+                $moduleName = basename($directory);
+                $configPath = "{$directory}/Config/Navigation.php";
 
-        foreach ($directories as $directory) {
-            $moduleName = basename($directory);
-            $configPath = "{$directory}/Config/Navigation.php";
-
-            if (File::exists($configPath)) {
-                $modules[] = $moduleName;
+                if (File::exists($configPath)) {
+                    $modules[] = $moduleName;
+                }
             }
         }
 

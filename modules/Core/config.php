@@ -42,6 +42,14 @@ return [
     'modules_base_path' => base_path('modules'),
 
     /**
+     * Module Paths
+     */
+    'modules_base_paths' => [
+        base_path('modules'),
+//        base_path('vendor/lawoo-io/lawoo/modules'),
+    ],
+
+    /**
      * Translate scan configuration
      */
     'scan_directories' => [

@@ -4,6 +4,7 @@ namespace Modules\Core\Services\Modules;
 
 use Modules\Core\Models\Module;
 use Modules\Core\Services\Classes\ClassOverrider;
+use Modules\Core\Services\PathService;
 
 class ModuleInstaller
 {
@@ -23,7 +24,7 @@ class ModuleInstaller
             ];
         }
 
-        $path = config('app.modules_base_path') . '/' . $moduleName;
+        $path = PathService::getModulePath($moduleName) ;
 
         ClassOverrider::scan($path, $mod);
 

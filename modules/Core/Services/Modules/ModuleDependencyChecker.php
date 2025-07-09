@@ -4,13 +4,14 @@ namespace Modules\Core\Services\Modules;
 
 use Illuminate\Support\Facades\File;
 use Modules\Core\Models\Module;
+use Modules\Core\Services\PathService;
 
 class ModuleDependencyChecker
 {
 
     public static function run(string $module = null): void
     {
-        $basePath = base_path('modules');
+        $basePath = PathService::getByModule($module);
 
         if ($module) {
             $modules = [$module];

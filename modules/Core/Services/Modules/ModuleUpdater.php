@@ -5,6 +5,7 @@ namespace Modules\Core\Services\Modules;
 use Modules\Core\Models\Module;
 use Modules\Core\Repositories\ModuleRepository;
 use Modules\Core\Services\Classes\ClassOverrider;
+use Modules\Core\Services\PathService;
 
 class ModuleUpdater
 {
@@ -28,7 +29,7 @@ class ModuleUpdater
             ];
         }
 
-        $path = config('app.modules_base_path') . '/' . $moduleName;
+        $path = PathService::getModulePath($moduleName);
 
         ClassOverrider::scan($path, $module);
 
