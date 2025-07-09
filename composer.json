@@ -31,6 +31,10 @@
     "lawoo": {
       "type": "vcs",
       "url": "https://github.com/lawoo-io/lawoo.git"
+    },
+    "flux-pro": {
+        "type": "composer",
+        "url": "https://composer.fluxui.dev"
     }
   },
   "minimum-stability": "dev",
