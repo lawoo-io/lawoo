@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\ModuleUiTranslation;
+use Modules\Core\Services\PathService;
 use Symfony\Component\Finder\Finder;
 
 class TranslationSyncService
@@ -316,7 +317,7 @@ class TranslationSyncService
      */
     private function getJsonFilePath(string $module, string $locale): string
     {
-        return base_path("modules/{$module}/Resources/lang/strings/{$locale}.json");
+        return PathService::getModulePath($module) . "/Resources/lang/strings/{$locale}.json";
     }
 
     private function ensureDirectoryExists(string $directory): void

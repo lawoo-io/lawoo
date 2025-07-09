@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Modules\Core\Models\ModuleView;
+use Modules\Core\Services\PathService;
 
 class ResourceBuild
 {
@@ -21,7 +22,7 @@ class ResourceBuild
 
         foreach ($modules as $module) {
 
-            $resourcePath = config('app.modules_base_path') . "/{$module}/Resources";
+            $resourcePath = PathService::getModulePath($module) . '/Resources';
 
             if (!File::isDirectory($resourcePath)) {
                 echo "📁 Resources directory not found for module: {$module}";
@@ -74,14 +75,14 @@ class ResourceBuild
         $moduleNameSlug = strtolower($moduleName);
         $fullPath = $file->getPathname();
 
-        $moduleBasePath = config('app.modules_base_path') . '/' . $moduleName . '/Resources';
+        $moduleBasePath = PathService::getModulePath($moduleName) . '/Resources';
+
         $relativePath = Str::after($fullPath, $moduleBasePath);
 
         $pathParts = explode(DIRECTORY_SEPARATOR, $relativePath);
         $typeFolder = strtolower(array_shift($pathParts));
 
         $targetPath = resource_path("{$typeFolder}/{$moduleNameSlug}/" . implode('/', $pathParts));
-
 
         File::ensureDirectoryExists(dirname($targetPath));
         File::copy($fullPath, $targetPath);

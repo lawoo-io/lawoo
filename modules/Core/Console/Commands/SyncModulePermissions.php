@@ -4,6 +4,8 @@ namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
 use Modules\Core\Contracts\PermissionRegistrarInterface;
+use Modules\Core\Models\Permission;
+use Modules\Core\Services\PathService;
 
 class SyncModulePermissions extends Command
 {
@@ -25,7 +27,8 @@ class SyncModulePermissions extends Command
 
     protected function syncSingleModule(string $module, PermissionRegistrarInterface $registrar): void
     {
-        $configFile = base_path("modules/{$module}/Config/RolesAndPermissions.php");
+        $modulePath = PathService::getModulePath($module);
+        $configFile = $modulePath . "/Config/RolesAndPermissions.php";
 
         if (!file_exists($configFile)) {
             $this->error("No RolesAndPermissions.php found for module: {$module}");
@@ -76,13 +79,15 @@ class SyncModulePermissions extends Command
 
     protected function syncAllModules(PermissionRegistrarInterface $registrar): void
     {
-        $modulesPath = base_path('modules');
-        $modules = array_filter(scandir($modulesPath), function ($item) use ($modulesPath) {
-            return $item !== '.' && $item !== '..' && is_dir($modulesPath . '/' . $item);
-        });
+        $modulePaths = PathService::getAllModulePaths();
+        foreach ($modulePaths as $modulesPath) {
+            $modules = array_filter(scandir($modulesPath), function ($item) use ($modulesPath) {
+                return $item !== '.' && $item !== '..' && is_dir($modulesPath . '/' . $item);
+            });
 
-        foreach ($modules as $module) {
-            $this->syncSingleModule($module, $registrar);
+            foreach ($modules as $module) {
+                $this->syncSingleModule($module, $registrar);
+            }
         }
     }
 
@@ -118,7 +123,28 @@ class SyncModulePermissions extends Command
             'permissions' => $permissionSlugs
         ];
 
-        $registrar->createRoleWithPermissions(strtolower($module), $roleRecord);
+        $role = $registrar->createRoleWithPermissions(strtolower($module), $roleRecord);
+
+        $this->deleteOldPermissions($role, $roleData);
+    }
+
+    private function deleteOldPermissions($role, $roleData): void
+    {
+        if (isset($roleData['permissions'])) {
+            $permissionLists = $role->getPermissionsList();
+
+            $array = [];
+            foreach ($roleData['permissions'] as $slug => $permissionData) {
+                $array[] = $slug;
+            }
+
+            foreach ($permissionLists as $permission) {
+                if (!in_array($permission, $array)) {
+                    Permission::where('slug', $permission)->delete();
+                }
+            }
+
+        }
     }
 
     private function generatePermissionName(string $slug): string

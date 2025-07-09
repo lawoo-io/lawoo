@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Modules\Core\Models\Permission;
 use Modules\Core\Models\Role;
+use Modules\Core\Services\PathService;
 use Modules\Core\Services\PermissionRegistrar;
 use Modules\Core\Contracts\PermissionRegistrarInterface;
 
@@ -98,19 +99,22 @@ class RbacServiceProvider extends ServiceProvider
         $registrar = $this->app->make(PermissionRegistrarInterface::class);
 
         // Get all module directories
-        $modulesPath = base_path('modules');
+        $modulePaths = PathService::getAllModulePaths();
 
-        if (!is_dir($modulesPath)) {
-            return;
+        foreach ($modulePaths as $modulePath) {
+            if (!is_dir($modulePath)) {
+                return;
+            }
+
+            $modules = array_filter(scandir($modulePath), function ($item) use ($modulePath) {
+                return $item !== '.' && $item !== '..' && is_dir($modulePath . '/' . $item);
+            });
+
+            foreach ($modules as $module) {
+                $this->registerModulePermissions($module, $registrar);
+            }
         }
 
-        $modules = array_filter(scandir($modulesPath), function ($item) use ($modulesPath) {
-            return $item !== '.' && $item !== '..' && is_dir($modulesPath . '/' . $item);
-        });
-
-        foreach ($modules as $module) {
-            $this->registerModulePermissions($module, $registrar);
-        }
     }
 
     /**
@@ -119,7 +123,7 @@ class RbacServiceProvider extends ServiceProvider
     protected function registerModulePermissions(string $module, PermissionRegistrarInterface $registrar): void
     {
         // Look for permissions.php config file in module
-        $permissionsFile = base_path("modules/{$module}/Config/permissions.php");
+        $permissionsFile = PathService::getModulePath($module) . "/Config/permissions.php";
 
         if (file_exists($permissionsFile)) {
             $permissions = require $permissionsFile;

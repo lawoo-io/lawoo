@@ -7,6 +7,7 @@ use Modules\Core\Models\DbModel;
 use Modules\Core\Models\MigrationFile;
 use Modules\Core\Models\Module;
 use Modules\Core\Models\ModuleUiTranslation;
+use Modules\Core\Services\PathService;
 
 class MigrationManager
 {
@@ -19,10 +20,12 @@ class MigrationManager
             $table->where('module_id', $module->id);
         })->orderBy('sequence')->get();
 
-        $stubPathCreate = base_path() . '/modules/Core/Database/Stubs/migrate_create.stub';
-        $stubPathUpdate = base_path() . '/modules/Core/Database/Stubs/migrate_change.stub';
+        $coreModulePath = PathService::getModulePath('Core');
 
-        $outputdir = base_path() . "/modules/$moduleName/Database/Migrations";
+        $stubPathCreate = $coreModulePath . '/Database/Stubs/migrate_create.stub';
+        $stubPathUpdate = $coreModulePath . '/Database/Stubs/migrate_change.stub';
+
+        $outputdir = PathService::getModulePath($moduleName) . '/Database/Migrations';
 
         $count = 0;
         foreach ($dbModels as $dbModel) {

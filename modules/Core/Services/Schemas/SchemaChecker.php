@@ -5,6 +5,7 @@ namespace Modules\Core\Services\Schemas;
 use Illuminate\Support\Facades\File;
 use Modules\Core\Models\YamlFile;
 use Modules\Core\Repositories\DbModelRepository;
+use Modules\Core\Services\PathService;
 use Symfony\Component\Yaml\Yaml;
 
 class SchemaChecker
@@ -12,12 +13,13 @@ class SchemaChecker
 
     public static function run(string $module): array
     {
-        $path = base_path('modules') . '/' . $module . '/Database/Schemas';
+        $path = PathService::getModulePath($module) . '/Database/Schemas';
+
 
         if (!is_dir($path)) {
             return [
-                'type' => 'error',
-                'message' => 'Directory' . $path . ' does not exist.',
+                'type' => 'info',
+                'message' => 'Directory ' . $path . ' does not exist.',
             ];
         }
 

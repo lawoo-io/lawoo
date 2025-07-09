@@ -17,7 +17,7 @@ class SettingSynchronizerService
      */
     public static function run(string $moduleName): void
     {
-        $filePath = config('app.modules_base_path') . '/' . $moduleName . '/Config/Settings.php';
+        $filePath = PathService::getModulePath($moduleName) . '/Config/Settings.php';
         if (!File::exists($filePath)) {
             return;
         }

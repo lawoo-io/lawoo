@@ -4,6 +4,7 @@ namespace Modules\Core\Services\Makes;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Modules\Core\Services\PathService;
 
 class MakeModel
 {
@@ -19,10 +20,12 @@ class MakeModel
      */
     public static function run(string $name, string $module, bool $schema = false): array
     {
-        $modelPath = base_path("modules/{$module}/Models/{$name}.php");
-        $schemaPath = base_path("modules/{$module}/Database/Schemas/" . Str::kebab($name) . ".yml");
+        $modulePath = PathService::getModulePath($module);
+        $modelPath = $modulePath . "/Models/{$name}.php";
+        $schemaPath = $modelPath . "/Database/Schemas/" . Str::kebab($name) . ".yml";
 
-        $stubDir = base_path('modules/Core/Console/Stubs');
+        $coreModulePath = PathService::getModulePath('Core');
+        $stubDir = $coreModulePath . "/Console/Stubs";
         $modelStubPath = "{$stubDir}/model.stub";
         $schemaStubPath = "{$stubDir}/schema.stub";
 

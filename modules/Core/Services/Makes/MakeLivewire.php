@@ -4,18 +4,18 @@ namespace Modules\Core\Services\Makes;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Modules\Core\Services\PathService;
 
 class MakeLivewire
 {
-
     public static function run(string $name, string $module, bool $res = false): array
     {
-
-        $componentPath = base_path("modules/{$module}/Http/Livewire/{$name}.php");
+        $modulePath = PathService::getModulePath($module);
+        $componentPath = $modulePath . "/Http/Livewire/{$name}.php";
 
         if ($res) {
-            $viewPath = base_path("modules/{$module}/Resources/Views/livewire/"
-                . Str::kebab($module) . "/" . Str::kebab($name) . ".blade.php");
+            $viewPath = $modulePath . "/Resources/Views/livewire/"
+                . Str::kebab($module) . "/" . Str::kebab($name) . ".blade.php";
         }
 
         if (str_contains($name, 'List')){
@@ -28,7 +28,9 @@ class MakeLivewire
             $stubName = 'livewire.stub';
         }
 
-        $stubDir = base_path('modules/Core/Console/Stubs');
+        $coreModulePath = PathService::getModulePath('Core');
+
+        $stubDir = $coreModulePath . "/Console/Stubs";
         $componentStubPath = "{$stubDir}/{$stubName}";
         $viewStubPath = "{$stubDir}/view.stub";
 

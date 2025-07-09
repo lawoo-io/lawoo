@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Modules\Core\Services\PathService;
 use Modules\Core\Services\Resources\TranslationSyncService;
 
 class SyncUiStrings extends Command
@@ -54,7 +55,8 @@ class SyncUiStrings extends Command
 
     private function prepareConfiguration(): array
     {
-        $modulesBasePath = base_path('modules');
+        $specificModule = $this->argument('module');
+        $modulesBasePath = PathService::getByModule($specificModule);
 
         if (!File::exists($modulesBasePath)) {
             throw new \RuntimeException("The modules directory '{$modulesBasePath}' does not exist.");
@@ -65,7 +67,6 @@ class SyncUiStrings extends Command
             throw new \RuntimeException("No supported locales defined in config/app.php.");
         }
 
-        $specificModule = $this->argument('module');
         if ($specificModule && !File::isDirectory("{$modulesBasePath}/{$specificModule}")) {
             throw new \RuntimeException("Specific module '{$specificModule}' not found.");
         }

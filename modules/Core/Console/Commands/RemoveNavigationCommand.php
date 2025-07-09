@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Modules\Core\Services\NavigationService;
+use Modules\Core\Services\PathService;
 
 class RemoveNavigationCommand extends Command
 {
@@ -55,13 +56,14 @@ class RemoveNavigationCommand extends Command
 
     private function prepareConfiguration(): array
     {
-        $modulesBasePath = base_path('modules');
+        $module = $this->argument('module');
+
+        $modulesBasePath = PathService::getByModule($module);
 
         if (!File::exists($modulesBasePath)) {
             throw new \RuntimeException("The modules directory '{$modulesBasePath}' does not exist.");
         }
 
-        $module = $this->argument('module');
         if (!$module) {
             throw new \RuntimeException("Module name is required for removal.");
         }

@@ -12,7 +12,7 @@ class TranslationImporter
      */
     public function importTranslationFile(string $moduleName, string $translationType): array
     {
-        $filePath = base_path("modules/{$moduleName}/Data/{$translationType}Translations.php");
+        $filePath = PathService::getModulePath($moduleName) . "/Data/{$translationType}Translations.php";
 
         if (!file_exists($filePath)) {
             return ['status' => 'skipped', 'reason' => "No {$translationType}Translations.php found"];
@@ -41,7 +41,7 @@ class TranslationImporter
      */
     public function importModuleTranslations(string $moduleName): array
     {
-        $dataPath = base_path("modules/{$moduleName}/Data/");
+        $dataPath = PathService::getModulePath($moduleName) . "/Data/";
         $files = glob($dataPath . "*Translations.php");
 
         $totalResults = ['imported' => 0, 'updated' => 0, 'skipped' => 0];
