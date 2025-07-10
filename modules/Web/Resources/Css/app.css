@@ -6,8 +6,8 @@
 @source '../../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../../vendor/livewire/flux/stubs/**/*.blade.php';
 
-/* LiveWire Komponenten in Modulen scannen */
-@source '../../../vendor/lawoo-io/lawoo/modules/**/Livewire/**/*.php'
+/* Komponenten in Modulen scannen */
+@source '../../../vendor/lawoo-io/lawoo/modules/**/*.php';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
