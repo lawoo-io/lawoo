@@ -130,6 +130,7 @@ class ModuleRepository extends BaseRepository
 
         foreach ($files as $file) {
             $relativePath = Str::after($file->getPathname(), base_path() . '/');
+            $relativePath = preg_replace('#^vendor[\\\/]lawoo-io[\\\/]lawoo[\\\/]#', '', $relativePath);
             $class = str_replace(['/', '.php'], ['\\', ''], $relativePath);
             $class = Str::replaceFirst('modules\\', 'Modules\\', $class);
 
