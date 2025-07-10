@@ -59,7 +59,7 @@ composer require livewire/flux-pro
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
-DB_DATABASE=lawoo-dev
+DB_DATABASE=lawoo-test
 DB_USERNAME=postgres
 DB_PASSWORD=12345
 
