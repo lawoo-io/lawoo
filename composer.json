@@ -27,6 +27,10 @@
     ]
   },
   "repositories": {
+    "flux-pro": {
+      "type": "composer",
+      "url": "https://composer.fluxui.dev"
+    },
     "lawoo": {
       "type": "vcs",
       "url": "https://github.com/lawoo-io/lawoo.git"
