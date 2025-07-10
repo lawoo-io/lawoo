@@ -46,7 +46,29 @@ composer config prefer-stable true
 composer require lawoo-io/lawoo:dev-main
 ```
 
-### ⚙️ 4. Initialize Lawoo modules
+### 4. Install the Flux-Pro package
+Licence required
+```
+composer config repositories.flux-pro composer https://composer.fluxui.dev
+composer require livewire/flux-pro
+```
+
+### 5. Configure .env
+
+```
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=lawoo-dev
+DB_USERNAME=postgres
+DB_PASSWORD=12345
+
+...
+
+CACHE_STORE=redis
+```
+
+### ⚙️ 6. Initialize Lawoo modules
 
 ```bash
 php artisan lawoo:init
@@ -56,13 +78,12 @@ This command will:
 
 •	Create the modules/ directory in your Laravel project 
 
-•	Copy all Lawoo modules (e.g. Core, Demo) from vendor/ to your project root
-
 •	Set up autoloading and prepare the system for use
 
-### 🛠️ 5. Run database migrations
+### 🛠️ 7. Run database migrations
 
 ```bash
 php artisan migrate
 php artisan lawoo:check
+php artisan lawoo:install Web
 ```
