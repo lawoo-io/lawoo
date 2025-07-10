@@ -24,7 +24,6 @@ class ModuleChecker
      */
     public static function run(?string $module = null): array
     {
-        $basePath = PathService::getByModule($module);
 
         $paths = PathService::getAllModulePaths();
 
