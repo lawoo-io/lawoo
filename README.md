@@ -83,7 +83,7 @@ This command will:
 ### 🛠️ 7. Run database migrations
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 php artisan lawoo:check
 php artisan lawoo:install Web
 ```
