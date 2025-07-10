@@ -74,17 +74,25 @@ class ResourceBuild
     {
         $moduleNameSlug = strtolower($moduleName);
         $fullPath = $file->getPathname();
-
         $moduleBasePath = PathService::getModulePath($moduleName) . '/Resources';
 
+        // Relativen Pfad ab Resources/ ermitteln
         $relativePath = Str::after($fullPath, $moduleBasePath);
+        $relativePath = ltrim($relativePath, DIRECTORY_SEPARATOR);
 
+        // Pfad-Teile aufteilen
         $pathParts = explode(DIRECTORY_SEPARATOR, $relativePath);
+
+        // Asset-Typ (css, js, images, etc.) extrahieren
         $typeFolder = strtolower(array_shift($pathParts));
 
+        // Zielverzeichnis: resources/{asset-typ}/{modul-name}/{restlicher-pfad}
         $targetPath = resource_path("{$typeFolder}/{$moduleNameSlug}/" . implode('/', $pathParts));
 
+        // Verzeichnis erstellen falls nicht vorhanden
         File::ensureDirectoryExists(dirname($targetPath));
+
+        // Datei kopieren
         File::copy($fullPath, $targetPath);
     }
 
