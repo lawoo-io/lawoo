@@ -26,47 +26,51 @@ class ModuleChecker
     {
         $basePath = PathService::getByModule($module);
 
-        if ($module) {
-            $path = $basePath . '/' . $module;
-
-            if (!is_dir($path)) {
-                return [
-                    'type' => 'error',
-                    'message' => 'Module ' . $module . ' not found in modules/ directory.',
-                ];
-            }
-
-            $modules = [$module];
-        } else {
-            $modules = collect(File::directories($basePath))
-                ->map(fn ($dir) => basename($dir))
-                ->toArray();
-        }
+        $paths = PathService::getAllModulePaths();
 
         $count = 0;
 
-        foreach ($modules as $mod) {
-            $manifestPath = $basePath . '/' . $mod . '/manifest.json';
+        foreach ($paths as $basePath) {
+            if ($module) {
+                $path = $basePath . '/' . $module;
 
-            if (!file_exists($manifestPath)) {
-                if (!$mod == 'Core')
-                    echo "⚠️ Skipped '$mod' – manifest.json not found.\n";
-                continue;
+                if (!is_dir($path)) {
+                    return [
+                        'type' => 'error',
+                        'message' => 'Module ' . $module . ' not found in modules/ directory.',
+                    ];
+                }
+
+                $modules = [$module];
+            } else {
+                $modules = collect(File::directories($basePath))
+                    ->map(fn ($dir) => basename($dir))
+                    ->toArray();
             }
 
-            try {
-                $content = json_decode(File::get($manifestPath), true, 512, JSON_THROW_ON_ERROR);
 
-                Module::createOrUpdateValidate($content, $mod);
-                $count++;
-            } catch (\JsonException $e) {
-                echo "❌ Error in '$mod/manifest.json': " . $e->getMessage() . "\n";
+            foreach ($modules as $mod) {
+                $manifestPath = $basePath . '/' . $mod . '/manifest.json';
+
+                if (!file_exists($manifestPath)) {
+                    if (!$mod == 'Core')
+                        echo "⚠️ Skipped '$mod' – manifest.json not found.\n";
+                    continue;
+                }
+
+                try {
+                    $content = json_decode(File::get($manifestPath), true, 512, JSON_THROW_ON_ERROR);
+
+                    Module::createOrUpdateValidate($content, $mod);
+                    $count++;
+                } catch (\JsonException $e) {
+                    echo "❌ Error in '$mod/manifest.json': " . $e->getMessage() . "\n";
+                }
+
             }
 
+            ModuleDependencyChecker::run($module);
         }
-
-        ModuleDependencyChecker::run($module);
-
 
         return [
             'type' => 'success',
