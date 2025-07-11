@@ -18,6 +18,7 @@ class UserKanbanView extends BaseKanbanView
     protected string $repositoryClass = UserRepository::class;
     public array $availableFilters = [];
     public string $formViewRoute = 'lawoo.users.records.view';
+    public string $recordsRoute = 'lawoo.users.records';
 
     public function boot(): void
     {

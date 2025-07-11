@@ -66,9 +66,9 @@ class ModuleChecker
                     echo "❌ Error in '$mod/manifest.json': " . $e->getMessage() . "\n";
                 }
 
+                ModuleDependencyChecker::run($mod);
             }
 
-            ModuleDependencyChecker::run($module);
         }
 
         return [

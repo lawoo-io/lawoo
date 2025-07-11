@@ -36,6 +36,8 @@ class UserListView extends BaseListView
 
     public string $createViewRoute = 'lawoo.users.records.create';
 
+    public string $recordsRoute = 'lawoo.users.records';
+
     public function boot(): void
     {
         $this->title = __t('Users', 'User');

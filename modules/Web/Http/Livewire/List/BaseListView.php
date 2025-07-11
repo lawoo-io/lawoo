@@ -120,6 +120,8 @@ class BaseListView extends Component
     // Loading States
     public bool $isLoading = true;
 
+    public string $recordsRoute = '';
+
     /**
      * Form view route
      */
@@ -213,7 +215,8 @@ class BaseListView extends Component
         cookie()->queue(cookie($cookieKey, $viewType, 60 * 24 * settings('cache_view_settings_days')));
         $this->viewType = $viewType;
 
-        $this->redirect(route('lawoo.users.records'), navigate: true);
+        if ($this->recordsRoute)
+            $this->redirect(route($this->recordsRoute), navigate: true);
     }
 
     public function updatedPerPage($value): void

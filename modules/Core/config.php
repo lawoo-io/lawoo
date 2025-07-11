@@ -45,8 +45,8 @@ return [
      * Module Paths
      */
     'modules_base_paths' => [
-        base_path('modules'),
         base_path('vendor/lawoo-io/lawoo/modules'),
+        base_path('modules'),
     ],
 
     /**
