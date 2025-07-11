@@ -1,2 +1,3 @@
 .idea/
-modules/**/Database/Migrations/*.php
+modules/*/Database/Migrations/*.php
+!modules/Core/Database/Migrations/*.php
