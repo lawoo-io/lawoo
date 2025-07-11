@@ -82,6 +82,7 @@ class MigrationManager
             // migration reset, delete migration files
             $migrationFiles = $dbModel->migrationFiles->where('module_id', $module->id);
             foreach ($migrationFiles as $migrationFile) {
+                echo $migrationFile->path . "\n";
                 Artisan::call('migrate:reset', ['--path' => $migrationFile->path]);
                 $migrationFile->delete();
             }
