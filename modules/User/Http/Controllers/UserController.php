@@ -20,6 +20,11 @@ class UserController extends BaseController
         return view('modules.user.users.records', compact('viewType'));
     }
 
+    public function viewFile(): View
+    {
+
+    }
+
     public function view(): View
     {
         return view('modules.user.users.view');

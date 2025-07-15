@@ -2,10 +2,10 @@
 
 namespace Modules\Web\Http\Livewire\Settings;
 
-
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Modules\Core\Services\PathService;
 use Modules\Web\Models\Setting;
 use Modules\Web\Models\SettingsMenu;
 
@@ -94,7 +94,8 @@ class Settings extends Component
     protected function getFields(): array
     {
         foreach ($this->data as $setting) {
-            $filePath = base_path("modules/{$setting['module_name']}/Config/Settings.php");
+            $basePath = PathService::getModulePath($setting['module_name']);
+            $filePath = $basePath . "/Config/Settings.php";
             $fields = $this->getFieldsFromFile($filePath);
             if($fields) $this->fields = array_merge($this->fields, $fields[$setting['module_name']]['fields']);
         }

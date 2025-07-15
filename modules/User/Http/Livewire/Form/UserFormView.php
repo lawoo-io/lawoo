@@ -12,6 +12,8 @@ class UserFormView extends BaseFormView
 {
     protected string $repositoryClass = UserRepository::class;
 
+    public string $permissionForShow = 'user.users.show';
+
     public string $permissionForEdit = 'user.users.edit';
 
     public string $permissionForDeleting = 'user.users.delete';
@@ -33,6 +35,15 @@ class UserFormView extends BaseFormView
                 'label' => __t('Name', 'User'),
                 'class' => 'lg:col-span-6',
             ],
+            'image' => [
+                'type' => 'fileUploader',
+                'mode' => 'image',
+                'accept' => 'image/jpeg,image/png,image/gif,image/webp',
+                'imageClass' => 'w-20 h-20',
+                'model' => '',
+                'label' => __t('Avatar', 'User'),
+                'class' => 'lg:col-span-6',
+            ],
             'email' => [
                 'type' => 'input',
                 'label' => __t('Email', 'User'),
@@ -50,6 +61,30 @@ class UserFormView extends BaseFormView
                 'label' => __t('Super-Admin', 'User'),
                 'class' => 'lg:col-span-6',
                 'disabled' => $this->id === auth()->id(),
+            ],
+            'images' => [
+                'type' => 'fileUploader',
+                'mode' => 'images',
+                'accept' => 'image/jpeg,image/png,image/gif,image/webp',
+                'model' => '',
+                'label' => __t('Images', 'User'),
+                'class' => 'lg:col-span-6',
+            ],
+            'document' => [
+                'type' => 'fileUploader',
+                'mode' => 'document',
+                'accept' => 'application/pdf',
+                'model' => '',
+                'label' => __t('Document', 'User'),
+                'class' => 'lg:col-span-6',
+            ],
+            'documents' => [
+                'type' => 'fileUploader',
+                'mode' => 'documents',
+                'accept' => 'application/pdf',
+                'model' => '',
+                'label' => __t('Documents', 'User'),
+                'class' => 'lg:col-span-6',
             ],
             'tabs' => [
                 'tab_first' => [

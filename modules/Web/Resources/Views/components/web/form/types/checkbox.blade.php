@@ -23,6 +23,10 @@ priority: 0
             @endforeach
         </flux:checkbox.group>
     </div>
+@elseif(isset($options['mode']) && $options['mode'] === 'single')
+    <div class="{{ $options['class'] }}">
+        checkbox
+    </div>
 @else
     <div class="{{ $options['class'] }}">
         <flux:checkbox.group>

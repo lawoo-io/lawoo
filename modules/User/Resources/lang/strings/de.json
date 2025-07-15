@@ -29,5 +29,9 @@
     "You can't delete Super Admins!": "Du kannst Super-Admins nicht löschen!",
     "Delete": "Löschen",
     "Create user": "Benutzer erstellen",
-    "Companies": "Unternehmen"
+    "Companies": "Unternehmen",
+    "Avatar": "Avatar",
+    "Images": "Bilder",
+    "Document": "Dokument",
+    "Documents": "Dokumente"
 }

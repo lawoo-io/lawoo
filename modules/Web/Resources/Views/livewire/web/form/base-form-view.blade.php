@@ -88,7 +88,14 @@ priority: 0
                 </div>
 
                 <div class="flex items-center justify-between mt-4">
-                    <flux:button type="submit" size="sm" variant="primary" disabled wire:dirty.attr.remove="disabled" class="cursor-pointer">
+                    <flux:button
+                        type="submit"
+                        size="sm"
+                        variant="primary"
+                        class="cursor-pointer"
+                        disabled
+                        wire:dirty.attr.remove="disabled"
+                    >
                         @if ($this->type === 'edit')
                             {{ __t('Save', 'Web') }}
                         @elseif($this->type === 'create')

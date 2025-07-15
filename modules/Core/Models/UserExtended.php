@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Modules\Core\Database\Factories\UserFactory;
 use Modules\Core\Models\Traits\ClearsCacheOnSave;
+use Modules\Core\Models\Traits\HasFiles;
 use Modules\Core\Models\Traits\HasMessages;
 use Modules\Core\Models\Traits\HasRoles;
 use Modules\Core\Models\Traits\TrackableModel;
@@ -17,7 +18,7 @@ use Modules\Web\Models\Company;
 
 class UserExtended extends User implements MustVerifyEmail
 {
-    use HasRoles, SoftDeletes, ClearsCacheOnSave, HasMessages, TrackableModel;
+    use HasRoles, SoftDeletes, ClearsCacheOnSave, HasMessages, TrackableModel, HasFiles;
 
     protected $table = 'users';
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Web\Http\Controllers\CompaniesController;
 use Modules\Web\Http\Controllers\CountryController;
+use Modules\Web\Http\Controllers\FileDownloadController;
 use Modules\Web\Http\Controllers\LanguagesController;
 use Modules\Web\Http\Controllers\ModulesController;
 use Modules\Web\Http\Controllers\ProfileController;
@@ -83,7 +84,30 @@ Route::middleware(['auth'])->group(function () {
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
+
+    // Hauptroute für private File-Downloads
+    Route::get('/files/private/{file}', [FileDownloadController::class, 'downloadPrivateFile'])
+        ->name('files.private');
 });
+
+// Öffentliche Files (ohne Authentication)
+Route::get('/files/public/{file}', function ($fileId) {
+    $file = \Modules\Core\Models\File::findOrFail($fileId);
+
+    if (!$file->is_public) {
+        abort(403, 'File is not public');
+    }
+
+    if (!$file->exists()) {
+        abort(404, 'File not found');
+    }
+
+    return \Illuminate\Support\Facades\Storage::response(
+        $file->getStoragePath(),
+        $file->file_name,
+        ['Content-Type' => $file->content_type]
+    );
+})->name('files.public');
 
 Route::post('logout', \Modules\Web\Http\Livewire\Auth\Logout::class)
         ->name('logout');

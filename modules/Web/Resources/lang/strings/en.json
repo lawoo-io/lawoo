@@ -120,5 +120,9 @@
     "Do you want to remove this module?": "Do you want to remove this module?",
     "Ok": "Ok",
     "Required Modules Missing": "Required Modules Missing",
-    "Additional required modules will be installed automatically:": "Additional required modules will be installed automatically:"
+    "Additional required modules will be installed automatically:": "Additional required modules will be installed automatically:",
+    "Thumbnails only available for images": "Thumbnails only available for images",
+    "Size:": "Size:",
+    "Download": "Download",
+    "Uploaded": "Uploaded"
 }

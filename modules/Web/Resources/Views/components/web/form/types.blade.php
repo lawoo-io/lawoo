@@ -19,4 +19,6 @@ priority: 0
     <x-web.form.types.checkbox-group :field="$field" :options="$options"/>
 @elseif($options['type'] === 'select')
     <x-web.form.types.select :field="$field" :options="$options" />
+@elseif($options['type'] === 'fileUploader')
+    <x-web.form.types.file-uploader :field="$field" :options="$options"/>
 @endif

@@ -4,6 +4,7 @@ namespace Modules\Web\Http\Livewire\Form;
 
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Modules\Core\Models\Language;
@@ -60,6 +61,11 @@ class BaseFormView extends Component
     /**
      * @var string
      */
+    public string $permissionForShow = '';
+
+    /**
+     * @var string
+     */
     public string $permissionForEdit = '';
 
     /**
@@ -104,6 +110,8 @@ class BaseFormView extends Component
     public string $defaultLocale = '';
 
     public array $translatableFields = [];
+
+    public bool $hasFiles = false;
 
     /**
      * @var string
@@ -240,6 +248,9 @@ class BaseFormView extends Component
             if (!isset($this->data[$field])) {
                 $this->data[$field] = $options['default'] ?? null;
             }
+            if (isset($options['type']) && $options['type'] === 'fileUploader') {
+                $this->fields[$field]['model'] = $this->record;
+            }
         }
     }
 
@@ -269,6 +280,12 @@ class BaseFormView extends Component
     {
         $this->deleteRecord();
         $this->redirect(route($this->recordsRoute), navigate: true);
+    }
+
+    #[On('file-uploader-form')]
+    public function formCanSaved(): void
+    {
+        $this->hasFiles = true;
     }
 
     public function render()

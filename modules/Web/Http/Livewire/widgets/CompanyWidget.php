@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Web\Http\Livewire\widgets;
+namespace Modules\Web\Http\Livewire\Widgets;
 
 
 use Illuminate\Support\Facades\Cache;

@@ -24,6 +24,16 @@ return [
                 'group' => 'Cache',
                 'class' => 'col-span-6',
                 'rules' => 'required|integer',
+            ],
+            'file_upload_sharding_enabled' => [
+                'label' => 'File upload sharding',
+                'description_top' => 'Automatically stores uploaded files in subfolders to improve performance with high upload volumes.',
+                'value' => false,
+                'type' => 'switch',
+                'mode' => 'single',
+                'group' => 'File Upload',
+                'class' => 'col-span-6',
+                'rules' => 'boolean',
             ]
         ]
     ]
