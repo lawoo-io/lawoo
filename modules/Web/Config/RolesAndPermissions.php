@@ -110,6 +110,12 @@ return [
                 'resource' => 'countries',
                 'action' => 'create',
             ],
+            'web.user.show_info' => [
+                'name' => 'Show User Info',
+                'description' => 'Can show user info: Name and Image',
+                'resource' => 'user',
+                'action' => 'show',
+            ]
         ],
     ],
 
@@ -125,6 +131,7 @@ return [
             'web.profile.edit' => [],
             'web.password.change' => [],
             'web.appearance.change' => [],
+            'web.user.show_info' => []
         ]
     ]
 ];

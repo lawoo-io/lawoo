@@ -52,9 +52,15 @@ class FileDownloadController extends BaseController
             return $this->serveThumbnail($file, $request);
         }
 
-        // 8. File ausliefern
+        // 8. Embed-Request?
+        if ($request->has('embed')) {
+            return $this->serveFileForEmbed($file, $request);
+        }
+
+        // 9. File ausliefern
         return $this->serveFile($file, $request->get('download') === '1');
     }
+
 
     /**
      * Thumbnail für Bilder generieren und ausliefern
@@ -269,6 +275,21 @@ class FileDownloadController extends BaseController
         } else {
             $headers['Content-Disposition'] = 'inline; filename="' . $file->file_name . '"';
         }
+
+        return Storage::response($file->getStoragePath(), $file->file_name, $headers);
+    }
+
+
+    protected function serveFileForEmbed(File $file, Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $headers = [
+            'Content-Type' => $file->content_type ?: 'application/octet-stream',
+            'Content-Length' => $file->file_size,
+            'Content-Disposition' => 'inline; filename="' . $file->file_name . '"',
+            'Cache-Control' => 'private, max-age=3600',
+            'X-Content-Type-Options' => 'nosniff',
+            'X-Frame-Options' => 'SAMEORIGIN'
+        ];
 
         return Storage::response($file->getStoragePath(), $file->file_name, $headers);
     }

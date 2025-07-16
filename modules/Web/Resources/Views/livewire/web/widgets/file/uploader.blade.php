@@ -5,7 +5,7 @@ active: 1,
 override_name: '',
 priority: 0
 --}}
-<div class="file-uploader">
+<div class="file-uploader" x-data="{ showPdfPreview: false, pdfUrl: '', pdfTitle: '' }">
     @if ($this->mode === 'image')
         <div class="flex items-start gap-4"
              x-data="{ uploading: false, progress: 0 }"
@@ -79,7 +79,7 @@ priority: 0
                 </div>
                 @foreach($this->existingFiles as $file)
                     <div class="relative group" wire:key="existing-{{ $file->id }}">
-                        <div class="{{ $this->imageClass }}  rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
+                        <div class="{{ $this->imageClass }} rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
                             <a @if($this->glightbox) href="{{ $this->getThumb($file, 1000, 1000, 80) }}" data-type="image" @endif class="{{ $this->glightbox ? 'glightbox': '' }}">
                                 <img src="{{ $this->getThumb($file) }}"/>
                             </a>
@@ -116,6 +116,11 @@ priority: 0
                         <span>{{ $this->existingFile->file_name }}</span>
                     </div>
                     <div class="flex gap-1">
+                        <flux:tooltip content="{{ __t('Open', 'Web') }}">
+                            <div  x-on:click="showPdfPreview = true; pdfUrl = '{{ $this->existingFile->getEmbedUrl($permissionForShow) }}'">
+                                <flux:icon.viewfinder-circle variant="mini" class="size-4 cursor-pointer text-gray-500 hover:text-gray-800"/>
+                            </div>
+                        </flux:tooltip>
                         <flux:tooltip content="{{ __t('Download', 'Web') }}">
                             <flux:link href="{{ $this->getDownloadUrl($this->existingFile->id) }}">
                                 <flux:icon.arrow-down-tray variant="mini" class="size-4 cursor-pointer text-gray-500 hover:text-gray-800"/>
@@ -179,6 +184,11 @@ priority: 0
                             <span>{{ $file->file_name }}</span>
                         </div>
                         <div class="flex gap-1">
+                            <flux:tooltip content="{{ __t('Open', 'Web') }}">
+                                <div  x-on:click="showPdfPreview = true; pdfUrl = '{{ $file->getEmbedUrl($permissionForShow) }}'">
+                                    <flux:icon.viewfinder-circle variant="mini" class="size-4 cursor-pointer text-gray-500 hover:text-gray-800"/>
+                                </div>
+                            </flux:tooltip>
                             <flux:tooltip content="{{ __t('Download', 'Web') }}">
                                 <flux:link href="{{ $this->getDownloadUrl($file->id) }}">
                                     <flux:icon.arrow-down-tray variant="mini" class="size-4 cursor-pointer text-gray-500 hover:text-gray-800"/>
@@ -190,6 +200,39 @@ priority: 0
                         </div>
                     </div>
                 @endforeach
+            </div>
+        </div>
+    @endif
+
+    {{-- PDF Preview Modal --}}
+    @if ($this->mode === 'document' || $this->mode === 'documents')
+        <div x-show="showPdfPreview"
+             x-cloak
+             @keydown.escape="showPdfPreview = false, pdfUrl = ''"
+             @click="showPdfPreview = false, pdfUrl = ''"
+             class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+
+            <div class="bg-white rounded-lg w-full max-w-6xl h-full max-h-[98vh] overflow-hidden flex flex-col">
+                {{-- Header --}}
+                <div class="flex items-center justify-between p-4 border-b">
+                    <div class="flex gap-2 ml-auto space-x-2">
+                        <a :href="pdfUrl" target="_blank" class="cursor-pointer">
+                            <flux:tooltip content="{{ __t('Open in new Window', 'Web') }}">
+                                <flux:icon.window variant="mini" class="size-5"/>
+                            </flux:tooltip>
+                        </a>
+                        <a x-on:click="showPdfPreview = false, pdfUrl = ''" class="cursor-pointer">
+                            <flux:tooltip content="{{ __t('Close', 'Web') }}">
+                                <flux:icon.x-mark variant="mini" class="size-5"/>
+                            </flux:tooltip>
+                        </a>
+                    </div>
+                </div>
+
+                {{-- PDF Viewer --}}
+                <div class="flex-1">
+                    <iframe :src="pdfUrl" class="w-full h-full border-none"></iframe>
+                </div>
             </div>
         </div>
     @endif

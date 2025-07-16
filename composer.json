@@ -11,7 +11,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Modules\\": "vendor/lawoo-io/lawoo/modules/"
+      "Modules\\": "vendor/lawoo-io/lawoo/modules/",
+      "CustomModules\\": "modules/"
     }
   },
   "extra": {

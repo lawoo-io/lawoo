@@ -361,6 +361,26 @@ class File extends Model
         );
     }
 
+    public function getEmbedUrl(string $permission, string $route = 'files.private', $hoursValid = 24): string
+    {
+        $user = auth()->user();
+        if (!$permission || !$user->can($permission)) {
+            abort(403, __t("Permission denied or required", "Web"));
+        }
+
+        $params = [
+            'file' => $this->id,
+            'hash' => $this->getSecurityHash($user),
+            'embed' => '1',
+        ];
+
+        return URL::temporarySignedRoute(
+            'files.private',
+            now()->addHours($hoursValid),
+            $params
+        );
+    }
+
     /**
      * Download-URL (forciert Download statt Inline)
      */
