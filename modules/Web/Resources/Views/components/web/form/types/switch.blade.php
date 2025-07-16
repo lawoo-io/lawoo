@@ -13,9 +13,15 @@ priority: 0
     @if (isset($options['label']))
         <flux:label wire:dirty.class="!text-yellow-500" wire:target="data.{{ $field }}">{{ $options['label'] }}</flux:label>
     @endif
+    @if (isset($options['description_top']))
+        <flux:description>{{ $options['description_top'] }}</flux:description>
+    @endif
     <flux:switch
         wire:model="data.{{ $field }}"
         :disabled="isset($options['disabled']) && $options['disabled'] ?? false"
     />
+    @if (isset($options['description_bottom']))
+        <flux:description>{{ $options['description_bottom'] }}</flux:description>
+    @endif
     <flux:error name="data.{{ $field }}"/>
 </flux:field>

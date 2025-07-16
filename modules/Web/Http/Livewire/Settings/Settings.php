@@ -86,7 +86,7 @@ class Settings extends Component
     {
         $data = [];
         foreach ($this->data as $setting) {
-            $data[$setting['key']] = $setting['value'];
+            $data[$setting['key']] = $setting['value'] === '1' ? true : $setting['value'];
         }
         $this->data = $data;
     }

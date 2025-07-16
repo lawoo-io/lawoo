@@ -9,6 +9,9 @@ priority: 0
     'field',
     'options'
 ])
+
+
+
 <div class="{{ $options['class'] ?? '' }}">
     @livewire('web.widgets.file-uploader', [
     'field' => $field,

@@ -87,6 +87,7 @@ priority: 0
 @persist('toast')
 <flux:toast position="top right" class="mt-12" />
 @endpersist
+@stack('scripts')
 </body>
 
 </html>
