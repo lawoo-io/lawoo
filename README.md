@@ -87,3 +87,9 @@ php artisan migrate --seed
 php artisan lawoo:check
 php artisan lawoo:install Web
 ```
+
+### 8. Install GLightbox
+
+```bash
+npm install glightbox
+```

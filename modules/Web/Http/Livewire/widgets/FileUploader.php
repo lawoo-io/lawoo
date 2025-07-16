@@ -37,6 +37,8 @@ class FileUploader extends Component
 
     public array $fileRules = [];
 
+    public bool $glightbox = false;
+
     public function mount(string $field, array $options = [], $permissionForShow = '', $permissionForEdit = ''): void
     {
         $this->model = $options['model'] ?? null;
@@ -46,6 +48,7 @@ class FileUploader extends Component
         $this->multiple = $options['mode'] === 'images' || $options['mode'] === 'documents' ? true : false;
         $this->label = $options['label'] ?? null;
         $this->imageClass = $options['imageClass'] ?? 'w-17 h-17';
+        $this->glightbox = $options['glightbox'] ?? false;
 
         $this->fileRules = $options['fileRules'] ?? $this->model->getFileValidationRules($this->mode);
 
@@ -72,6 +75,7 @@ class FileUploader extends Component
         } else {
             $this->existingFiles = $this->model->{$this->field}()->orderBy('id', 'desc')->get();
         }
+
     }
 
     public function getThumb($file, int $width = 200, int $height = 200, int $quality = 80): string
@@ -140,6 +144,24 @@ class FileUploader extends Component
         }
 
         $this->loadExisting();
+        $this->dispatch('reinit-glightbox-delayed');
+    }
+
+    public function getUrl(int $id): string
+    {
+        if ($this->mode === 'document' || $this->mode === 'image'){
+            if($this->existingFile && $this->existingFile->id == $id) {
+                return $this->existingFile->getUrl($this->permissionForShow);
+            }
+        } else {
+            foreach($this->existingFiles as $file) {
+                if($file->id === $id) {
+                    return $file->getUrl($this->permissionForShow);
+                }
+            }
+        }
+
+        return '';
     }
 
     public function getDownloadUrl(int $id): string
@@ -177,6 +199,8 @@ class FileUploader extends Component
                 }
             }
         }
+
+        $this->dispatch('reinit-glightbox-delayed');
 
     }
 

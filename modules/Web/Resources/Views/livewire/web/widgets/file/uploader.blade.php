@@ -33,6 +33,13 @@ priority: 0
                             <img src="{{ $this->file->temporaryUrl() }}" class="w-full h-full object-cover" />
                         @elseif($this->existingFile)
                             <img src="{{ $this->getThumb($this->existingFile) }}" class="w-full h-full object-cover" />
+                            @if ($this->glightbox)
+                                <a href="{{ $this->getThumb($this->existingFile, 1000, 1000, 80) }}" data-type="image" class="absolute top-1 left-1 opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-100 z-30 glightbox">
+                                    <flux:tooltip content="{{ __t('Open', 'Web') }}">
+                                        <flux:icon.magnifying-glass class="size-4 text-white" variant="micro"/>
+                                    </flux:tooltip>
+                                </a>
+                            @endif
                             @can($this->permissionForEdit)
                                 <flux:tooltip content="{{ __t('Remove', 'Web') }}">
                                     <button type="button" class="absolute top-1 right-1 opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-100 z-30 cursor-pointer" wire:click="removeFile({{ $this->existingFile->id }})">
@@ -72,8 +79,10 @@ priority: 0
                 </div>
                 @foreach($this->existingFiles as $file)
                     <div class="relative group" wire:key="existing-{{ $file->id }}">
-                        <div class="{{ $this->imageClass }} rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
-                            <img src="{{ $this->getThumb($file) }}"/>
+                        <div class="{{ $this->imageClass }}  rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
+                            <a @if($this->glightbox) href="{{ $this->getThumb($file, 1000, 1000, 80) }}" data-type="image" @endif class="{{ $this->glightbox ? 'glightbox': '' }}">
+                                <img src="{{ $this->getThumb($file) }}"/>
+                            </a>
                             @can($this->permissionForEdit)
                                 <flux:tooltip content="{{ __t('Remove', 'Web') }}">
                                     <button type="button" class="absolute top-1 right-1 opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-100 z-30 cursor-pointer" wire:click="removeFile({{ $file->id }})">

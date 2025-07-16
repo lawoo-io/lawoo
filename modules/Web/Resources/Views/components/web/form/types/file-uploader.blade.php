@@ -10,7 +10,11 @@ priority: 0
     'options'
 ])
 
-
+@if(isset($options['glightbox']) && $options['glightbox'])
+    @push('styles')
+        @vite(['resources/js/web/glightbox.js'])
+    @endpush
+@endif
 
 <div class="{{ $options['class'] ?? '' }}">
     @livewire('web.widgets.file-uploader', [

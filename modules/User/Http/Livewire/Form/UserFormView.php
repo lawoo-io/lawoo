@@ -38,6 +38,7 @@ class UserFormView extends BaseFormView
             'image' => [
                 'type' => 'fileUploader',
                 'mode' => 'image',
+                'glightbox' => true,
                 'accept' => 'image/jpeg,image/png,image/gif,image/webp',
                 'imageClass' => 'w-20 h-20',
                 'model' => '',
@@ -65,6 +66,7 @@ class UserFormView extends BaseFormView
             'images' => [
                 'type' => 'fileUploader',
                 'mode' => 'images',
+                'glightbox' => true,
                 'accept' => 'image/jpeg,image/png,image/gif,image/webp',
                 'model' => '',
                 'label' => __t('Images', 'User'),
@@ -73,6 +75,7 @@ class UserFormView extends BaseFormView
             'document' => [
                 'type' => 'fileUploader',
                 'mode' => 'document',
+                'glightbox' => true,
                 'accept' => 'application/pdf',
                 'model' => '',
                 'label' => __t('Document', 'User'),
