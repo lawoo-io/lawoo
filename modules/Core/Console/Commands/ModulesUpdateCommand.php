@@ -21,7 +21,7 @@ class ModulesUpdateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'lawoo:update {module}';
+    protected $signature = 'lawoo:update {module} {--test-migrations : Create migration file without migrate}';
 
     /**
      * The console command description.
@@ -41,6 +41,7 @@ class ModulesUpdateCommand extends Command
              * Load module Name
              */
             $module = $this->argument('module');
+            $testMigration = $this->option('test-migrations');
 
 
             /**
@@ -69,7 +70,8 @@ class ModulesUpdateCommand extends Command
             /**
              * Run MigrationManager
              */
-            MigrationManager::run($module);
+            $result = MigrationManager::run($module, $testMigration);
+            $this->components->{$result['type']}($result['message']);
 
             /**
              * Run OverrideViews

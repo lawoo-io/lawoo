@@ -76,7 +76,7 @@ priority: 0
                                     @endforeach
                                 </flux:tabs>
                                 @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
-                                    <flux:tab.panel :name="$tabKey" class="md:col-span-12">
+                                    <flux:tab.panel :name="$tabKey" class="{{ $tabOptions['class'] ? $tabOptions['class'] : 'md:col-span-12' }}">
                                         @foreach($tabOptions['fields'] as $field => $options)
                                             <x-web.form.types :field="$field" :options="$options"/>
                                         @endforeach

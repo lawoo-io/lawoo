@@ -13,7 +13,7 @@ class FileUploader extends Component
 {
     use WithFileUploads;
 
-    public ?Model $model;
+    public $model;
     public string $field = '';
     public $accept = '*';
     public bool $multiple = false;
@@ -50,14 +50,15 @@ class FileUploader extends Component
         $this->imageClass = $options['imageClass'] ?? 'w-17 h-17';
         $this->glightbox = $options['glightbox'] ?? false;
 
-        $this->fileRules = $options['fileRules'] ?? $this->model->getFileValidationRules($this->mode);
-
         $this->permissionForShow = $permissionForShow;
         $this->permissionForEdit = $permissionForEdit;
 
         $this->componentId = $this->field . '_' . ($this->model->id ?? 'new') . '_' . uniqid();
 
-        $this->loadExisting();
+        if ($this->model) {
+            $this->fileRules = $options['fileRules'] ?? $this->model->getFileValidationRules($this->mode);
+            $this->loadExisting();
+        }
     }
 
     public function hydrate()
@@ -88,7 +89,9 @@ class FileUploader extends Component
         $rules = $this->setRules();
         try {
             $this->validate($rules);
-            $this->saveFile();
+            if(isset($this->model)) {
+                $this->saveFile();
+            }
         } catch(\Illuminate\Validation\ValidationException $e) {
             Flux::toast(text: $e->getMessage(), variant: 'danger');
             $this->reset('file');
@@ -100,7 +103,9 @@ class FileUploader extends Component
         $rules = $this->setRules();
         try {
             $this->validate($rules);
-            $this->saveFile();
+            if (isset($this->model)){
+                $this->saveFile();
+            }
         } catch(\Illuminate\Validation\ValidationException $e) {
             Flux::toast(text: $e->getMessage(), variant: 'danger');
             $this->reset('files');
@@ -123,15 +128,19 @@ class FileUploader extends Component
         return $rules;
     }
 
-    public function saveFile(): void
+    #[On('save-files')]
+    public function saveFile(int $id = null, string $modelClass = null): void
     {
+        if($modelClass && $id) {
+            $this->model = $this->resolveRepository($modelClass)->find($id);
+        }
         if ($this->mode === 'image' || $this->mode === 'images') {
             $type = 'images';
         } else if ($this->mode === 'document' || $this->mode === 'documents') {
             $type = 'documents';
         }
 
-        if ($this->file && $this->mode === 'image') {
+        if ($this->file && $this->mode === 'image' && $this->model) {
             $this->model->setImage($this->file, $this->field, $type);
             $this->reset('file');
         } else if($this->file && $this->mode === 'document') {
@@ -145,6 +154,13 @@ class FileUploader extends Component
 
         $this->loadExisting();
         $this->dispatch('reinit-glightbox-delayed');
+    }
+
+    protected function resolveRepository($modelClass)
+    {
+        if (class_exists($modelClass)) {
+            return new $modelClass();
+        }
     }
 
     public function getUrl(int $id): string

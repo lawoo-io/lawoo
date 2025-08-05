@@ -3,7 +3,9 @@
 namespace Modules\Web\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Core\Models\Traits\HasFiles;
 
 /**
  * Database model description
@@ -13,6 +15,8 @@ use Modules\Core\Abstracts\BaseModel;
 
 class Company extends BaseModel
 {
+    use HasFiles;
+
     /**
     * The database table name.
     *
@@ -39,6 +43,16 @@ class Company extends BaseModel
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 
 }

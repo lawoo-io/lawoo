@@ -36,6 +36,8 @@ class Country extends BaseModel
     protected $fillable = [
         'name',
         'is_active',
+        'phone_code',
+        'iso2',
     ];
 
     public $timestamps = false;

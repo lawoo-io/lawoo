@@ -94,13 +94,14 @@ class TranslationSyncService
 
             $files = $this->findViewFiles($viewsPath);
             if ($files->count() === 0) {
-                return [];
+                continue;
             }
 
             foreach ($files as $file) {
                 $fileKeys = $this->processFile($file, $moduleName, $config);
                 $moduleActiveKeys = array_merge($moduleActiveKeys, $fileKeys);
             }
+
         }
 
         return array_unique($moduleActiveKeys);

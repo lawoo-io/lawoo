@@ -25,7 +25,7 @@ priority: 0
                     }
                 @endphp
                 @if($image)
-                    <img src="{{ $image->getThumbnailUrl('web.user.show_info', 100, 100, 80) }}" class="shrink-0 w-full h-full object-cover"/>
+                    <img wire:loading.remove src="{{ $image->getThumbnailUrl('web.user.show_info', 100, 100, 80) }}" class="shrink-0 w-full h-auto object-cover" loading="lazy"/>
                 @else
                     <flux:avatar src="" size="xs" class="shrink-0" />
                 @endif

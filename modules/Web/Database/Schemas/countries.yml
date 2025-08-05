@@ -5,3 +5,5 @@ countries:
     id: id
     name: string=100.unique.index
     is_active: boolean.default=1
+    phone_code: string=10.nullable
+    iso2: string=2.nullable.nullable.index

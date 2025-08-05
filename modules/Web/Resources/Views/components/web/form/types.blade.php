@@ -21,4 +21,6 @@ priority: 0
     <x-web.form.types.select :field="$field" :options="$options" />
 @elseif($options['type'] === 'fileUploader')
     <x-web.form.types.file-uploader :field="$field" :options="$options"/>
+@elseif($options['type'] === 'cards')
+    <x-web.form.types.cards :field="$field" :options="$options"/>
 @endif

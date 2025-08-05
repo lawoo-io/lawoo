@@ -5,7 +5,7 @@ active: 1,
 override_name: '',
 priority: 0
 --}}
-<div class="file-uploader" x-data="{ showPdfPreview: false, pdfUrl: '', pdfTitle: '' }">
+<div class="file-uploader" x-data="{ showPdfPreview: false, pdfUrl: '', pdfTitle: '' }" wire:lazy>
     @if ($this->mode === 'image')
         <div class="flex items-start gap-4"
              x-data="{ uploading: false, progress: 0 }"
@@ -30,9 +30,9 @@ priority: 0
                     {{-- Visual Upload Button/Preview --}}
                     <div class="{{ $this->imageClass }} {{ !$this->file && !$this->existingFile ? 'border border-dashed border-gray-300' : '' }} rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
                         @if ($this->file)
-                            <img src="{{ $this->file->temporaryUrl() }}" class="w-full h-full object-cover" />
+                            <img src="{{ $this->file->temporaryUrl() }}" class="w-full h-auto object-cover" loading="lazy" />
                         @elseif($this->existingFile)
-                            <img src="{{ $this->getThumb($this->existingFile) }}" class="w-full h-full object-cover" />
+                            <img wire:loading.remove src="{{ $this->getThumb($this->existingFile) }}" class="w-full h-auto object-cover" loading="lazy" />
                             @if ($this->glightbox)
                                 <a href="{{ $this->getThumb($this->existingFile, 1000, 1000, 80) }}" data-type="image" class="absolute top-1 left-1 opacity-0 group-hover:opacity-70 hover:opacity-100 transition-opacity duration-100 z-30 glightbox">
                                     <flux:tooltip content="{{ __t('Open', 'Web') }}">
@@ -81,7 +81,7 @@ priority: 0
                     <div class="relative group" wire:key="existing-{{ $file->id }}">
                         <div class="{{ $this->imageClass }} rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
                             <a @if($this->glightbox) href="{{ $this->getThumb($file, 1000, 1000, 80) }}" data-type="image" @endif class="{{ $this->glightbox ? 'glightbox': '' }}">
-                                <img src="{{ $this->getThumb($file) }}"/>
+                                <img src="{{ $this->getThumb($file) }}" loading="lazy"/>
                             </a>
                             @can($this->permissionForEdit)
                                 <flux:tooltip content="{{ __t('Remove', 'Web') }}">

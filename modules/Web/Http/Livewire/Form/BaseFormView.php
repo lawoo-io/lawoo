@@ -225,6 +225,9 @@ class BaseFormView extends Component
     public function createRecord(): void
     {
         $id = $this->resolveRepository()->create($this->data);
+        if ($id) {
+            $this->dispatch('save-files', id: $id['id'], modelClass: $this->repositoryClass);
+        }
         if ($this->recordRoute){
             $this->redirectRoute($this->recordRoute, ['id' => $id], navigate: true);
         }

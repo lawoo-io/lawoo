@@ -13,7 +13,6 @@ priority: 0
     <flux:label wire:dirty.class="!text-yellow-500" wire:target="data.{{ $field }}">{{ $options['label'] }}</flux:label>
 @endif
 <div class="{{ $options['class'] }}">
-
     @foreach($options['options'] as $group => $items)
         <div class="{{ $options['group_class'] ? $options['group_class'] : false }}">
             <flux:checkbox.group wire:model="data.{{ $field }}" :label="$group"  >

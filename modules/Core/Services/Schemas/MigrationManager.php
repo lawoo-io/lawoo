@@ -2,7 +2,9 @@
 
 namespace Modules\Core\Services\Schemas;
 
+use http\Exception\RuntimeException;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 use Modules\Core\Models\DbModel;
 use Modules\Core\Models\MigrationFile;
 use Modules\Core\Models\Module;
@@ -12,7 +14,7 @@ use Modules\Core\Services\PathService;
 class MigrationManager
 {
 
-    public static function run($moduleName): void
+    public static function run($moduleName, $testMigrations = false): array
     {
         $module = Module::where('system_name', $moduleName)->first();
 
@@ -43,7 +45,7 @@ class MigrationManager
             // create new migration file
             $migrationPath = static::generateMigrationFileFromStub($dbModel->name, $stubPath, $outputdir, $dbModel->dbFields, $tableMode, $count);
 
-            if (!$migrationPath) return;
+            if (!$migrationPath) return ['type' => 'danger', 'message' => 'Migration could not be generated'];
 
             $path = str_replace(base_path() . '/', '', $migrationPath);
 
@@ -51,12 +53,18 @@ class MigrationManager
 
             static::runMigrateByFilePath($migrationFile, $dbModel);
 
+            if ($testMigrations) {
+                return ['type' => 'success', 'message' => 'Migrations have been created.'];
+            }
+
             $dbModel->setMigrateOff();
             $dbModel->dbFields()->each(fn ($field) => $field->setMigrateOff());
             static::removeFields($dbModel->dbFields, $module->id);
 
             $count++;
         }
+
+        return ['type' => 'success', 'message' => 'Migrations have been created.'];
     }
 
 
@@ -148,7 +156,13 @@ class MigrationManager
                 $fields[] = static::generateColumnLine($field->name, $raw, $mode);
 
                 if ($tableMode === 'update') {
-                    $reverse[] = "\$table->dropColumn('$field->name');";
+                    if (Str::startsWith('unique_', $field->name)) {
+                        $reverse[] = "\$table->dropUnique('$field->name');";
+                    } elseif(Str::startsWith('index_', $field->name)) {
+                        $reverse[] = "\$table->dropIndex('$field->name');";
+                    } else {
+                        $reverse[] = "\$table->dropColumn('$field->name');";
+                    }
                 }
             }
         }
@@ -190,24 +204,34 @@ class MigrationManager
         $type = $typeSplit[0];
         $param = $typeSplit[1] ?? null;
 
-        $code = "\$table->{$type}('{$name}'" . ($param ? ", {$param}" : "") . ")";
+        if ($type === 'unique') {
+            $code = "\$table->unique($param)";
+        } elseif($type === 'index') {
+            $code = "\$table->index($param)";
+        } else {
+            $code = "\$table->{$type}('{$name}'" . ($param ? ", {$param}" : "") . ")";
+        }
+
 
         foreach ($parts as $modifier) {
             if (str_contains($modifier, '=')) {
                 [$method, $value] = explode('=', $modifier, 2);
-                $code .= "->{$method}('{$value}')";
+                if ($method === 'query') {
+                    $code .= "->{$value}";
+                } else {
+                    $code .= "->{$method}('{$value}')";
+                }
             } else {
                 $code .= "->{$modifier}()";
             }
         }
 
-        if ($mode === 'update') {
+        if ($mode === 'update' && !$type === 'unique' && !$type === 'index') {
             $code .= "->change()";
         }
 
         return $code . ';';
     }
-
 
     public static function prepareFields(object $fields, bool $create = true): array
     {

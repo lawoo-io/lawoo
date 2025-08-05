@@ -11,6 +11,12 @@ companies:
     country_id: foreignId.nullable.constrained.nullOnDelete
     parent_id: foreignId.nullable.constrained=companies.nullOnDelete
     is_active: boolean.default=1
+    phone: string=50.nullable
+    mobile: string=50.nullable
+    email: string=150.nullable
+    website: string=256.nullable
+    company_nr: string=150.nullable
+    tax_nr: string=150.nullable
     created_at: timestamp.nullable
     updated_at: timestamp.nullable
     deleted_at: timestamp.nullable

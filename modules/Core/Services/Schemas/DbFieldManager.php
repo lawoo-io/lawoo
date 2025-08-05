@@ -119,12 +119,12 @@ class DbFieldManager
             'softDeletesTz', 'string', 'text', 'time', 'timeTz', 'timestamp',
             'timestampTz', 'timestamps', 'timestampsTz', 'tinyIncrements',
             'tinyInteger', 'tinyText', 'uuid', 'uuidMorphs', 'year', 'enum',
-            'foreignId', 'id',
+            'foreignId', 'foreign', 'id', 'unique', 'index', 'unsignedBigInteger'
         ];
 
         // Field types that MUST NOT have parameters
         $typesWithoutParams = [
-            'foreignId', 'boolean', 'timestamps', 'softDeletes', 'uuid', 'id',
+            'foreignId', 'foreign', 'boolean', 'timestamps', 'softDeletes', 'uuid', 'id',
             'rememberToken', 'nullableTimestamps', 'timestampsTz', 'timestamps',
             'morphs', 'nullableMorphs', 'nullableUuidMorphs', 'softDeletesTz',
             'json', 'jsonb'
@@ -186,7 +186,7 @@ class DbFieldManager
             'charset', 'collation', 'storedAs', 'virtualAs', 'generatedAs',
             'persisted', 'spatialIndex', 'constrained',
             'references', 'on', 'onDelete', 'onUpdate',
-            'cascadeOnDelete', 'nullOnDelete',
+            'cascadeOnDelete', 'nullOnDelete', 'foreign', 'query'
         ];
 
         // Modifiers that require a parameter
