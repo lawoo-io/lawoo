@@ -14,9 +14,10 @@ priority: 0
             <flux:dropdown>
                 <flux:button icon="ellipsis-horizontal" variant="ghost" size="sm" />
                 <flux:navmenu>
+                    <flux:navmenu.item href="/lawoo" wire:navigate>Home</flux:navmenu.item>
                     @foreach($this->breadcrumbs as $key => $item)
                         @if (!$loop->first && !$loop->last)
-                            <flux:menu.item href="{{ $item['url'] }}" class="cursor-pointer" wire:navigate>
+                            <flux:menu.item icon="arrow-turn-down-right" href="{{ $item['url'] }}" class="cursor-pointer" wire:navigate>
                                 {{ $item['name'] }}
                             </flux:menu.item>
                         @endif

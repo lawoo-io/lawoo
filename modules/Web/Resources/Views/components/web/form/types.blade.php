@@ -23,4 +23,8 @@ priority: 0
     <x-web.form.types.file-uploader :field="$field" :options="$options"/>
 @elseif($options['type'] === 'cards')
     <x-web.form.types.cards :field="$field" :options="$options"/>
+@elseif($options['type'] === 'textarea')
+    <x-web.form.types.textarea :field="$field" :options="$options"/>
+@elseif($options['type'] === 'editor')
+    <x-web.form.types.editor :field="$field" :options="$options"/>
 @endif

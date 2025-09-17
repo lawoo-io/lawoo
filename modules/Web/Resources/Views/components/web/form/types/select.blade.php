@@ -17,7 +17,7 @@ priority: 0
         <flux:description>{{ $options['description_top'] }}</flux:description>
     @endif
 
-    <flux:select variant="listbox" wire:model="data.{{ $field }}" searchable :placeholder="__t('--Please select--', 'Web')">
+    <flux:select variant="listbox" wire:model="data.{{ $field }}" :wire:change="$options['change'] ?? false" searchable :placeholder="__t('--Please select--', 'Web')" :disabled="$options['disabled'] ?? false">
     @foreach($options['options'] as $key => $value)
         <flux:select.option :value="$key">{{ $value }}</flux:select.option>
     @endforeach

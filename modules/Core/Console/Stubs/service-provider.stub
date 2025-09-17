@@ -30,5 +30,10 @@ class {{name}}ServiceProvider extends ServiceProvider
         // Load translations
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', '{{name|lower}}');
 
+        /**
+         * Load json translation
+         */
+        $this->loadJsonTranslationsFrom(__DIR__.'/../Resources/lang');
+
     }
 }

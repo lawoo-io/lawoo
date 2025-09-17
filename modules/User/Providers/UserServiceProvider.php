@@ -7,8 +7,6 @@ use Illuminate\Support\ServiceProvider;
 class UserServiceProvider extends ServiceProvider
 {
 
-//    protected string $moduleName = 'user';
-
     /**
      * Register any application services.
      */

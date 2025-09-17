@@ -1,16 +1,18 @@
 <?php
 
 return [
-    'name.required' => 'Name ist erforderlich',
-    'name.max' => 'Name darf nicht länger als :max Zeichen sein',
-    'email.required' => 'E-Mail ist erforderlich',
-    'email.email' => 'Bitte geben Sie eine gültige E-Mail-Adresse ein',
-    'email.unique' => 'Diese E-Mail wird bereits verwendet',
+    'required' => 'Das Feld :attribute ist erforderlich.',
 
-    // Password validation
-    'current_password.required' => 'Aktuelles Passwort ist erforderlich',
-    'current_password.current_password' => 'Das aktuelle Passwort ist falsch',
-    'password.required' => 'Neues Passwort ist erforderlich',
-    'password.confirmed' => 'Passwort-Bestätigung stimmt nicht überein',
-    'password.min' => 'Passwort muss mindestens :min Zeichen haben',
+    // Attributes
+    'attributes' => [
+        'data.name' => 'Name',
+
+        // Countries
+        'data.phone_code' => 'Telefonvorwahl',
+        'data.iso2' => 'Ländercode',
+
+        // Settings
+        'data.cache_view_settings_days' => 'Cache für Form-Ansicht',
+        'data.cache_settings_records' => 'Cache',
+    ],
 ];

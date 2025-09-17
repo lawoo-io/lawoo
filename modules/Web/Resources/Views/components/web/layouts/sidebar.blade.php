@@ -9,7 +9,7 @@ priority: 0
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" xmlns:flug="http://www.w3.org/1999/html">
 <head>
     @include('modules.web.partials.head')
-    @vite(['resources/js/web/alpineStore.js'])
+    @vite(['resources/js/web/alpineStore.js', 'resources/js/web/modalUrl.js', 'resources/js/web/codemirror.js'])
 </head>
 <body class="min-h-screen bg-white dark:bg-zinc-800 test">
 <flux:sidebar id="sidebar"
@@ -48,19 +48,25 @@ priority: 0
 
     <flux:spacer />
 
+    @if(isset($headerTopRight))
+        {{ $headerTopRight }}
+    @endif
+
     <livewire:web.widgets.company-widget/>
 
     <flux:dropdown position="top" align="end">
         <flux:profile
+            circle
             :initials="auth()->user()->initials()"
             class="shrink-0 cursor-pointer"
+            :iconTrailing="false"
         />
         <flux:menu>
             <flux:menu.radio.group>
                 <div class="p-0 text-sm font-normal">
                     <div class="p-0 text-sm font-normal">
                         <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                            <span class="p-1 bg-gray-200 rounded">{{ auth()->user()->initials() }}</span>
+                            <span class="p-1 bg-gray-200 dark:bg-gray-700 rounded">{{ auth()->user()->initials() }}</span>
                             <span class="text-sm leading-tight truncate font-semibold">{{ auth()->user()->name }}</span>
                         </div>
                     </div>
@@ -77,7 +83,7 @@ priority: 0
 
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
-                <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
+                <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full cursor-pointer">
                     {{ __t('Logout', 'Web') }}
                 </flux:menu.item>
             </form>
@@ -90,6 +96,7 @@ priority: 0
 </flux:main>
 
 <livewire:web.modal.base-modal-view />
+<livewire:web.modal.modal-stack />
 @fluxScripts
 @persist('toast')
 <flux:toast position="top right" class="mt-12" />

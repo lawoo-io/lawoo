@@ -3,10 +3,8 @@
 namespace Modules\Web\Http\Livewire\Breadcrumbs;
 
 
-use Illuminate\Support\Facades\Route;
 use Livewire\Component;
 use Illuminate\Support\Facades\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Breadcrumbs extends Component
 {
@@ -77,7 +75,7 @@ class Breadcrumbs extends Component
 
             $this->breadcrumbs[] = [
                 // Für den letzten Breadcrumb verwenden wir den übergebenen Seitentitel, falls vorhanden.
-                'name'   => ($index === count($segmentsToProcess) - 1 && $this->pageTitle) ? $this->pageTitle : $name,
+                'name'   => ($index === count($segmentsToProcess) - 1 && $this->pageTitle) ? $this->pageTitle : __($name),
                 'url'    => $breadcrumbLinkUrl,
                 'active' => false, // Später gesetzt
             ];

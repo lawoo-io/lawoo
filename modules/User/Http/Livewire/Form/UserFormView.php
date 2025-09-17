@@ -181,18 +181,14 @@ class UserFormView extends BaseFormView
         return $this->resolveRepository()->getCompanyOptions();
     }
 
-    public function prepareViewOptions(): array
+    protected function headerCenterView(): string
     {
-        $options = parent::prepareViewOptions();
+        return 'livewire.user.form.user-header-center-view';
+    }
 
-        if ($this->id) {
-            $userFormView = view('livewire.user.form.user-form-view', ['data' => $this->data]);
-            $options['formTopLeft'] = $userFormView->renderSections()['formTopLeft'] ?? null;
-            $options['formTopRight'] = $userFormView->renderSections()['formTopRight'] ?? null;
-            $options['headerCenter'] = $userFormView->renderSections()['headerCenter'] ?? null;
-        }
-
-        return $options;
+    protected function extraHeaderView(): string
+    {
+        return 'livewire.user.form.user-extra-header-view';
     }
 
     public function delete()
@@ -203,11 +199,4 @@ class UserFormView extends BaseFormView
         }
         parent::delete();
     }
-
-    public function render()
-    {
-        View::share('livewireComponent', $this);
-        return view($this->view, $this->prepareViewOptions());
-    }
-
 }

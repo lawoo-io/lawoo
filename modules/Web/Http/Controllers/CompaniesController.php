@@ -2,7 +2,6 @@
 
 namespace Modules\Web\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 use Modules\Core\Abstracts\BaseController;
 
@@ -15,7 +14,7 @@ class CompaniesController extends BaseController
         $this->middleware('permission:web.settings.companies.show')->only(['records', 'view']);
     }
 
-    public function create(): View
+    public function create()
     {
         return view('modules.web.companies.create');
     }

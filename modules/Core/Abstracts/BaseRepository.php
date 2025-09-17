@@ -7,8 +7,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\App;
 use Modules\Core\Models\Language;
 
 
@@ -43,7 +41,20 @@ abstract class BaseRepository
      */
     public function find(int $id): ?Model
     {
-        return $this->model->find($id);
+        $company_ids = session()->get('company_ids', []);
+        $query = $this->model->where('id', $id);
+
+        // prüfen, ob Feld "company_id" in der Tabelle existiert
+        if ($this->model->isFillable('company_id') || array_key_exists('company_id', $this->model->getAttributes())) {
+            $query->where(function ($q) use ($company_ids) {
+                if (!empty($company_ids)) {
+                    $q->whereIn('company_id', $company_ids);
+                }
+                $q->orWhereNull('company_id');
+            });
+        }
+
+        return $query->firstOrFail();
     }
 
     /**
@@ -57,13 +68,19 @@ abstract class BaseRepository
 
     public function update(int $id, array $data, string $locale): Model
     {
+        $model = $this->find($id);
+        [$normalData, $translations] = $this->splitData($model, $data, $locale);
+        $this->updateModel($model, $normalData);
+        $this->updateTranslations($model, $translations);
+        return $model;
+    }
+
+    protected function splitData(Model $model, array $data, string $locale): array
+    {
         $defaultLocale = Language::getDefault()->first()->code;
 
         $normalData = [];
         $translations = [];
-
-        $model = $this->model->find($id);
-
         $translatable = $model->translatable ?? false;
 
         foreach ($data as $field => $value) {
@@ -73,24 +90,65 @@ abstract class BaseRepository
                 } else {
                     $translations[$locale][$field] = $value;
                 }
-                continue;
+            } else {
+                $normalData[$field] = $value;
             }
-
-            $normalData[$field] = $value;
         }
 
+        return [$normalData, $translations];
+    }
+
+    protected function updateModel(Model $model, array $normalData): void
+    {
         $model->fill($normalData);
         $model->save();
+    }
 
-        // Nur Non-Default Translations speichern
+    protected function updateTranslations(Model $model, array $translations): void
+    {
         foreach ($translations as $locale => $translatedData) {
             foreach ($translatedData as $field => $value) {
                 $model->lang($locale)->$field = $value;
             }
         }
-
-        return $model;
     }
+
+//    public function update_old(int $id, array $data, string $locale): Model
+//    {
+//        $defaultLocale = Language::getDefault()->first()->code;
+//
+//        $normalData = [];
+//        $translations = [];
+//
+//        $model = $this->model->find($id);
+//
+//        $translatable = $model->translatable ?? false;
+//
+//        foreach ($data as $field => $value) {
+//            if ($translatable && $model->isTranslatableAttribute($field)) {
+//                if ($locale === $defaultLocale) {
+//                    $normalData[$field] = $value;
+//                } else {
+//                    $translations[$locale][$field] = $value;
+//                }
+//                continue;
+//            }
+//
+//            $normalData[$field] = $value;
+//        }
+//
+//        $model->fill($normalData);
+//        $model->save();
+//
+//        // Nur Non-Default Translations speichern
+//        foreach ($translations as $locale => $translatedData) {
+//            foreach ($translatedData as $field => $value) {
+//                $model->lang($locale)->$field = $value;
+//            }
+//        }
+//
+//        return $model;
+//    }
 
     /**
      * @param array $params
@@ -135,7 +193,11 @@ abstract class BaseRepository
     {
         $companyIds = session()->get('company_ids');
         if (count($companyIds)){
-            $query->whereIn('company_id', $companyIds);
+//            $query->whereIn('company_id', $companyIds)->orWhereNull('company_id');
+            $query->where(function ($q) use ($companyIds) {
+                $q->whereIn('company_id', $companyIds);
+                $q->orWhereNull('company_id');
+            });
         }
     }
 
@@ -368,18 +430,39 @@ abstract class BaseRepository
     {
         $count = 0;
         try {
+            $query = $this->model->newQuery();
+
             if ($all) {
-                $count = $this->model->whereNotIn('id', $excludedIds)->count();
-                $this->model->whereNotIn('id', $excludedIds)->delete();
+                $records = $query->whereNotIn('id', $excludedIds)->get();
             } else {
-                $count = $this->model->whereIn('id', $ids)->whereNotIn('id', $excludedIds)->count();
-                $this->model->whereIn('id', $ids)->whereNotIn('id', $excludedIds)->delete();
+                $records = $query->whereIn('id', $ids)->whereNotIn('id', $excludedIds)->get();
             }
+
+            foreach ($records as $record) {
+                foreach (['image', 'images', 'document', 'documents'] as $relation) {
+                    if ($record->$relation) {
+                        $items = $record->$relation instanceof \Illuminate\Support\Collection
+                            ? $record->$relation
+                            : collect([$record->$relation]);
+
+                        foreach ($items as $file) {
+                            $file->deleteFile();
+                        }
+                    }
+                }
+
+                $record->delete();
+            }
+
+            $count = $records->count();
         } catch (\Exception $e) {
             Flux::toast($e->getMessage(), 'error');
         };
 
-        Flux::toast(text: __('core::messages.records_deleted', ['count' => $count]), variant: $count ? 'success' : 'warning' );
+        Flux::toast(
+            text: __('core::messages.records_deleted', ['count' => $count]),
+            variant: $count ? 'success' : 'warning'
+        );
     }
 
     /**

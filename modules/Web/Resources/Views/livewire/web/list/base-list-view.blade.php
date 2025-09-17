@@ -9,7 +9,7 @@ priority: 0
     <x-web.list.view>
         <x-slot:toolbar>
             @if($this->createViewRoute)
-            <flux:button href="{{ route($this->createViewRoute) }}" size="xs" icon="plus" tooltip="{{ __t('Create', 'Web') }}" class="cursor-pointer" wire:navigate/>
+            <flux:button href="{{ route($this->createViewRoute) }}" size="xs" icon="plus" tooltip="{{ __t('Create', 'Web') }}" class="cursor-pointer text-white" variant="primary" color="cyan" wire:navigate/>
             @endif
             <livewire:web.breadcrumbs.breadcrumbs :pageTitle="$this->title" />
         </x-slot:toolbar>
@@ -64,9 +64,9 @@ priority: 0
                     {!! $viewButtons !!}
                 </div>
             @endisset
-            <flux:input wire:model.live.debounce.2s="perPage" class="!w-12" size="xs"/>
+            <flux:input wire:model.live.debounce.2s="perPage" class="!w-12 ml-auto" size="xs"/>
             @if($data->hasPages())
-                <flux:pagination :paginator="$data" class="!border-none !py-0 ml-2" />
+                <flux:pagination :paginator="$data" class="!border-none !py-0 ml-auto" />
             @endif
         </x-slot:actions>
 

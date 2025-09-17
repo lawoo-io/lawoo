@@ -4,6 +4,7 @@ namespace Modules\Web\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use Modules\Core\Abstracts\BaseModel;
 use Modules\Core\Models\Traits\HasFiles;
 
@@ -55,4 +56,14 @@ class Company extends BaseModel
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    /**
+     * Get the user's initials
+     */
+    public function initials(): string
+    {
+        return Str::of($this->name)
+            ->explode(' ')
+            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+            ->implode('');
+    }
 }

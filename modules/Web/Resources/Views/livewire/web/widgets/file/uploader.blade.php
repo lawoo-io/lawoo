@@ -77,6 +77,15 @@ priority: 0
                         <div x-show="uploading" class="text-sm text-gray-500 text-center"><br><span x-text="progress + '%'"></span></div>
                     </div>
                 </div>
+                @if($this->files)
+                    @foreach($this->files as $file)
+                        <div class="relative group">
+                            <div class="{{ $this->imageClass }} rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
+                                <img src="{{ $file->temporaryUrl() }}" loading="lazy"/>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
                 @foreach($this->existingFiles as $file)
                     <div class="relative group" wire:key="existing-{{ $file->id }}">
                         <div class="{{ $this->imageClass }} rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">

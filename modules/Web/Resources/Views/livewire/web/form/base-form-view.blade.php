@@ -14,11 +14,9 @@ priority: 0
         </x-slot:toolbar>
 
         <x-slot:toolbarCenter>
-            @isset($headerCenter)
-                <flux:button.group>
-                    {!! $headerCenter  !!}
-                </flux:button.group>
-            @endisset
+            @if (method_exists($this, 'headerCenterView'))
+                @include($this->headerCenterView(), ['cmp' => $this])
+            @endif
         </x-slot:toolbarCenter>
 
         <x-slot:actions>
@@ -50,21 +48,12 @@ priority: 0
         <div class="flex-1 max-w-{{ $this->showMessages && $this->id ? '2/3' : 'full' }} ">
             <form wire:submit.prevent="save" class="border dark:border-gray-600 rounded-lg p-4">
                 @csrf
-                @if(isset($formTopLeft) || isset($formTopRight))
-                <div class="flex md:justify-between items-center pb-4 border-b dark:border-b-gray-600 lg:col-span-12 mb-3">
-                    @isset($formTopLeft)
-                    <div>
-                        {!! $formTopLeft !!}
+                @if (method_exists($this, 'extraHeaderView') && $this->extraHeaderView())
+                    <div class="flex md:justify-between items-center pb-4 border-b dark:border-b-gray-600 lg:col-span-12 mb-3">
+                        @include($this->extraHeaderView(), ['cmp' => $this])
                     </div>
-                    @endisset
-                    @isset($formTopRight)
-                    <div>
-                        {!! $formTopRight !!}
-                    </div>
-                    @endisset
-                </div>
                 @endif
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
                     @foreach($this->fields as $field => $options)
                         @if ($field !== 'tabs' && $field !== 'tab_*')
                             <x-web.form.types :field="$field" :options="$options"/>
@@ -72,7 +61,7 @@ priority: 0
                             <flux:tab.group class="mt-2 lg:col-span-12">
                                 <flux:tabs>
                                     @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
-                                        <flux:tab :name="$tabKey" class="cursor-pointer" :icon="$tabOptions['icon'] ?? false">{{ $tabOptions['label'] }}</flux:tab>
+                                        <flux:tab :name="$tabKey" class="cursor-pointer {{ in_array($tabKey, $this->tabsWithErrors) ? 'text-red-600! font-bold' : '' }}" :icon="$tabOptions['icon'] ?? false">{{ $tabOptions['label'] }}</flux:tab>
                                     @endforeach
                                 </flux:tabs>
                                 @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
@@ -93,8 +82,8 @@ priority: 0
                         size="sm"
                         variant="primary"
                         class="cursor-pointer"
-                        disabled
-                        wire:dirty.attr.remove="disabled"
+{{--                        disabled--}}
+{{--                        wire:dirty.attr.remove="disabled"--}}
                     >
                         @if ($this->type === 'edit')
                             {{ __t('Save', 'Web') }}

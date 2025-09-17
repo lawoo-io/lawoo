@@ -4,7 +4,7 @@ namespace Modules\Website\Providers;
 
 use Illuminate\Foundation\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
-use Modules\Website\Http\Middleware\WebsiteLocaleFromUrl;
+use Modules\Core\Http\Middleware\SetLocale;
 
 class WebsiteServiceProvider extends ServiceProvider
 {
@@ -24,7 +24,7 @@ class WebsiteServiceProvider extends ServiceProvider
         /**
          * Register Kernel
          */
-        $kernel->prependMiddlewareToGroup('web', WebsiteLocaleFromUrl::class);
+        $kernel->prependMiddlewareToGroup('web', SetLocale::class);
 
         /**
          * Register RouteServiceProvider
@@ -34,7 +34,7 @@ class WebsiteServiceProvider extends ServiceProvider
         /**
          * Load Translations from same Module
          */
-        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'website');
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang');
 
     }
 }

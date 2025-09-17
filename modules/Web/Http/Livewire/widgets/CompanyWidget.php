@@ -4,6 +4,7 @@ namespace Modules\Web\Http\Livewire\Widgets;
 
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -74,6 +75,15 @@ class CompanyWidget extends Component
         } else {
             return count($this->selected) . ' ' . __t('selected', 'Web');
         }
+    }
+
+    public function initials(string $RawName): string
+    {
+        return Str::of($RawName)
+            ->explode(' ')
+            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+            ->take(2)
+            ->implode('');
     }
 
     public function checkChecked(int $key): bool

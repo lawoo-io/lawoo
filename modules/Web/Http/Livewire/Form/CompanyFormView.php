@@ -63,7 +63,7 @@ class CompanyFormView extends BaseFormView
             'tabs' => [
                 'tab_one' => [
                     'label' => __t('Contact data', 'Web'),
-                    'class' => 'w-full grid grid-cols-12 gap-4',
+                    'class' => 'w-full grid grid-cols-1 lg:grid-cols-12 gap-4',
                     'fields' => [
                         'street' => [
                             'label' => __t('Street, No', 'Web'),
@@ -134,6 +134,10 @@ class CompanyFormView extends BaseFormView
                             'component' => 'web.cards.company',
                             'items' => [],
                             'model' => Company::class,
+                            'modal' => [
+                                'livewire' => 'web.form.company-form-view',
+                                'widthClass' => 'w-full',
+                            ]
                         ]
                     ]
                 ]
@@ -141,11 +145,18 @@ class CompanyFormView extends BaseFormView
         ];
     }
 
+    public function setRules(): void
+    {
+        $this->rules = [
+            'data.name' => 'required',
+        ];
+    }
+
     public function getCompanies(): array
     {
         $companies = Company::active();
         if($this->record) {
-            $companies->where('id', '!=', $this->record->id)->where('parent_id', '=', null);
+            $companies->where('id', '!=', $this->record->id);
         }
         return $companies->pluck('name', 'id')->toArray();
     }

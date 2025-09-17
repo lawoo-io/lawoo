@@ -139,11 +139,6 @@ class ModuleRepository extends BaseRepository
             $reflection = new ReflectionClass($class);
             if (! $reflection->isSubclassOf(\Livewire\Component::class)) continue;
 
-//            $componentName = Str::of($class)
-//                ->after("Modules\\")
-//                ->replace(['\\Http\\Livewire\\', '\\'], ['.', '.'])
-//                ->replace('Component', '')
-//                ->lower();
             $componentName = Str::of($class)
                 ->after("Modules\\")
                 ->replace(['\\Http\\Livewire\\', '\\'], ['.', '.'])
@@ -153,9 +148,6 @@ class ModuleRepository extends BaseRepository
                     $parts = explode('.', $str);
                     return implode('.', array_map(fn($part) => Str::kebab($part), $parts));
                 });
-
-//            echo "Test: $componentName\n";
-//            echo "Test 2: $class\n";
 
             Livewire::component($componentName->toString(), $class);
         }

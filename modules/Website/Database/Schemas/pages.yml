@@ -1,0 +1,23 @@
+pages:
+  base: 1
+  sequence: 20
+  fields:
+    id: id
+    name: string=256.nullable
+    url: string=256.nullable
+    meta_title: string=100.nullable
+    meta_description: string=256.nullable
+    internal_note: string.nullable
+    layout_id: integer
+    content: longText.nullable
+    is_active: boolean.default=1
+    is_public: boolean.default=0
+    is_changed: boolean.default=0
+    path: string.unique.nullable
+    website_id: integer.nullable
+    company_id: integer.nullable
+    theme_id: integer.nullable
+    created_by: integer.nullable
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable
+    deleted_at: timestamp.nullable

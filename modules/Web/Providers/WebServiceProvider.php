@@ -32,7 +32,12 @@ class WebServiceProvider extends ServiceProvider
         /**
          * Load Translations
          */
-        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'web');
+        $this->loadTranslationsFrom(__DIR__.'/../Resources/lang');
+
+        /**
+         * Load json translation
+         */
+        $this->loadJsonTranslationsFrom(__DIR__.'/../Resources/lang/strings');
 
         /**
          * Load Helpers

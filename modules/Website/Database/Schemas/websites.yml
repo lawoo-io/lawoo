@@ -1,0 +1,17 @@
+websites:
+  base: 1
+  sequence: 20
+  fields:
+    id: id
+    name: string=256.nullable
+    slug: string=256.unique
+    url: string=256.unique.nullable.index
+    meta_title: string=100.nullable
+    meta_description: string=200.nullable
+    is_active: boolean.default=1
+    company_id: integer.nullable
+    created_by: integer.nullable
+    theme_id: integer.nullable
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable
+    deleted_at: timestamp.nullable

@@ -1,0 +1,6 @@
+@extends('{{ layoutName }}')
+@section('title', '{{ metaTitle }}')
+@section('meta_title', '{{ metaTitle }}')
+@section('meta_description', '{{ metaDescription }}')
+
+{{ content }}

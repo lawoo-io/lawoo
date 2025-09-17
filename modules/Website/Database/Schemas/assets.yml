@@ -1,0 +1,19 @@
+assets:
+  base: 1
+  sequence: 40
+  fields:
+    id: id
+    name: string=150.nullable
+    type: string=50.nullable
+    path: string=150.nullable
+    internal_note: string=256.nullable
+    content: longText.nullable
+    is_active: boolean.default=1
+    is_public: boolean.default=0
+    is_changed: boolean.default=0
+    company_id: integer.nullable
+    theme_id: integer.nullable
+    website_id: integer.nullable
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable
+    deleted_at: timestamp.nullable

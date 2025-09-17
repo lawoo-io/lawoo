@@ -41,6 +41,7 @@ class FileUploader extends Component
 
     public function mount(string $field, array $options = [], $permissionForShow = '', $permissionForEdit = ''): void
     {
+        $this->existingFiles = collect();
         $this->model = $options['model'] ?? null;
         $this->field = $field;
         $this->accept = $options['accept'] ?? null;

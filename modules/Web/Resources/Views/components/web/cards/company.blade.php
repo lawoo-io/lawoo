@@ -9,24 +9,10 @@ priority: 0
     @foreach($items as $item)
         <div class="lg:col-span-4 md:col-span-6 col-span-12">
             <div class="relative p-3 border dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
-                <a href="{{ route('lawoo.settings.companies.records.view', [$item->id]) }}" class="absolute inset-0 z-5 cursor-pointer" wire:navigate></a>
-                <div class="pointer-events-auto z-10 absolute top-1 right-1.5">
-                    <flux:dropdown position="bottom" align="end" class="ml-2">
-                        <flux:button variant="ghost" size="xs" icon="ellipsis-vertical" inset="top right bottom" />
-                        <flux:menu>
-                            @can('web.settings.company.delete')
-                                <flux:menu.item
-                                    class="size-6 cursor-pointer"
-                                    wire:click="deleteSub({{ $item->id }})"
-                                    wire:confirm="{{ __t('Are you sure you want to delete the selected items?', 'Web') }}"
-                                >
-                                    <flux:icon.trash class="size-4 mr-2 text-red-600" />
-                                    {{ __t('Remove', 'Web') }}
-                                </flux:menu.item>
-                            @endcan
-                        </flux:menu>
-                    </flux:dropdown>
-                </div>
+                @php
+                $url = route('lawoo.settings.companies.records.view', ['id' => $item->id]);
+                @endphp
+                <a wire:click="openModal('{{ $modal ? $modal['livewire'] : '' }}', {{ $item->id }}, '{{ $url }}')" class="absolute inset-0 z-5 cursor-pointer" wire:navigate></a>
                 <div class="relative z-0">
                     <div class="grid grid-cols-6">
                         @if($item->hasImage())

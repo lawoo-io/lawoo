@@ -64,9 +64,9 @@ Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->name('lawoo.
 
 });
 
-Route::get('/', function () {
-    return redirect()->route('lawoo.dashboard');
-});
+//Route::get('/', function () {
+//    return redirect()->route('lawoo.dashboard');
+//});
 
 /**
  * Auth Guests
