@@ -9,37 +9,38 @@ priority: 0
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" xmlns:flug="http://www.w3.org/1999/html">
 <head>
     @include('modules.web.partials.head')
-    @vite(['resources/js/web/alpineStore.js', 'resources/js/web/modalUrl.js', 'resources/js/web/codemirror.js'])
+    @vite(['resources/js/web/modalUrl.js', 'resources/js/web/codemirror.js'])
 </head>
 <body class="min-h-screen bg-white dark:bg-zinc-800 test">
 <flux:sidebar id="sidebar"
               sticky
-              stashable
+              collapsible
               class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-    <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
-    <span class="cursor-pointer !absolute right-1 mt-2">
-        <flux:icon.chevron-left class="size-4 text-gray-400 hover:text-gray-700" size="xs"/>
-        <flux:icon.chevron-right class="size-4 text-gray-400 hover:text-gray-700" size="xs"/>
-    </span>
-
-    <a href="{{ route('lawoo.dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse " wire:navigate>
-        <x-web.svg.logo-sidebar class="size-10" />
-    </a>
+    <flux:sidebar.header>
+        <flux:sidebar.brand
+            href="{{ route('lawoo.dashboard') }}"
+            logo="{{ Vite::asset('resources/images/web/logo/b.png') }}"
+            logo:dark="{{ Vite::asset('resources/images/web/logo/w.png') }}"
+            name="Lawoo"
+            wire:navigate
+        />
+        <flux:sidebar.collapse class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
+    </flux:sidebar.header>
 
     <!-- Navigation Left -->
     <livewire:web.nav.nav-left/>
 
     <flux:spacer/>
 
-    <flux:navlist variant="outline">
-        <flux:navlist.item icon="folder-git-2" href="https://github.com/lawoo-io/lawoo" target="_blank">
-            <span>{{ __t('Repository', 'Web') }}</span>
-        </flux:navlist.item>
+    <flux:sidebar.nav>
+        <flux:sidebar.item icon="folder-git-2" href="https://github.com/lawoo-io/lawoo" target="_blank">
+            {{ __t('Repository', 'Web') }}
+        </flux:sidebar.item>
 
-        <flux:navlist.item icon="book-open-text" href="https://lawoo.io/documentation" target="_blank">
-            <span>{{ __t('Documentation', 'Web') }}</span>
-        </flux:navlist.item>
-    </flux:navlist>
+        <flux:sidebar.item icon="book-open-text" href="https://lawoo.io/documentation" target="_blank">
+            {{ __t('Documentation', 'Web') }}
+        </flux:sidebar.item>
+    </flux:sidebar.nav>
 
 </flux:sidebar>
 <flux:header class="bg-white lg:bg-zinc-50 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 flex items-center !pl-1 !pr-1">
