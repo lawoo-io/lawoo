@@ -79,17 +79,3 @@ This command will:
 •	Create the modules/ directory in your Laravel project 
 
 •	Set up autoloading and prepare the system for use
-
-### 🛠️ 7. Run database migrations
-
-```bash
-php artisan migrate --seed
-php artisan lawoo:check
-php artisan lawoo:install Web
-```
-
-### 8. Install GLightbox
-
-```bash
-npm install glightbox
-```

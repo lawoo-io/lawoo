@@ -3,6 +3,7 @@
 namespace Modules\Core\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 
@@ -24,6 +25,10 @@ class InitCommand extends Command
             File::ensureDirectoryExists($targetBase);
 
             $this->info("Modules directory created in /modules directory");
+
+            Artisan::call("migrate --seed");
+            Artisan::call("lawoo:check");
+            Artisan::call("lawoo:install Web");
 
         } catch (\Exception $e) {
             $this->error('❌ Installation failed: ' . $e->getMessage());
@@ -59,6 +64,12 @@ class InitCommand extends Command
 
         if (!$result->successful()) {
             throw new \Exception('Codemirror install failed: ' . $result->errorOutput());
+        }
+
+        // Install glightbox
+        $result = Process::run('npm install glightbox');
+        if (!$result->successful()) {
+            throw new \Exception('Glightbox install failed: ' . $result->errorOutput());
         }
 
         $this->info('✅ NPM dependencies installed');
