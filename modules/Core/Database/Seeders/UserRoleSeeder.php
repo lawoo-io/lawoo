@@ -16,7 +16,6 @@ class UserRoleSeeder extends Seeder
     {
         $this->assignDefaultRoles();
         $this->createSuperAdmin();
-//        $this->createDemoUsers();
     }
 
     /**
@@ -28,27 +27,8 @@ class UserRoleSeeder extends Seeder
         $firstUser = UserExtended::first();
         if ($firstUser) {
             $firstUser->delete();
-//            $firstUser->update([
-//                'is_super_admin' => true,
-//                'is_active' => true
-//            ]);
-//
-//            $superAdminRole = Role::where('slug', 'super-admin')->first();
-//            if ($superAdminRole) {
-//                $firstUser->assignRole($superAdminRole);
-//            }
         }
 
-        // Assign basic user role to other users
-//        $otherUsers = UserExtended::where('id', '>', 1)->get();
-//        $userRole = Role::where('slug', 'user')->first();
-//
-//        if ($userRole) {
-//            foreach ($otherUsers as $user) {
-//                $user->update(['is_active' => true]);
-//                $user->assignRole($userRole);
-//            }
-//        }
     }
 
 
@@ -77,42 +57,4 @@ class UserRoleSeeder extends Seeder
         }
     }
 
-    /**
-     * Create demo users for testing
-     */
-    protected function createDemoUsers(): void
-    {
-
-        // Create Manager User
-        $manager = UserExtended::firstOrCreate(
-            ['email' => 'manager@lawoo.local'],
-            [
-                'name' => 'Manager User',
-                'password' => bcrypt('password'),
-                'is_active' => true,
-                'email_verified_at' => now()
-            ]
-        );
-
-        $managerRole = Role::where('slug', 'manager')->first();
-        if ($managerRole) {
-            $manager->assignRole($managerRole);
-        }
-
-        // Create Basic User
-        $user = UserExtended::firstOrCreate(
-            ['email' => 'user@lawoo.local'],
-            [
-                'name' => 'Basic User',
-                'password' => bcrypt('password'),
-                'is_active' => true,
-                'email_verified_at' => now()
-            ]
-        );
-
-        $userRole = Role::where('slug', 'user')->first();
-        if ($userRole) {
-            $user->assignRole($userRole);
-        }
-    }
 }
