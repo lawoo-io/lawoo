@@ -1,5 +1,8 @@
 <?php
 
+$originalCwd = getcwd();
+chdir(base_path());
+
 return [
     /**
      * Available languages
@@ -62,3 +65,4 @@ return [
     ],
 
 ];
+chdir($originalCwd);

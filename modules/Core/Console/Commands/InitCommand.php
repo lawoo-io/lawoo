@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Process;
 
 class InitCommand extends Command
 {
-    protected $signature = 'lawoo:init';
+    protected $signature = 'lawoo:init {--f|fresh : Cleaning node_modules}';
     protected $description = 'Install all Lawoo modules into /modules';
 
     public function handle()

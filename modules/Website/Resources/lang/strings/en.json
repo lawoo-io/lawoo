@@ -41,5 +41,6 @@
     "Assets": "Assets",
     "Create Asset": "Create Asset",
     "Update Asset": "Update Asset",
-    "Type": "Type"
+    "Type": "Type",
+    "Filter": ""
 }

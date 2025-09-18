@@ -65,7 +65,9 @@ class ModuleChecker
                 } catch (\JsonException $e) {
                     echo "❌ Error in '$mod/manifest.json': " . $e->getMessage() . "\n";
                 }
+            }
 
+            foreach ($modules as $mod) {
                 ModuleDependencyChecker::run($mod);
             }
 
