@@ -19,7 +19,7 @@ class PathService
         }
 
         if(empty($path)) {
-            throw new \RuntimeException('Module path not found');
+            throw new \RuntimeException('Module path not found test');
         }
 
         Log::info('Path: '.$path);
