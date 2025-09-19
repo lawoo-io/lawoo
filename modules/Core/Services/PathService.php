@@ -17,12 +17,12 @@ class PathService
                 break;
             }
         }
-        Log::info('Path: '.$path);
 
         if(empty($path)) {
             throw new \RuntimeException('Module path not found');
         }
 
+        Log::info('Path: '.$path);
         return $path;
     }
 
