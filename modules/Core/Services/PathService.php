@@ -8,7 +8,6 @@ class PathService
 {
     public static function getByModule($module): string
     {
-        Log::info('/////MODULE: '.$module.'//////');
         $path = '';
         foreach (config('app.modules_base_paths') as $base_path) {
             Log::info("Base path: {$base_path}");
@@ -18,12 +17,11 @@ class PathService
             }
         }
 
-        Log::info('Path before: '.$path);
         if(empty($path)) {
-            throw new \RuntimeException('Module path not found test');
+            Log::info('No path before: '.$module);
+            return false;
         }
 
-        Log::info('Path: '.$path);
         return $path;
     }
 
