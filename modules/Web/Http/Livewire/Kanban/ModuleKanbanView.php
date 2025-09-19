@@ -68,7 +68,7 @@ class ModuleKanbanView extends BaseKanbanView
                     'field' => 'enabled',
                     'value' => true,
                 ],
-                'click' => 'update',
+                'click' => 'updateModule',
                 'size' => 'xs',
             ],
             'info' => [
@@ -177,15 +177,15 @@ class ModuleKanbanView extends BaseKanbanView
             Artisan::call('lawoo:install', [
                 'module' => $module->system_name,
             ]);
-            $this->reset(['confirmData']);
             Flux::modals()->close();
-            $this->refresh();
+            $this->reset(['confirmData']);
+            $this->js('window.location.reload();');
         } catch (\Exception $exception) {
             dd($exception->getMessage());
         }
     }
 
-    public function update(int $id): void
+    public function updateModule(int $id): void
     {
         try {
             $module = $this->resolveRepository()->find($id);
@@ -194,7 +194,9 @@ class ModuleKanbanView extends BaseKanbanView
                     'module' => $module->system_name,
                 ]);
                 \Log::info("Module {$module->system_name} updated successfully.");
-                $this->refresh();
+                Flux::modals()->close();
+                $this->reset(['confirmData']);
+                $this->js('window.location.reload();');
             }
         } catch (\Exception $exception) {
             dd($exception->getMessage());
