@@ -66,6 +66,12 @@ class InitCommand extends Command
             throw new \Exception('Codemirror install failed: ' . $result->errorOutput());
         }
 
+        // install fast-glob für die dynamische vite assets
+        $result = Process::run('npm install fast-glob --save-dev');
+        if (!$result->successful()) {
+            throw new \Exception('fast-glob install failed: ' . $result->errorOutput());
+        }
+
         // Install glightbox
         $result = Process::run('npm install glightbox');
         if (!$result->successful()) {

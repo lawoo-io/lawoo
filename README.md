@@ -79,3 +79,30 @@ This command will:
 •	Create the modules/ directory in your Laravel project 
 
 •	Set up autoloading and prepare the system for use
+
+### 7. Change vite.config.js (only for production)
+```javascript
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
+import fg from 'fast-glob'
+
+// Dynamisch alle Assets einsammeln
+const resourceInputs = fg.sync([
+    'resources/js/**/*.js',
+    'resources/css/**/*.css',
+    'resources/images/**/*.{png,jpg,jpeg,svg,gif,webp}'
+])
+
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: resourceInputs,
+            refresh: true,
+        }),
+        tailwindcss(),
+    ],
+});
+
+```
