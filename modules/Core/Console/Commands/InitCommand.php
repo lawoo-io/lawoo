@@ -26,10 +26,6 @@ class InitCommand extends Command
 
             $this->info("Modules directory created in /modules directory");
 
-            Artisan::call("migrate --seed");
-            Artisan::call("lawoo:check");
-            Artisan::call("lawoo:install Web");
-
         } catch (\Exception $e) {
             $this->error('❌ Installation failed: ' . $e->getMessage());
             return Command::FAILURE;
@@ -50,6 +46,8 @@ class InitCommand extends Command
 
         if (!$result->successful()) {
             throw new \Exception('NPM install failed: ' . $result->errorOutput());
+        } else {
+            $this->info('NPM installed successfully.');
         }
 
         // GLightbox installation
@@ -57,6 +55,8 @@ class InitCommand extends Command
 
         if (!$result->successful()) {
             throw new \Exception('GLightbox install failed: ' . $result->errorOutput());
+        } else {
+            $this->info('GLightbox installed successfully.');
         }
 
         // Install Codemirror
@@ -64,18 +64,24 @@ class InitCommand extends Command
 
         if (!$result->successful()) {
             throw new \Exception('Codemirror install failed: ' . $result->errorOutput());
+        } else {
+            $this->info('Codemirror installed successfully.');
         }
 
         // install fast-glob für die dynamische vite assets
         $result = Process::run('npm install fast-glob --save-dev');
         if (!$result->successful()) {
             throw new \Exception('fast-glob install failed: ' . $result->errorOutput());
+        } else {
+            $this->info('fast-glob installed successfully.');
         }
 
         // Install glightbox
         $result = Process::run('npm install glightbox');
         if (!$result->successful()) {
             throw new \Exception('Glightbox install failed: ' . $result->errorOutput());
+        } else {
+            $this->info('Glightbox installed successfully.');
         }
 
         $this->info('✅ NPM dependencies installed');

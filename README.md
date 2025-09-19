@@ -80,7 +80,22 @@ This command will:
 
 •	Set up autoloading and prepare the system for use
 
-### 7. Change vite.config.js (only for production)
+### 7. Migrate tables
+```shell
+php artisan migrate --seed
+```
+
+### 8. Scann all Modules
+```shell
+php artisan migrate --seed
+```
+
+### 9. Install Base Module
+```shell
+php artisan migrate --seed
+```
+
+### 10. Change vite.config.js (only for production)
 ```javascript
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
