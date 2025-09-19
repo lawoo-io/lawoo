@@ -19,7 +19,7 @@ class PathService
 
         if(empty($path)) {
             Log::info('No path before: '.$module);
-            return false;
+            return '';
         }
 
         return $path;
