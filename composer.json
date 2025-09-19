@@ -27,10 +27,17 @@
     "post-autoload-dump": []
   },
   "repositories": {
+    "lawoo": {
+      "type": "vcs",
+      "url": "https://github.com/lawoo-io/lawoo.git"
+    },
     "flux-pro": {
       "type": "composer",
       "url": "https://composer.fluxui.dev"
     }
+  },
+  "require": {
+    "lawoo-io/lawoo": "dev-main"
   },
   "minimum-stability": "dev",
   "prefer-stable": true
