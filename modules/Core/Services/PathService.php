@@ -11,11 +11,13 @@ class PathService
         Log::info('/////MODULE: '.$module.'//////');
         $path = '';
         foreach (config('app.modules_base_paths') as $base_path) {
+            Log::info("Base path: {$base_path}");
             if(is_dir($base_path.'/'.$module)) {
                 $path = $base_path;
                 break;
             }
         }
+        Log::info('Path: '.$path);
 
         if(empty($path)) {
             throw new \RuntimeException('Module path not found');
