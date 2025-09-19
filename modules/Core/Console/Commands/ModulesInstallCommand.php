@@ -101,16 +101,15 @@ class ModulesInstallCommand extends Command
         /**
          * Run translation command
          */
-//        Artisan::call('lawoo:sync-ui-strings ' . $module . ' --cleanup');
         Artisan::call('lawoo:sync-ui-strings', [
             'module' => $module,
             '--cleanup' => true,
+            '--force' => true,
         ]);
 
         /*
          * Register permissions
          */
-//        Artisan::call('lawoo:rbac:sync ' . $module);
         Artisan::call('lawoo:rbac:sync', [
             'module' => $module,
         ]);
@@ -118,7 +117,6 @@ class ModulesInstallCommand extends Command
         /*
          * Sync navigation
          */
-//        Artisan::call('lawoo:nav:sync ' . $module);
         Artisan::call('lawoo:nav:sync', [
             'module' => $module,
         ]);

@@ -174,7 +174,6 @@ class ModuleKanbanView extends BaseKanbanView
     {
         try {
             $module = $this->resolveRepository()->find($id);
-//            Artisan::call('lawoo:install ' . $module->system_name);
             Artisan::call('lawoo:install', [
                 'module' => $module->system_name,
             ]);
@@ -191,7 +190,6 @@ class ModuleKanbanView extends BaseKanbanView
         try {
             $module = $this->resolveRepository()->find($id);
             if($module) {
-//                Artisan::call('lawoo:update ' . $module->system_name);
                 Artisan::call('lawoo:update', [
                     'module' => $module->system_name,
                 ]);
@@ -226,7 +224,6 @@ class ModuleKanbanView extends BaseKanbanView
     {
         try {
             $module = $this->resolveRepository()->find($id);
-//            Artisan::call('lawoo:remove ' . $module->system_name);
             Artisan::call('lawoo:remove', [
                 'module' => $module->system_name,
             ]);
