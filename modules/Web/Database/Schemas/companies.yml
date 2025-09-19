@@ -8,8 +8,8 @@ companies:
     street_2: string.nullable
     zip: string=20.nullable
     city: string.nullable
-    country_id: foreignId.nullable.constrained.nullOnDelete
-    parent_id: foreignId.nullable.constrained=companies.nullOnDelete
+    country_id: integer.nullable
+    parent_id: integer.nullable
     is_active: boolean.default=1
     phone: string=50.nullable
     mobile: string=50.nullable

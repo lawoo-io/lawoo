@@ -2,5 +2,5 @@ user_companies:
   base: 1
   sequence: 20
   fields:
-    user_id: foreignId.constrained=users.cascadeOnDelete
-    company_id: foreignId.constrained=companies.cascadeOnDelete
+    user_id: integer.nullable
+    company_id: integer.nullable

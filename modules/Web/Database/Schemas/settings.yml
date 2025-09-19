@@ -4,7 +4,7 @@ settings:
   fields:
     id: id
     value: string.nullable
-    settings_menu_id: foreignId.constrained.onDelete=cascade
+    settings_menu_id: integer.nullable
     key: string.unique.index
     module_name: string=100.nullable
     created_at: timestamp.nullable

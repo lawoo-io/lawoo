@@ -5,7 +5,7 @@ user_settings:
     id: id
     name: string=100
     data: json
-    user_id: foreignId.constrained.nullOnDelete.index
+    user_id: integer.nullable
     key: string=256.index
     default: boolean.default=0
     public: boolean.default=0.index
