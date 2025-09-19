@@ -177,6 +177,7 @@ class ModuleKanbanView extends BaseKanbanView
             Artisan::call('lawoo:install ' . $module->system_name);
             $this->reset(['confirmData']);
             Flux::modals()->close();
+            $this->refresh();
         } catch (\Exception $exception) {
             dd($exception->getMessage());
         }
@@ -189,6 +190,7 @@ class ModuleKanbanView extends BaseKanbanView
             if($module) {
                 Artisan::call('lawoo:update ' . $module->system_name);
                 \Log::info("Module {$module->system_name} updated successfully.");
+                $this->refresh();
             }
         } catch (\Exception $exception) {
             dd($exception->getMessage());
