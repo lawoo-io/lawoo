@@ -17,7 +17,7 @@ class PathService
         }
 
         if(empty($path)) {
-            throw new \RuntimeException('Module path not found test');
+            throw new \RuntimeException('Module path not found.');
         }
 
         return $path;

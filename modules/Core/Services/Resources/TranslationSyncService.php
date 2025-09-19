@@ -98,7 +98,7 @@ class TranslationSyncService
             }
 
             foreach ($files as $file) {
-                $fileKeys = $this->processFile($file, $moduleName, $config);
+                $fileKeys = $this->processFile($file, $moduleName, $config, $modulePath);
                 $moduleActiveKeys = array_merge($moduleActiveKeys, $fileKeys);
             }
 
@@ -121,7 +121,7 @@ class TranslationSyncService
     /**
      * Verarbeitet eine einzelne Datei
      */
-    private function processFile(\SplFileInfo $file, string $defaultModule, array $config): array
+    private function processFile(\SplFileInfo $file, string $defaultModule, array $config, string $modulePath = ''): array
     {
         $contents = $file->getContents();
         $translationKeys = $this->extractTranslationKeys($contents);
@@ -137,7 +137,7 @@ class TranslationSyncService
             $targetModule = $keyData['module'] ?: $defaultModule;
             $activeKeys[] = $keyData['key'];
 
-            if ($this->syncTranslationKey($keyData['key'], $targetModule, $config)) {
+            if ($this->syncTranslationKey($keyData['key'], $targetModule, $config, $modulePath)) {
                 $fileUpdated = true;
             }
         }
@@ -176,18 +176,18 @@ class TranslationSyncService
     /**
      * Synchronisiert einen einzelnen Übersetzungsschlüssel
      */
-    private function syncTranslationKey(string $key, string $module, array $config): bool
+    private function syncTranslationKey(string $key, string $module, array $config, string $modulePath = ''): bool
     {
 
         $updated = false;
 
         foreach ($config['supported_locales'] as $locale) {
-            if ($this->syncToJsonFile($key, $module, $locale, $config)) {
+            if ($this->syncToJsonFile($key, $module, $locale, $config, $modulePath)) {
                 $updated = true;
             }
 
             if (!$config['dry_run']) {
-                $this->syncToDatabase($key, $module, $locale, $config);
+                $this->syncToDatabase($key, $module, $locale, $config, $modulePath);
             }
         }
 
@@ -197,9 +197,9 @@ class TranslationSyncService
     /**
      * Synchronisiert zu JSON-Datei
      */
-    private function syncToJsonFile(string $key, string $module, string $locale, array $config): bool
+    private function syncToJsonFile(string $key, string $module, string $locale, array $config, string $modulePath = ''): bool
     {
-        $jsonFilePath = $this->getJsonFilePath($module, $locale);
+        $jsonFilePath = $this->getJsonFilePath($module, $locale, $modulePath);
         $this->ensureDirectoryExists(dirname($jsonFilePath));
 
         $jsonContent = $this->loadJsonFile($jsonFilePath);
@@ -230,9 +230,9 @@ class TranslationSyncService
     /**
      * Synchronisiert zur Datenbank
      */
-    private function syncToDatabase(string $key, string $module, string $locale, array $config): void
+    private function syncToDatabase(string $key, string $module, string $locale, array $config, string $modulePath = ''): void
     {
-        $jsonFilePath = $this->getJsonFilePath($module, $locale);
+        $jsonFilePath = $this->getJsonFilePath($module, $locale, $modulePath);
         $jsonContent = $this->loadJsonFile($jsonFilePath);
         $valueFromJson = $jsonContent[$key] ?? $key;
 
@@ -316,9 +316,12 @@ class TranslationSyncService
     /**
      * Helper-Methoden
      */
-    private function getJsonFilePath(string $module, string $locale): string
+    private function getJsonFilePath(string $module, string $locale, string $modulePath = ''): string
     {
-        return PathService::getModulePath($module) . "/Resources/lang/strings/{$locale}.json";
+        if (empty($modulePath)) {
+            $modulePath = PathService::getModulePath($module);
+        }
+        return $modulePath . "/Resources/lang/strings/{$locale}.json";
     }
 
     private function ensureDirectoryExists(string $directory): void
