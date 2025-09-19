@@ -2,10 +2,13 @@
 
 namespace Modules\Core\Services;
 
+use Illuminate\Support\Facades\Log;
+
 class PathService
 {
     public static function getByModule($module): string
     {
+        Log::info('/////MODULE: '.$module.'//////');
         $path = '';
         foreach (config('app.modules_base_paths') as $base_path) {
             if(is_dir($base_path.'/'.$module)) {
