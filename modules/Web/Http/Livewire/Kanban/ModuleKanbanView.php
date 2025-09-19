@@ -225,7 +225,7 @@ class ModuleKanbanView extends BaseKanbanView
         try {
             $module = $this->resolveRepository()->find($id);
             Artisan::call('lawoo:remove', [
-                'module' => $module->system_name,
+                'name' => $module->system_name,
             ]);
             \Log::info("Module {$module->system_name} removed successfully.");
             Flux::modals()->close();
