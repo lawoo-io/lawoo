@@ -87,12 +87,12 @@ php artisan migrate --seed
 
 ### 8. Scann all Modules
 ```shell
-php artisan migrate --seed
+php artisan lawoo:check
 ```
 
 ### 9. Install Base Module
 ```shell
-php artisan migrate --seed
+php artisan lawoo:install Web
 ```
 
 ### 10. Change vite.config.js (only for production)
