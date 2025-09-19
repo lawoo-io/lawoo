@@ -19,5 +19,5 @@ priority: 0
 
 @stack('styles')
 
-@vite(['resources/css/web/app.css', 'resources/js/app.js'])
+@vite(['resources/css/web/app.css', 'resources/js/web/app.js'])
 @fluxAppearance
