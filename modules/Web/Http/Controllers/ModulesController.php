@@ -23,7 +23,7 @@ class ModulesController extends BaseController
 
     public function check()
     {
-        Artisan::call('module:check');
+        Artisan::call('lawoo:check');
         return redirect()->route('lawoo.modules');
     }
 }
