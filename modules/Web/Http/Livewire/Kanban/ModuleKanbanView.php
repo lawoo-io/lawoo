@@ -174,7 +174,11 @@ class ModuleKanbanView extends BaseKanbanView
     {
         try {
             $module = $this->resolveRepository()->find($id);
-            Artisan::call('lawoo:install ' . $module->system_name);
+//            Artisan::call('lawoo:install ' . $module->system_name);
+            Artisan::call('lawoo:install', [
+                'module' => $module->system_name,
+                '--force' => true,
+            ]);
             $this->reset(['confirmData']);
             Flux::modals()->close();
             $this->refresh();
@@ -188,7 +192,11 @@ class ModuleKanbanView extends BaseKanbanView
         try {
             $module = $this->resolveRepository()->find($id);
             if($module) {
-                Artisan::call('lawoo:update ' . $module->system_name);
+//                Artisan::call('lawoo:update ' . $module->system_name);
+                Artisan::call('lawoo:update', [
+                    'module' => $module->system_name,
+                    '--force' => true,
+                ]);
                 \Log::info("Module {$module->system_name} updated successfully.");
                 $this->refresh();
             }
@@ -220,7 +228,11 @@ class ModuleKanbanView extends BaseKanbanView
     {
         try {
             $module = $this->resolveRepository()->find($id);
-            Artisan::call('lawoo:remove ' . $module->system_name);
+//            Artisan::call('lawoo:remove ' . $module->system_name);
+            Artisan::call('lawoo:remove', [
+                'module' => $module->system_name,
+                '--force' => true,
+            ]);
             \Log::info("Module {$module->system_name} removed successfully.");
             Flux::modals()->close();
             $this->reset(['confirmData']);

@@ -67,7 +67,10 @@ class ModulesRemoveCommand extends Command
         /**
          * Remove Navigation
          */
-        Artisan::call('lawoo:nav:remove ' . $name . ' --force');
+//        Artisan::call('lawoo:nav:remove ' . $name . ' --force');
+        Artisan::call('lawoo:nav:remove', [
+            'module' => $name,
+        ]);
         Artisan::call('cache:clear');
 
         if($this->option('remove-db')){

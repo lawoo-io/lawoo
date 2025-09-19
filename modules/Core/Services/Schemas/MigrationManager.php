@@ -91,7 +91,7 @@ class MigrationManager
             $migrationFiles = $dbModel->migrationFiles->where('module_id', $module->id);
             foreach ($migrationFiles as $migrationFile) {
                 echo $migrationFile->path . "\n";
-                Artisan::call('migrate:reset', ['--path' => $migrationFile->path]);
+                Artisan::call('migrate:reset', ['--path' => $migrationFile->path, '--force' => true]);
                 $migrationFile->delete();
             }
 
@@ -125,7 +125,10 @@ class MigrationManager
     public static function runMigrateByFilePath(MigrationFile $migrationFile, DbModel $dbModel): void
     {
         try {
-            Artisan::call("migrate --path=$migrationFile->path");
+            Artisan::call('migrate', [
+                '--path'  => $migrationFile->path,
+                '--force' => true,
+            ]);
             $migrationFile->migrated = true;
             $migrationFile->save();
         } catch (\Exception $e) {

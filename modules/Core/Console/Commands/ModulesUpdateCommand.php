@@ -82,18 +82,29 @@ class ModulesUpdateCommand extends Command
             /**
              * Run translation command
              */
-            Artisan::call('lawoo:sync-ui-strings ' . $module . ' --cleanup');
+//            Artisan::call('lawoo:sync-ui-strings ' . $module . ' --cleanup');
+            Artisan::call('lawoo:sync-ui-strings', [
+                'module' => $module,
+                '--cleanup' => true,
+            ]);
 
             /*
              * Update Register permissions
              */
-            Artisan::call('lawoo:rbac:sync ' . $module);
+//            Artisan::call('lawoo:rbac:sync ' . $module);
+            Artisan::call('lawoo:rbac:sync', [
+                'module' => $module,
+            ]);
+
             Artisan::call('lawoo:rbac:clear-cache');
 
             /**
              * Update Navigation
              */
-            Artisan::call('lawoo:nav:sync ' . $module);
+//            Artisan::call('lawoo:nav:sync ' . $module);
+            Artisan::call('lawoo:nav:sync', [
+                'module' => $module,
+            ]);
 
             /**
              * Import or Update Default Translations
