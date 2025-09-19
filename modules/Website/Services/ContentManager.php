@@ -3,6 +3,7 @@
 namespace Modules\Website\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Modules\Core\Services\PathService;
@@ -26,6 +27,7 @@ class ContentManager
             }
 
             File::put($filePath, $content);
+            Artisan::call('view:clear');
 
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
@@ -41,6 +43,8 @@ class ContentManager
             if (File::exists($filePath)) {
                 File::delete($filePath);
             }
+
+            Artisan::call('view:clear');
 
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
