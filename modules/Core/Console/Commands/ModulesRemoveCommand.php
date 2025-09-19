@@ -69,6 +69,7 @@ class ModulesRemoveCommand extends Command
          */
         Artisan::call('lawoo:nav:remove', [
             'module' => $name,
+            '--force' => true,
         ]);
         Artisan::call('cache:clear');
 
