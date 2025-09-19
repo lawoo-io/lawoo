@@ -10,7 +10,6 @@ class PathService
     {
         $path = '';
         foreach (config('app.modules_base_paths') as $base_path) {
-            Log::info("Base path: {$base_path}");
             if(is_dir($base_path.'/'.$module)) {
                 $path = $base_path;
                 break;
@@ -18,8 +17,7 @@ class PathService
         }
 
         if(empty($path)) {
-            Log::info('No path before: '.$module);
-            return '';
+            throw new \RuntimeException('Module path not found test');
         }
 
         return $path;
