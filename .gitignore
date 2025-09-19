@@ -1,3 +1,4 @@
 .idea/
 modules/*/Database/Migrations/*.php
 !modules/Core/Database/Migrations/*.php
+composer.lock
