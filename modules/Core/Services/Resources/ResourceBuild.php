@@ -13,8 +13,8 @@ class ResourceBuild
 
     public static function run (array|string $moduleNames = '*'): array
     {
-//        $originalCwd = getcwd();
-//        chdir(base_path());
+        $originalCwd = getcwd();
+        chdir(base_path());
 
         $modules = (array) $moduleNames;
 
@@ -62,7 +62,7 @@ class ResourceBuild
             }
         }
 
-//        chdir($originalCwd);
+        chdir($originalCwd);
 
         return [
             'type' => 'success',

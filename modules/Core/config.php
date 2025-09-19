@@ -1,7 +1,7 @@
 <?php
 
-//$originalCwd = getcwd();
-//chdir(base_path());
+$originalCwd = getcwd();
+chdir(base_path());
 
 return [
     /**
@@ -65,4 +65,4 @@ return [
     ],
 
 ];
-//chdir($originalCwd);
+chdir($originalCwd);
