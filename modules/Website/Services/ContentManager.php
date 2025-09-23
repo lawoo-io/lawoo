@@ -105,7 +105,7 @@ class ContentManager
     {
         if(empty($model->path)) $path = Str::slug($model->name);
         else $path = $model->path;
-        $layoutPath = resource_path($model->type . '/websites/website_' . $model->website->slug . '/' . $path . '.' . $model->type);
+        $layoutPath = resource_path('views/websites/website_' . $model->website->slug . '/assets/' . $model->type . '/' . $path . '.' . $model->type);
         $content = $model->content;
 
         return [$layoutPath, $content];

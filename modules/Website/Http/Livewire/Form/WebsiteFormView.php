@@ -2,8 +2,10 @@
 
 namespace Modules\Website\Http\Livewire\Form;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Modules\Web\Http\Livewire\Form\BaseFormView;
+use Modules\Web\Repositories\LanguageRepository;
 use Modules\Website\Repositories\ThemeRepository;
 use Modules\Website\Repositories\WebsiteRepository;
 
@@ -40,7 +42,7 @@ class WebsiteFormView extends BaseFormView
     {
         $this->fields = [
             'name' => [
-                'label' => __t('Name', 'Web'),
+                'label' => __t('Name', 'Website'),
                 'type' => 'input',
                 'class' => 'lg:col-span-6',
                 'blur' => 'generateSlugFromName'
@@ -83,8 +85,19 @@ class WebsiteFormView extends BaseFormView
                 'type' => 'select',
                 'class' => 'lg:col-span-6',
                 'options' => self::getCompanies(),
+            ],
+            'languages' => [
+                'label' => __t('Languages', 'Website'),
+                'type' => 'pillbox',
+                'class' => 'lg:col-span-6',
+                'options' => self::getLanguages(),
             ]
         ];
+    }
+
+    public function getLanguages(): array
+    {
+        return LanguageRepository::getActive();
     }
 
     // Replace from Base
@@ -107,6 +120,23 @@ class WebsiteFormView extends BaseFormView
             'data.name' => 'required|min:3|max:256',
             'data.slug' => 'required',
         ];
+    }
+
+    protected function update(): ?Model
+    {
+        $model = parent::update();
+        if($model) {
+            $model->languages()->sync($this->data['languages']);
+        }
+
+        return $model;
+    }
+
+    protected function loadData(): void
+    {
+        parent::loadData();
+        if ($this->record)
+            $this->data['languages'] = $this->record->languages->sortBy('slug')->pluck('id')->toArray();
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\Core\Services\Modules;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Modules\Core\Models\Module;
 use Modules\Core\Services\PathService;
@@ -69,6 +70,12 @@ class ModuleChecker
 
             foreach ($modules as $mod) {
                 ModuleDependencyChecker::run($mod);
+            }
+
+            // Find all module with a new Version
+            $modules = Module::where('enabled', true)->whereColumn('version', '!=', 'version_installed')->get();
+            foreach ($modules as $mod) {
+                Artisan::call('lawoo:update', ['module' => $mod->system_name]);
             }
 
         }

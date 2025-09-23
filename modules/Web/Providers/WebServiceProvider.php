@@ -4,10 +4,7 @@ namespace Modules\Web\Providers;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\ServiceProvider;
-use Modules\Web\Database\Seeders\CommunicationTypeSeeders;
 use Modules\Web\Database\Seeders\CompanySeeders;
-use Modules\Web\Extends\Traits\ExtendUser;
-use Modules\Web\Extends\Models\ExtendUserModel;
 
 class WebServiceProvider extends ServiceProvider
 {

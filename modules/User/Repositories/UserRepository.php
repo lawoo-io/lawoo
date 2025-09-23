@@ -22,8 +22,6 @@ class UserRepository extends BaseRepository
         return $this->model->with(['roles'])->find($id);
     }
 
-
-
 //     protected function loadRelationships(Builder $query): void
 //     {
 //        $query->with(['roles']);

@@ -70,6 +70,7 @@ class AssetFormView extends BaseFormView
                     'css' => 'CSS',
                     'scss' => 'SCSS',
                     'js' => 'JavaScript',
+                    'svg' => 'SVG',
                 ],
                 'change' => 'changeType',
                 'disabled' => !($this->type === 'create'),
@@ -108,8 +109,14 @@ class AssetFormView extends BaseFormView
             'is_active' => [
                 'label' => __t('Active', 'Website'),
                 'type' => 'switch',
-                'class' => 'lg:col-span-6',
+                'class' => 'lg:col-span-3',
                 'default' => true,
+            ],
+            'auto_public' => [
+                'label' => __t('Public', 'Website'),
+                'type' => 'switch',
+                'class' => 'lg:col-span-3',
+                'default' => false,
             ],
             'is_public' => [
                 'label' => __t('Public', 'Website'),

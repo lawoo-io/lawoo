@@ -35,6 +35,7 @@ class Asset extends BaseModel
         'content',
         'is_active',
         'is_public',
+        'auto_public',
         'is_changed',
         'company_id',
         'theme_id',

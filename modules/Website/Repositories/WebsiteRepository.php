@@ -2,10 +2,9 @@
 
 namespace Modules\Website\Repositories;
 
-use Modules\Core\Abstracts\BaseRepository;
 use Modules\Website\Models\Website;
 
-class WebsiteRepository extends BaseRepository
+class WebsiteRepository extends \Modules\Core\Abstracts\BaseRepository
 {
     public function __construct()
     {

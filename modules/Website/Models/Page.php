@@ -37,6 +37,7 @@ class Page extends BaseModel
         'meta_description',
         'is_active',
         'is_public',
+        'auto_public',
         'is_changed',
         'path',
         'layout_id',

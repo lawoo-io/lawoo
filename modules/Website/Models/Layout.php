@@ -33,6 +33,7 @@ class Layout extends BaseModel
         'content',
         'is_active',
         'is_public',
+        'auto_public',
         'is_changed',
         'path',
         'company_id',

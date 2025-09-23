@@ -42,5 +42,9 @@
     "Create Asset": "Create Asset",
     "Update Asset": "Update Asset",
     "Type": "Type",
-    "Filter": ""
+    "Filter": "Filter",
+    "Name": "Name",
+    "ID": "ID",
+    "Publish automatically": "Publish automatically",
+    "Languages": "Languages"
 }

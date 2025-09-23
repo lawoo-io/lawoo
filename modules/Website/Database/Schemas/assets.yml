@@ -9,6 +9,7 @@ assets:
     internal_note: string=256.nullable
     content: longText.nullable
     is_active: boolean.default=1
+    auto_public: boolean.default=0
     is_public: boolean.default=0
     is_changed: boolean.default=0
     company_id: integer.nullable

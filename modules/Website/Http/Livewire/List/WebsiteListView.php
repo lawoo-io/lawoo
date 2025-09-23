@@ -56,7 +56,7 @@ class WebsiteListView extends BaseListView
     public static function setSearchFields(): array
     {
         return [
-            'name' => __t('Name', 'Web'),
+            'name' => __t('Name', 'Website'),
         ];
     }
 
@@ -67,16 +67,16 @@ class WebsiteListView extends BaseListView
     {
         return [
             'id' => [
-                'label' => __t('ID', 'Web')
+                'label' => __t('ID', 'Website')
             ],
             'name' => [
-                'label' => __t('Name', 'Web'),
+                'label' => __t('Name', 'Website'),
             ],
             'url' => [
                 'label' => __t('URL', 'Website'),
             ],
             'is_active' => [
-                'label' => __t('Active', 'Web'),
+                'label' => __t('Active', 'Website'),
                 'type' => 'switch',
             ]
         ];

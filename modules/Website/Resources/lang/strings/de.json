@@ -42,5 +42,9 @@
     "Create Asset": "Asset erstellen",
     "Update Asset": "Asset aktualisieren",
     "Type": "Typ",
-    "Filter": "Filter"
+    "Filter": "Filter",
+    "Name": "Name",
+    "ID": "ID",
+    "Publish automatically": "Automatisch veröffentlichen",
+    "Languages": "Sprachen"
 }

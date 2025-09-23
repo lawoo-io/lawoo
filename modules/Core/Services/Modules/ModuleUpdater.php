@@ -17,6 +17,9 @@ class ModuleUpdater
         $moduleRepository = app(ModuleRepository::class);
         $module = $moduleRepository->getBySystemName($moduleName);
 
+        $module->version_installed = $module->version;
+        $module->save();
+
         if (!$module) {
             return [
                 'type' => 'error',

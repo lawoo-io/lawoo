@@ -86,7 +86,13 @@ class LayoutFormView extends BaseFormView
             'is_active' => [
                 'label' => __t('Active', 'Website'),
                 'type' => 'switch',
-                'class' => 'lg:col-span-6',
+                'class' => 'lg:col-span-3',
+                'default' => false
+            ],
+            'auto_public' => [
+                'label' => 'Public',
+                'type' => 'switch',
+                'class' => 'lg:col-span-3',
                 'default' => false
             ],
             'is_public' => [

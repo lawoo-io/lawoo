@@ -8,7 +8,6 @@ import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
 import { css } from "@codemirror/lang-css";
 import { autocompletion } from "@codemirror/autocomplete";
-
 import { oneDark } from "@codemirror/theme-one-dark";
 
 function getCustomThemeWhite() {
@@ -83,7 +82,10 @@ async function getExtensionsFromLanguages(languages, hiddenInput) {
     // Warte auf korrekte Theme-Erkennung
     const isDark = await waitForTheme();
 
-    const exts = [basicSetup, autocompletion()];
+    const exts = [
+        basicSetup,
+        autocompletion()
+    ];
 
     if (isDark) {
         // Dark Mode = oneDark + deine Dark-Anpassungen
@@ -97,6 +99,9 @@ async function getExtensionsFromLanguages(languages, hiddenInput) {
     languages.forEach(lang => {
         switch (lang.trim()) {
             case "html":
+                exts.push(html());
+                break;
+            case "svg":
                 exts.push(html());
                 break;
             case "javascript":

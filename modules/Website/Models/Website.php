@@ -2,8 +2,12 @@
 
 namespace Modules\Website\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Core\Models\Language;
 use Modules\Web\Models\Company;
 
 
@@ -48,6 +52,11 @@ class Website extends BaseModel
     public function theme(): BelongsTo
     {
         return $this->belongsTo(Theme::class);
+    }
+
+    public function languages(): BelongsToMany
+    {
+        return $this->belongsToMany(Language::class);
     }
 
 }

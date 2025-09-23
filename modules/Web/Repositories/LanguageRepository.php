@@ -12,4 +12,14 @@ class LanguageRepository extends BaseRepository
     {
         parent::__construct(new Language());
     }
+
+    public static function getActive(): array
+    {
+        return Language::where('is_active', true)->get()->map(function (Language $language) {
+            return [
+                'name' => $language->name,
+                'id' => $language->id,
+            ];
+        })->toArray();
+    }
 }

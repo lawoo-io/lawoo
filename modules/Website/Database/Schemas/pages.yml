@@ -12,6 +12,7 @@ pages:
     content: longText.nullable
     is_active: boolean.default=1
     is_public: boolean.default=0
+    auto_public: boolean.default=0
     is_changed: boolean.default=0
     path: string.unique.nullable
     website_id: integer.nullable

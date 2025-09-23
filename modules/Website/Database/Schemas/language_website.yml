@@ -1,0 +1,6 @@
+language_website:
+  base: 1
+  sequence: 20
+  fields:
+    language_id: integer.nullable
+    website_id: integer.nullable

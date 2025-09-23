@@ -27,4 +27,6 @@ priority: 0
     <x-web.form.types.textarea :field="$field" :options="$options"/>
 @elseif($options['type'] === 'editor')
     <x-web.form.types.editor :field="$field" :options="$options"/>
+@elseif($options['type'] === 'pillbox')
+    <x-web.form.types.pillbox :field="$field" :options="$options"/>
 @endif

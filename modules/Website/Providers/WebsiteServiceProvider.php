@@ -2,9 +2,8 @@
 
 namespace Modules\Website\Providers;
 
-use Illuminate\Foundation\Http\Kernel;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Http\Middleware\SetLocale;
 
 class WebsiteServiceProvider extends ServiceProvider
 {
@@ -19,12 +18,8 @@ class WebsiteServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(Kernel $kernel): void
+    public function boot(): void
     {
-        /**
-         * Register Kernel
-         */
-        $kernel->prependMiddlewareToGroup('web', SetLocale::class);
 
         /**
          * Register RouteServiceProvider
@@ -35,6 +30,11 @@ class WebsiteServiceProvider extends ServiceProvider
          * Load Translations from same Module
          */
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang');
+
+        /**
+         * Load json translation
+         */
+        $this->loadJsonTranslationsFrom(__DIR__.'/../Resources/lang/strings');
 
     }
 }
