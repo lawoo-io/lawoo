@@ -15,7 +15,7 @@ class CheckActiveUser
     public function handle(Request $request, Closure $next): BaseResponse
     {
         // Skip für Login/Register/Logout Routes
-        if ($request->routeIs(['login', 'register', 'logout', 'password.*'])) {
+        if ($request->routeIs(['login', 'register', 'logout', 'password.*', 'website'])) {
             return $next($request);
         }
 

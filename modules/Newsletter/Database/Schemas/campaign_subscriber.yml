@@ -1,0 +1,8 @@
+campaign_subscriber:
+  base: 1
+  sequence: 20
+  fields:
+    campaign_id: integer
+    subscriber_id: integer
+    subscribed_at: timestamp
+    status: string=50

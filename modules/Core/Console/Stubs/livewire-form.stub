@@ -37,7 +37,7 @@ class {{name}} extends BaseFormView
     {
         $this->fields = [
             'name' => [
-                'label' => __t('Name', 'Web'),
+                'label' => __t('Name', '{{module}}'),
                 'type' => 'input',
                 'class' => 'lg:col-span-12',
             ],

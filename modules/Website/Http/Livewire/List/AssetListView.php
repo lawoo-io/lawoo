@@ -56,7 +56,7 @@ class AssetListView extends BaseListView
     public static function setSearchFields(): array
     {
         return [
-            'name' => __t('Name', 'Web'),
+            'name' => __t('Name', 'Website'),
             'type' => __t('Type', 'Website'),
         ];
     }
@@ -95,10 +95,10 @@ class AssetListView extends BaseListView
     {
         return [
             'id' => [
-                'label' => __t('ID', 'Web')
+                'label' => __t('ID', 'Website')
             ],
             'name' => [
-                'label' => __t('Name', 'Web'),
+                'label' => __t('Name', 'Website'),
             ],
             'type' => [
                 'label' => __t('Type', 'Website'),

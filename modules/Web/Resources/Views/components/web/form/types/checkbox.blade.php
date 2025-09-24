@@ -23,16 +23,12 @@ priority: 0
             @endforeach
         </flux:checkbox.group>
     </div>
-@elseif(isset($options['mode']) && $options['mode'] === 'single')
-    <div class="{{ $options['class'] }}">
-        checkbox
-    </div>
 @else
     <div class="{{ $options['class'] }}">
         <flux:checkbox.group>
             <flux:label wire:dirty.class="!text-yellow-500" wire:target="data.{{ $field }}" class="pb-1">{{ $options['label'] }}</flux:label>
-            @foreach($options['options'] as $option)
-                <flux:checkbox :value="$option['id']" wire:model="data.{{ $field }}" :label="$option['name']"/>
+            @foreach($options['options'] as $key => $value)
+                <flux:checkbox :value="$key" wire:model="data.{{ $field }}" :label="$value"/>
             @endforeach
         </flux:checkbox.group>
     </div>

@@ -1,0 +1,9 @@
+newsletter_campaigns:
+  base: 1
+  sequence: 10
+  fields:
+    id: id
+    name: string=150.nullable
+    slug: string=160.nullable
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable

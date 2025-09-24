@@ -74,7 +74,7 @@ Route::prefix('lawoo')->middleware(['web', 'auth', 'active.user'])->name('lawoo.
 Route::middleware('guest')->group(function () {
     Route::get('login', function () {
         return view('modules.web.auth.login');
-    })->name('login'); // <== DAS FEHLTE
+    })->name('login');
 });
 
 /**

@@ -6,7 +6,7 @@ override_name: '',
 priority: 0
 --}}
 <div>
-    @if(count($websites))
+    @if(is_countable($websites) && count($websites))
         <flux:dropdown position="top" align="end">
             <flux:button variant="ghost" icon:trailing="chevron-down" class="cursor-pointer">{{ $this->websites[$this->website_id] }}</flux:button>
             <flux:menu>

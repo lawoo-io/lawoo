@@ -1,0 +1,9 @@
+{
+    "name": "Newsletter Module",
+    "short_desc": "Short description for Newsletter Module...",
+    "category": "Basis",
+    "author": "Alexander Kröker",
+    "author_url": "https://www.lawoo.io",
+    "version": "0.0.1",
+    "depends": ["Web"]
+}

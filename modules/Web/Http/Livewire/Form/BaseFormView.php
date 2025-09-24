@@ -6,7 +6,6 @@ use Flux\Flux;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Modules\Core\Models\Language;
 use Modules\Web\Models\Company;

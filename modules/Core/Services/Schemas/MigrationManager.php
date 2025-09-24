@@ -148,7 +148,7 @@ class MigrationManager
 
             if (!$field->changed && !$field->to_remove) continue;
 
-            $raw = $field->new_param ? $field->new_params : $field->params;
+            $raw = $field->new_params ?? $field->params;
 
             if ($field->to_remove && $tableMode === 'update') {
                 $fields[] = "\$table->dropColumn('$field->name');";
@@ -229,7 +229,7 @@ class MigrationManager
             }
         }
 
-        if ($mode === 'update' && !$type === 'unique' && !$type === 'index') {
+        if ($mode === 'update' && $type !== 'unique' && $type !== 'index') {
             $code .= "->change()";
         }
 

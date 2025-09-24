@@ -55,7 +55,7 @@ class {{name}} extends BaseListView
     public static function setSearchFields(): array
     {
         return [
-            'name' => __t('Name', 'Web'),
+            'name' => __t('Name', '{{module}}'),
         ];
     }
 
@@ -66,10 +66,10 @@ class {{name}} extends BaseListView
     {
         return [
             'id' => [
-                'label' => __t('ID', 'Web')
+                'label' => __t('ID', '{{module}}')
             ],
             'name' => [
-                'label' => __t('Name', 'Web'),
+                'label' => __t('Name', '{{module}}'),
             ],
         ];
     }

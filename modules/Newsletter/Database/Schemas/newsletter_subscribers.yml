@@ -1,0 +1,15 @@
+newsletter_subscribers:
+  base: 1
+  sequence: 10
+  fields:
+    id: id
+    email: string=150.nullable
+    first_name: string=150.nullable
+    last_name: string=150.nullable
+    status: string=50.nullable
+    confirmation_token: string=64.nullable
+    confirmed_at: timestamp.nullable
+    unsubscribed_at: timestamp.nullable
+    ip_address: string=100.nullable
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable

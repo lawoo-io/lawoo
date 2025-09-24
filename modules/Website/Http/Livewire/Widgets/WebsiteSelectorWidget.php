@@ -23,7 +23,7 @@ class WebsiteSelectorWidget extends Component
         $websiteRepository = new WebsiteRepository();
         $this->websites = $websiteRepository->getFilteredData()->pluck('name', 'id')->toArray();
 
-        if(count($this->websites)) {
+        if(is_countable($this->websites) && count($this->websites)) {
             $this->getSelected();
         }
     }

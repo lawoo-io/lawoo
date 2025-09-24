@@ -90,7 +90,7 @@ class LayoutFormView extends BaseFormView
                 'default' => false
             ],
             'auto_public' => [
-                'label' => 'Public',
+                'label' => __t('Publish automatically', 'Website'),
                 'type' => 'switch',
                 'class' => 'lg:col-span-3',
                 'default' => false

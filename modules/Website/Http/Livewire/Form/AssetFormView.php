@@ -113,7 +113,7 @@ class AssetFormView extends BaseFormView
                 'default' => true,
             ],
             'auto_public' => [
-                'label' => __t('Public', 'Website'),
+                'label' => __t('Publish automatically', 'Website'),
                 'type' => 'switch',
                 'class' => 'lg:col-span-3',
                 'default' => false,
