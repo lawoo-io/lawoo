@@ -23,7 +23,7 @@ class ConfirmSubscription extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Bestätige deine Anmeldung',
+            subject: 'Bestätigen Sie Ihre Anmeldung',
         );
     }
 
