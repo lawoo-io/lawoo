@@ -26,6 +26,10 @@ Route::get('/{slug?}', function (string $slug = '/') use ($availableLocales) {
         ->where('url', $prefix . $slug)
         ->first();
 
+    if (!empty($page->redirect_url)) {
+        return redirect(url($page->redirect_url));
+    }
+
     if (! $page) {
         $pages = Page::where('website_id', $website->id)->get();
         foreach ($pages as $page) {
@@ -43,6 +47,11 @@ Route::get('/{slug?}', function (string $slug = '/') use ($availableLocales) {
             ], $url);
 
             if (preg_match('#^' . $pattern . '$#', $slug, $matches)) {
+
+                if (!empty($page->redirect_url)) {
+                    return redirect(url($page->redirect_url));
+                }
+
                 // Param-Namen extrahieren
                 preg_match_all('#\{([a-zA-Z0-9_]+)\??\*?\}#', $url, $keys);
 
