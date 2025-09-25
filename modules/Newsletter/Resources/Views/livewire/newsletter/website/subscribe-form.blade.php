@@ -35,10 +35,12 @@ priority: 0
                 <flux:error name="privacy"/>
             </div>
         </div>
-        <div class="mt-4 flex items-center justify-center gap-x-6">
+        <div class="mt-4 flex items-center justify-center gap-6">
 
             <flux:button type="submit" variant="primary" class="cursor-pointer">Jetzt anmelden</flux:button>
+            @if($showContactBtn)
             <a href="/kontakt" class="text-sm/6 font-semibold text-gray-900">Kontakt aufnehmen<span aria-hidden="true">→</span></a>
+            @endif
         </div>
     </form>
     @endif

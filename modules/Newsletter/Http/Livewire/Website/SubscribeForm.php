@@ -13,10 +13,12 @@ class SubscribeForm extends Component
     public string $email = '';
     public bool $privacy = false;
     public bool $success = false;
+    public bool $showContactBtn;
 
-    public function mount(array $campaigns): void
+    public function mount(array $campaigns, bool $showContactBtn = false): void
     {
         $this->campaigns = $campaigns;
+        $this->showContactBtn = $showContactBtn;
     }
 
     protected function rules(): array
