@@ -2,5 +2,8 @@
 @section('title', '{{ metaTitle }}')
 @section('meta_title', '{{ metaTitle }}')
 @section('meta_description', '{{ metaDescription }}')
+@section('robot_index', '{{ robotIndex }}')
+@section('robot_follow', '{{ robotFollow }}')
+@section('canonical_url', '{{ canonicalUrl }}')
 
 {{ content }}

@@ -91,6 +91,34 @@ class PageFormView extends BaseFormView
                             'type' => 'textarea',
                             'rows' => 2,
                             'class' => 'lg:col-span-6',
+                        ],
+                        'robot_index' => [
+                            'label' => __t('Robot Index', 'Website'),
+                            'type' => 'select',
+                            'class' => 'lg:col-span-6',
+                            'options' => [
+                                'index' => __t('index', 'Website'),
+                                'noindex' => __t('noindex', 'Website'),
+                            ]
+                        ],
+                        'robot_follow' => [
+                            'label' => __t('Robot Follow', 'Website'),
+                            'type' => 'select',
+                            'class' => 'lg:col-span-6',
+                            'options' => [
+                                'follow' => __t('follow', 'Website'),
+                                'nofollow' => __t('nofollow', 'Website'),
+                            ]
+                        ],
+                        'canonical_url' => [
+                            'label' => __t('Canonical URL', 'Website'),
+                            'type' => 'input',
+                            'class' => 'lg:col-span-6',
+                        ],
+                        'redirect_url' => [
+                            'label' => __t('Redirect URL', 'Website'),
+                            'type' => 'input',
+                            'class' => 'lg:col-span-6',
                         ]
                     ]
                 ],
@@ -154,6 +182,8 @@ class PageFormView extends BaseFormView
             'data.layout_id' => 'required',
             'data.content' => 'required',
             'data.website_id' => 'required',
+            'data.robot_index' => 'required',
+            'data.robot_follow' => 'required',
         ];
     }
 

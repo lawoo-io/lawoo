@@ -7,6 +7,10 @@ pages:
     url: string=256.nullable
     meta_title: string=100.nullable
     meta_description: string=256.nullable
+    canonical_url: string=256.nullable
+    redirect_url: string=256.nullable
+    robot_index: string=20.nullable
+    robot_follow: string=20.nullable
     internal_note: string.nullable
     layout_id: integer
     content: longText.nullable

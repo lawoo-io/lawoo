@@ -4,6 +4,6 @@
     "category": "Website",
     "author": "Alexander Kröker",
     "author_url": "https://www.lawoo.io",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "depends": ["Web"]
 }

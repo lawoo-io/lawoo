@@ -93,8 +93,24 @@ class ContentManager
         $layoutName = 'websites.website_' . $model->website->slug . '.layouts.' . $model->layout->path;
 
         $content = str_replace(
-            ['{{ layoutName }}', '{{ metaTitle }}', '{{ metaDescription }}', '{{ content }}'],
-            [$layoutName, $model->meta_title ?? $model->name, $model->meta_description, $model->content],
+            [
+                '{{ layoutName }}',
+                '{{ metaTitle }}',
+                '{{ metaDescription }}',
+                '{{ robotIndex }}',
+                '{{ robotFollow }}',
+                '{{ canonicalUrl }}',
+                '{{ content }}'
+            ],
+            [
+                $layoutName,
+                $model->meta_title ?? $model->name,
+                $model->meta_description,
+                $model->robot_index ?? 'index',
+                $model->robot_follow ?? 'follow',
+                $model->canonical_url ?? url($model->url),
+                $model->content
+            ],
             $pageStub
         );
 

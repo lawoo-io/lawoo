@@ -46,5 +46,13 @@
     "Name": "Name",
     "ID": "ID",
     "Publish automatically": "Automatisch veröffentlichen",
-    "Languages": "Sprachen"
+    "Languages": "Sprachen",
+    "Robot Index": "Robot Index",
+    "index": "index",
+    "noindex": "noindex",
+    "Robot Follow": "Robot Follow",
+    "follow": "follow",
+    "nofollow": "nofollow",
+    "Canonical URL": "Canonical URL",
+    "Redirect URL": "Weiterleitung URL"
 }

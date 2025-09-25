@@ -1,13 +1,12 @@
 <?php
 
 return [
-    'required' => 'Das Feld :attribute ist erforderlich.',
 
     'attributes' => [
         'data.name' => 'Name',
-        'data.slug' => 'Alias',
+        'data.slug' => 'Slug',
         'data.url' => 'URL',
-        'data.content' => 'Inhalt',
+        'data.content' => 'Content',
         'data.layout_id' => 'Layout',
         'data.theme_id' => 'Theme',
         'data.system_name' => 'Systemname',
