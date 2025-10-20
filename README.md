@@ -44,11 +44,12 @@ composer config prefer-stable true
 
 ```bash
 composer require lawoo-io/lawoo:dev-main
+composer require davidhsianturi/blade-bootstrap-icons
 ```
 
 ### 4. Install the Flux-Pro package
 Licence required
-```
+```bash
 composer config repositories.flux-pro composer https://composer.fluxui.dev
 composer require livewire/flux-pro
 ```
@@ -106,6 +107,9 @@ import fg from 'fast-glob'
 const resourceInputs = fg.sync([
     'resources/js/**/*.js',
     'resources/css/**/*.css',
+    'resources/views/websites/**/assets/css/*.*',
+    'resources/views/websites/**/assets/js/*.*',
+    'resources/views/websites/**/assets/svg/*.*',
     'resources/images/**/*.{png,jpg,jpeg,svg,gif,webp}'
 ])
 
@@ -119,5 +123,4 @@ export default defineConfig({
         tailwindcss(),
     ],
 });
-
 ```

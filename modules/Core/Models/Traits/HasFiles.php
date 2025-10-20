@@ -3,6 +3,8 @@
 namespace Modules\Core\Models\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\UploadedFile;
 use Modules\Core\Models\File;
 
@@ -33,9 +35,11 @@ trait HasFiles
     /**
      * Einzelnes Bild (field = 'image')
      */
-    public function image(): MorphMany
+
+    public function image(): MorphOne
     {
-        return $this->filesForField('image');
+        return $this->morphOne(File::class, 'model', 'model_type', 'model_id')
+            ->where('field', 'image');
     }
 
     /**
@@ -49,9 +53,10 @@ trait HasFiles
     /**
      * Einzelnes Dokument (field = 'document')
      */
-    public function document(): MorphMany
+    public function document(): MorphOne
     {
-        return $this->filesForField('document');
+        return $this->morphOne(File::class, 'model', 'model_type', 'model_id')
+            ->where('field', 'document');
     }
 
     /**
@@ -195,13 +200,6 @@ trait HasFiles
             ->get();
     }
 
-    /**
-     * Files nach Content-Type filtern
-     */
-    public function getFilesByType(string $contentType): \Illuminate\Database\Eloquent\Collection
-    {
-        return $this->files()->where('content_type', $contentType)->get();
-    }
 
     /**
      * Nur Bilder abrufen (alle image/* Content-Types)
@@ -331,24 +329,6 @@ trait HasFiles
         return $deletedCount;
     }
 
-    /**
-     * File-Reihenfolge aktualisieren
-     */
-    public function updateFileOrder(array $fileIdOrder, ?string $field = null): bool
-    {
-        $query = $this->files();
-
-        if ($field) {
-            $query->where('field', $field);
-        }
-
-        foreach ($fileIdOrder as $sortOrder => $fileId) {
-            $query->where('id', $fileId)->update(['sort_order' => $sortOrder + 1]);
-        }
-
-        return true;
-    }
-
     // =============================================
     // FILE STATISTICS & INFO
     // =============================================
@@ -465,56 +445,22 @@ trait HasFiles
     public static function bootHasFiles(): void
     {
         // Beim Löschen des Models: Alle Files auch löschen
+//        static::deleting(function ($model) {
+//            if (method_exists($model, 'removeAllFiles')) {
+//                $model->removeAllFiles();
+//            }
+//        });
         static::deleting(function ($model) {
-            if (method_exists($model, 'removeAllFiles')) {
-                $model->removeAllFiles();
+            $usesSoftDeletes = in_array(SoftDeletes::class, class_uses_recursive($model));
+
+            if ($usesSoftDeletes && method_exists($model, 'isForceDeleting') && !$model->isForceDeleting()) {
+                return;
             }
+
+            $model->removeAllFiles();
         });
     }
 
-    // =============================================
-    // HELPER METHODS FÜR BLADE TEMPLATES
-    // =============================================
-
-    /**
-     * Bild-Tag für Blade (mit Fallback)
-     */
-    public function imageTag(array $attributes = [], ?string $fallback = null): string
-    {
-        $url = $this->getImageUrl($fallback);
-
-        if (!$url) {
-            return '';
-        }
-
-        $attrs = '';
-        foreach ($attributes as $key => $value) {
-            $attrs .= " {$key}=\"{$value}\"";
-        }
-
-        return "<img src=\"{$url}\"{$attrs}>";
-    }
-
-    /**
-     * File-Liste für Blade
-     */
-    public function filesList(?string $field = null): string
-    {
-        $files = $field ? $this->getFilesForField($field) : $this->files;
-
-        if ($files->isEmpty()) {
-            return '<p>No files available</p>';
-        }
-
-        $html = '<ul class="files-list">';
-        foreach ($files as $file) {
-            $size = $file->getHumanFileSize();
-            $html .= "<li><a href=\"{$file->getUrl()}\" target=\"_blank\">{$file->title}</a> ({$size})</li>";
-        }
-        $html .= '</ul>';
-
-        return $html;
-    }
 
     // =============================================
     // VALIDATION HELPERS
@@ -528,21 +474,67 @@ trait HasFiles
         $rules = [];
 
         // Field-spezifische Anpassungen
-        if ($field === 'image' || $field === 'images') {
+        if (in_array($field, ['image', 'images'])) {
+            // Bilder
             $rules[] = 'image';
-            // Bilder: Nur Bilder erlaubt
             $rules[] = 'mimes:jpg,jpeg,png,gif,webp';
             $rules[] = 'max:5120'; // 5MB
         }
 
-        if ($field === 'document' || $field === 'documents') {
+        if (in_array($field, ['document', 'documents'])) {
+            // Dokumente
             $rules[] = 'file';
-            // Dokumente: Alle erlaubten Typen außer Bilder
             $rules[] = 'mimes:pdf,docx,xlsx,pptx,txt,csv';
             $rules[] = 'max:51200'; // 50MB
         }
 
+        if ($field === 'attachments') {
+            // Kombinierte Anhänge: Bilder + Dokumente
+            $rules[] = 'file';
+            $rules[] = 'mimes:jpg,jpeg,png,gif,webp,pdf,docx,xlsx,pptx,txt,csv';
+            $rules[] = 'max:51200'; // 50MB
+        }
+
         return $rules;
+    }
+
+    public function getFileValidationDescription(?string $field = null): string
+    {
+        $rules = $this->getFileValidationRules($field);
+
+        $mimes = null;
+        $max = null;
+
+        foreach ($rules as $rule) {
+            if (str_starts_with($rule, 'mimes:')) {
+                $mimes = explode(',', str_replace('mimes:', '', $rule));
+            }
+            if (str_starts_with($rule, 'max:')) {
+                $max = (int) str_replace('max:', '', $rule);
+            }
+        }
+
+        // 🔠 Endungen formatiert
+        $extensions = $mimes ? strtoupper(implode(', ', $mimes)) : '';
+
+        // 📏 Größe in MB
+        $sizeMb = $max ? round($max / 1024, 1) : null;
+
+        // 🗣️ Mehrsprachiger Text
+        if ($extensions && $sizeMb) {
+            return __('validation.file_description_with_size', [
+                'types' => $extensions,
+                'size'  => $sizeMb,
+            ]);
+        }
+
+        if ($extensions) {
+            return __('validation.file_description_types_only', [
+                'types' => $extensions,
+            ]);
+        }
+
+        return '';
     }
 
     /**

@@ -40,13 +40,8 @@ class CompanyFormView extends BaseFormView
             ],
             'image' => [
                 'label' => __t('Logo', 'Web'),
-                'type' => 'fileUploader',
-                'mode' => 'image',
-                'glightbox' => true,
-                'accept' => 'image/jpeg,image/png,image/gif,image/webp',
-                'imageClass' => 'w-20 h-20',
-                'model' => '',
-                'class' => 'lg:col-span-6',
+                'type' => 'avatar',
+                'class' => 'lg:col-span-6 flex justify-end',
             ],
             'parent_id' => [
                 'label' => __t('Parent company', 'Web'),

@@ -12,8 +12,8 @@ Route::get('/{slug?}', function (string $slug = '/') use ($availableLocales) {
 
     // Basis-Parameter (immer verfügbar)
     $baseParams = [
-        'website_id' => $website->id,
-        'company_id' => $website->company_id,
+        'websiteId' => $website->id,
+        'companyId' => $website->company_id,
     ];
 
     if ($slug === '/') {

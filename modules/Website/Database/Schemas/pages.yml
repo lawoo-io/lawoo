@@ -5,6 +5,7 @@ pages:
     id: id
     name: string=256.nullable
     url: string=256.nullable
+    meta_dynamic: boolean.default=0
     meta_title: string=100.nullable
     meta_description: string=256.nullable
     canonical_url: string=256.nullable

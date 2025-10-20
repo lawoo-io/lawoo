@@ -1,0 +1,23 @@
+blog_posts:
+  base: 1
+  sequence: 1
+  fields:
+    id: id
+    name: string=256.nullable
+    slug: string=256.nullable
+    is_active: boolean.default=1
+    is_public: boolean.default=0
+    published_at: dateTime.nullable
+    short_description: string=256.nullable
+    content: longText.nullable
+    blog_category_id: integer.nullable
+    meta_title: string=100.nullable
+    meta_description: string=256.nullable
+    robot_index: string=20.nullable
+    robot_follow: string=20.nullable
+    website_id: integer.nullable
+    company_id: integer.nullable
+    user_id: integer.nullable
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable
+    deleted_at: timestamp.nullable

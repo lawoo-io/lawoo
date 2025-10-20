@@ -18,6 +18,7 @@ priority: 0
     @endif
     <flux:switch
         wire:model="data.{{ $field }}"
+        :wire:change="$options['change'] ?? false"
         :disabled="isset($options['disabled']) && $options['disabled'] ?? false"
     />
     @if (isset($options['description_bottom']))

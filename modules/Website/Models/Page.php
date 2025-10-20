@@ -4,6 +4,7 @@ namespace Modules\Website\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Abstracts\BaseModel;
+use Modules\Core\Models\Traits\HasFiles;
 use Modules\Web\Models\Company;
 
 
@@ -16,6 +17,7 @@ use Modules\Web\Models\Company;
 class Page extends BaseModel
 {
 
+    use HasFiles;
     /**
     * The database table name.
     *
@@ -47,6 +49,7 @@ class Page extends BaseModel
         'layout_id',
         'company_id',
         'website_id',
+        'meta_dynamic'
     ];
 
     public function layout(): BelongsTo

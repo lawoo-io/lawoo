@@ -9,7 +9,7 @@ class LayoutController extends BaseController
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:website.layouts.view')->only(['records']);
+        $this->middleware('permission:website.layouts.view')->only(['records', 'view']);
         $this->middleware('permission:website.layouts.create')->only(['create']);
     }
 

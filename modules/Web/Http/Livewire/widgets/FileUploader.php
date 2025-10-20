@@ -4,7 +4,6 @@ namespace Modules\Web\Http\Livewire\Widgets;
 
 
 use Flux\Flux;
-use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;

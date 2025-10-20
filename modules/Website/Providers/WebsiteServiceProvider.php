@@ -2,8 +2,11 @@
 
 namespace Modules\Website\Providers;
 
-use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Modules\Website\Models\Website;
 
 class WebsiteServiceProvider extends ServiceProvider
 {
@@ -13,6 +16,7 @@ class WebsiteServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+
     }
 
     /**
@@ -36,5 +40,20 @@ class WebsiteServiceProvider extends ServiceProvider
          */
         $this->loadJsonTranslationsFrom(__DIR__.'/../Resources/lang/strings');
 
+        /**
+         * Register AnonymousComponentNamespace
+         */
+        self::registerAnonymousComponentNamespace();
     }
+
+    public static function registerAnonymousComponentNamespace(): void
+    {
+        $websites = Website::where('is_active', true)->get();
+        foreach ($websites as $website) {
+            $directory = 'websites/website_'.$website->slug . '/components';
+            $prefix = $website->slug;
+            Blade::anonymousComponentNamespace($directory, $prefix);
+        }
+    }
+
 }

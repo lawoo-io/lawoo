@@ -21,6 +21,7 @@ class WebsiteSelectorWidget extends Component
     protected function loadData(): void
     {
         $websiteRepository = new WebsiteRepository();
+
         $this->websites = $websiteRepository->getFilteredData()->pluck('name', 'id')->toArray();
 
         if(is_countable($this->websites) && count($this->websites)) {

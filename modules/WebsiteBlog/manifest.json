@@ -1,0 +1,9 @@
+{
+    "name": "WebsiteBlog Module",
+    "short_desc": "Short description for WebsiteBlog Module...",
+    "category": "Basis",
+    "author": "Your name or Company name",
+    "author_url": "https://www.lawoo.io",
+    "version": "0.0.1",
+    "depends": ["Web", "Website"]
+}

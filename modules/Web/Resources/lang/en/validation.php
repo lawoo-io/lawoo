@@ -13,4 +13,8 @@ return [
     'password.required' => 'New password is required',
     'password.confirmed' => 'Password confirmation does not match',
     'password.min' => 'Password must be at least :min characters',
+
+    // File validation
+    'file_description_with_size' => ':types up to :size MB',
+    'file_description_types_only' => ':types allowed',
 ];

@@ -1,0 +1,11 @@
+<x-{{ websiteSlug }}::layouts.{{ layoutName }} {{ metaTitle }}>
+
+    <x-slot:head>
+        <meta name="description" content="{{ metaDescription }}">
+        <meta name="robots" content="{{ robotIndex }}, {{ robotFollow }}">
+        <link rel="canonical" href="{{ canonicalUrl }}" />
+    </x-slot:head>
+
+    {{ content }}
+
+</x-{{ websiteSlug }}::layouts.{{ layoutName }}>

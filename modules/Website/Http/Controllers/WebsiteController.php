@@ -9,7 +9,7 @@ class WebsiteController extends BaseController
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:website.website.view')->only(['records']);
+        $this->middleware('permission:website.website.view')->only(['records', 'view']);
         $this->middleware('permission:website.website.create')->only(['create']);
     }
 

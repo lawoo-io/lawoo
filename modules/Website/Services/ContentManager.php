@@ -73,13 +73,62 @@ class ContentManager
     {
         if(empty($model->path)) $path = Str::slug($model->name);
         else $path = $model->path;
-        $layoutPath = resource_path('views/websites/website_' . $model->website->slug . '/layouts/' . $path . '.blade.php');
+        $layoutPath = resource_path('views/websites/website_' . $model->website->slug . '/components/layouts/' . $path . '.blade.php');
         $content = $model->content;
 
         return [$layoutPath, $content];
     }
 
     protected static function preparePage(Model $model): array
+    {
+        if(empty($model->path)) $path = Str::slug($model->name);
+        else $path = $model->path;
+        $pagePath = resource_path('views/websites/website_' . $model->website->slug . '/pages/' . $path . '.blade.php');
+
+        $websiteModulePath = PathService::getModulePath('Website');
+        $pageStubPath = "{$websiteModulePath}/Data/Stubs/pageNew.stub";
+
+        $pageStub = file_get_contents($pageStubPath);
+
+        $layoutName = $model->layout->path;
+
+
+
+        $content = str_replace(
+            [
+                '{{ websiteSlug }}',
+                '{{ layoutName }}',
+                '{{ metaTitle }}',
+                '{{ metaDescription }}',
+                '{{ robotIndex }}',
+                '{{ robotFollow }}',
+                '{{ canonicalUrl }}',
+                '{{ content }}'
+            ],
+            [
+                $model->website->slug,
+                $layoutName,
+                self::prepareTitle($model),
+                $model->meta_description,
+                $model->robot_index ?? 'index',
+                $model->robot_follow ?? 'follow',
+                $model->canonical_url ?? url($model->url),
+                $model->content
+            ],
+            $pageStub
+        );
+
+        return [$pagePath, $content];
+    }
+
+    protected static function prepareTitle(Model $model): string
+    {
+        if($model->meta_dynamic) return '';
+        if(!empty($model->meta_title)) return 'title="'.$model->meta_title . '"';
+        else return 'title="' . $model->name . '"';
+    }
+
+    protected static function preparePageOld(Model $model): array
     {
         if(empty($model->path)) $path = Str::slug($model->name);
         else $path = $model->path;

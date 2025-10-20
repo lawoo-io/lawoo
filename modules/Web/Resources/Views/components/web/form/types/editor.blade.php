@@ -13,6 +13,10 @@ priority: 0
     @if($options['mode'] && $options['mode'] === 'code')
         <div class="code-editor" data-languages="{{ $options['languages'] ?? '' }}" @if($options['ignore'] ?? true) wire:ignore @endif></div>
         <input type="hidden" wire:model="data.{{ $field }}"/>
+    @elseif($options['mode'] && $options['mode'] === 'text')
+    <flux:editor wire:model="data.{{ $field  }}" x-ref="editor">
+
+    </flux:editor>
     @endif
     <flux:error name="data.{{ $field }}"/>
 </div>

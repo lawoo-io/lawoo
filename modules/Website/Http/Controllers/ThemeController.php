@@ -9,7 +9,7 @@ class ThemeController extends BaseController
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:website.theme.view')->only(['records']);
+        $this->middleware('permission:website.theme.view')->only(['records', 'view']);
         $this->middleware('permission:website.theme.create')->only(['create']);
     }
 

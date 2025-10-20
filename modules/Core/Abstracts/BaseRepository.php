@@ -63,11 +63,15 @@ abstract class BaseRepository
      */
     public function create(array $data): Model
     {
+        if(in_array('user_id', $this->model->getFillable())) {
+            $data['user_id'] = auth()->id();
+        }
         return $this->model->create($data);
     }
 
     public function update(int $id, array $data, string $locale): Model
     {
+
         $model = $this->find($id);
         [$normalData, $translations] = $this->splitData($model, $data, $locale);
         $this->updateModel($model, $normalData);
@@ -100,6 +104,10 @@ abstract class BaseRepository
 
     protected function updateModel(Model $model, array $normalData): void
     {
+        if(in_array('user_id', $this->model->getFillable())) {
+            $normalData['user_id'] = auth()->id();
+        }
+
         $model->fill($normalData);
         $model->save();
     }
@@ -113,43 +121,6 @@ abstract class BaseRepository
         }
     }
 
-//    public function update_old(int $id, array $data, string $locale): Model
-//    {
-//        $defaultLocale = Language::getDefault()->first()->code;
-//
-//        $normalData = [];
-//        $translations = [];
-//
-//        $model = $this->model->find($id);
-//
-//        $translatable = $model->translatable ?? false;
-//
-//        foreach ($data as $field => $value) {
-//            if ($translatable && $model->isTranslatableAttribute($field)) {
-//                if ($locale === $defaultLocale) {
-//                    $normalData[$field] = $value;
-//                } else {
-//                    $translations[$locale][$field] = $value;
-//                }
-//                continue;
-//            }
-//
-//            $normalData[$field] = $value;
-//        }
-//
-//        $model->fill($normalData);
-//        $model->save();
-//
-//        // Nur Non-Default Translations speichern
-//        foreach ($translations as $locale => $translatedData) {
-//            foreach ($translatedData as $field => $value) {
-//                $model->lang($locale)->$field = $value;
-//            }
-//        }
-//
-//        return $model;
-//    }
-
     /**
      * @param array $params
      * @return Builder
@@ -157,6 +128,7 @@ abstract class BaseRepository
     public function getFilteredData(array $params = []): Builder
     {
         $query = $this->model->newQuery();
+
 
         // Filter by companies
         if(in_array('company_id', $this->model->getfillable())) {
@@ -191,9 +163,8 @@ abstract class BaseRepository
 
     protected function applyCompanyFilters(Builder $query): void
     {
-        $companyIds = session()->get('company_ids');
-        if (count($companyIds)){
-//            $query->whereIn('company_id', $companyIds)->orWhereNull('company_id');
+        $companyIds = session()->get('company_ids', null);
+        if ($companyIds && count($companyIds)){
             $query->where(function ($q) use ($companyIds) {
                 $q->whereIn('company_id', $companyIds);
                 $q->orWhereNull('company_id');

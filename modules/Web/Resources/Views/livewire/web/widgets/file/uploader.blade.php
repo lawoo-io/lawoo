@@ -77,9 +77,9 @@ priority: 0
                         <div x-show="uploading" class="text-sm text-gray-500 text-center"><br><span x-text="progress + '%'"></span></div>
                     </div>
                 </div>
-                @if($this->files)
+                @if($this->files && !count($this->existingFiles))
                     @foreach($this->files as $file)
-                        <div class="relative group">
+                        <div class="relative group test-1">
                             <div class="{{ $this->imageClass }} rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
                                 <img src="{{ $file->temporaryUrl() }}" loading="lazy"/>
                             </div>
@@ -87,7 +87,7 @@ priority: 0
                     @endforeach
                 @endif
                 @foreach($this->existingFiles as $file)
-                    <div class="relative group" wire:key="existing-{{ $file->id }}">
+                    <div class="relative group test-2" wire:key="existing-{{ $file->id }}">
                         <div class="{{ $this->imageClass }} rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors overflow-hidden">
                             <a @if($this->glightbox) href="{{ $this->getThumb($file, 1000, 1000, 80) }}" data-type="image" @endif class="{{ $this->glightbox ? 'glightbox': '' }}">
                                 <img src="{{ $this->getThumb($file) }}" loading="lazy"/>

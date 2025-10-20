@@ -2,13 +2,10 @@
 
 namespace Modules\Demo\Providers;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Modules\Core\Models\ModuleCategory;
 use Modules\Core\Services\Modules\ModuleOverrider;
 use Modules\Demo\Http\Livewire\Counter;
-use Modules\Demo\Models\ExtendCore;
 
 class DemoServiceProvider extends ServiceProvider
 {
@@ -25,6 +22,6 @@ class DemoServiceProvider extends ServiceProvider
         /**
          * Register Livewire Components
          */
-//        Livewire::component('web.counter', Counter::class);
+        Livewire::component('web.counter', Counter::class);
     }
 }

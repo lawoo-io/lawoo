@@ -33,6 +33,8 @@ class SubscriberFormView extends BaseFormView
      */
     public bool $showMessages = false;
 
+    public bool $showFirstLastname = false;
+
     /**
      * Set Fields function
      */

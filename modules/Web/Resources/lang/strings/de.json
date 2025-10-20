@@ -141,5 +141,7 @@
     "Subcontractor": "Subunternehmen",
     "Parent company": "Hauptunternehmen",
     "Warning: Something went wrong.": "Achtung: Etwas ist schiefgelaufen.",
-    "Choose language(s)...": "Sprache(n) auswählen..."
+    "Choose language(s)...": "Sprache(n) auswählen...",
+    "Preview": "Vorschau",
+    "Publish or Unpublish a file": "veröffentlichen / Veröffentlichung aufheben"
 }

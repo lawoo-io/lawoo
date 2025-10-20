@@ -15,4 +15,8 @@ return [
         'data.cache_view_settings_days' => 'Cache für Form-Ansicht',
         'data.cache_settings_records' => 'Cache',
     ],
+
+    // File validation
+    'file_description_with_size' => ':types bis :size MB',
+    'file_description_types_only' => ':types erlaubt',
 ];

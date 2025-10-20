@@ -57,7 +57,9 @@ class PageListView extends BaseListView
     public static function setSearchFields(): array
     {
         return [
+            'id' => 'ID',
             'name' => __t('Name', 'Website'),
+            'url' => __t('Url', 'Website'),
         ];
     }
 

@@ -4,7 +4,6 @@ namespace Modules\Web\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Modules\Core\Abstracts\BaseController;
 use Modules\Core\Models\File;
 
@@ -30,7 +29,7 @@ class FileDownloadController extends BaseController
 
         // 3. Nur private Files über diese Route
         if ($file->is_public) {
-            return redirect(Storage::url($file->getStoragePath()));
+            return redirect($file->getUrl());
         }
 
         // 4. Security Hash validieren

@@ -47,6 +47,161 @@ class File extends Model
         'sort_order' => 0
     ];
 
+
+    // =============================================
+    // ELOQUENT EVENTS
+    // =============================================
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (File $file) {
+            if (!self::isAllowedType($file->getExtension())) {
+                throw new \InvalidArgumentException("File type '{$file->getExtension()}' is not allowed");
+            }
+            if (!in_array($file->content_type, self::getAllowedMimeTypes(), true)) {
+                throw new \InvalidArgumentException("MIME type '{$file->content_type}' is not allowed");
+            }
+        });
+
+        static::created(function (File $file) {
+            $model = $file->model()->first();
+
+            if (!$model) {
+                return;
+            }
+
+            // Prüfen: Model hat das Feld is_public
+            if (isset($model->is_public) && $model->is_public) {
+                // Prüfen: Model hat eine Liste publishbarer Felder
+                if (property_exists($model, 'publishableFileFields') && is_array($model->publishableFileFields)) {
+                    if (in_array($file->field, $model->publishableFileFields, true)) {
+                        // Direkt publishen
+                        $file->publish();
+                    }
+                }
+            }
+        });
+
+        static::saved(function (File $file) {
+            if ($file->wasChanged('is_public')) {
+                $file->is_public ? $file->publish() : $file->unpublish();
+            }
+        });
+
+        static::deleting(function (File $file) {
+            // Public-Kopien weg
+            $file->removePublicThumbnails();
+            $file->deleteIfExists('public', $file->getStoragePath());
+            // Private Thumbs + Original weg
+            $file->deleteThumbnails();
+            $file->deleteIfExists('private', $file->getStoragePath());
+        });
+    }
+
+    // =============================================
+    // PUBLISH AND UNPUBLISH FILES
+    // =============================================
+
+    protected function streamCopy(string $fromDisk, string $toDisk, string $path): void
+    {
+        if (!Storage::disk($fromDisk)->exists($path)) return;
+
+        $in = Storage::disk($fromDisk)->readStream($path);
+        Storage::disk($toDisk)->put($path, $in, ['visibility' => $toDisk === 'public' ? 'public' : 'private']);
+        if (is_resource($in)) fclose($in);
+    }
+
+    protected function deleteIfExists(string $disk, string $path): void
+    {
+        if (Storage::disk($disk)->exists($path)) {
+            Storage::disk($disk)->delete($path);
+            $this->cleanupEmptyDirectories($disk, $path);
+        }
+    }
+
+    public function mirrorThumbnailsToPublic(): void
+    {
+        foreach ($this->getThumbnailsFromMetadata() as $thumb) {
+            if (!isset($thumb['path'])) continue;
+            $this->streamCopy('private', 'public', $thumb['path']);
+        }
+    }
+
+    public function removePublicThumbnails(): void
+    {
+        foreach ($this->getThumbnailsFromMetadata() as $thumb) {
+            if (!isset($thumb['path'])) continue;
+            $this->deleteIfExists('public', $thumb['path']);
+        }
+    }
+
+    public function publish(): void
+    {
+        if ($this->is_public) return;
+
+        // Original spiegeln
+        $this->streamCopy('private', 'public', $this->getStoragePath());
+        // Thumbnails spiegeln (aus metadata['thumbnails'][*]['path'])
+        $this->mirrorThumbnailsToPublic();
+
+        $this->forceFill(['is_public' => true])->saveQuietly();
+    }
+
+    public function unpublish(): void
+    {
+        if (!$this->is_public) return;
+
+        // Öffentliche Kopien löschen
+        $this->removePublicThumbnails();
+        $this->deleteIfExists('public', $this->getStoragePath());
+
+        $this->forceFill(['is_public' => false])->saveQuietly();
+
+        // Verzeichnisse aufräumen
+        $this->cleanupEmptyDirectories('public', $this->getStoragePath());
+    }
+
+    protected function cleanupEmptyDirectories(string $disk, string $path): void
+    {
+        $disk = Storage::disk($disk);
+        $directory = dirname($path);
+
+        $root = 'uploads';
+
+        while ($directory && $directory !== '.' && str_starts_with($directory, $root)) {
+            // Erst checken
+            $files = $disk->files($directory);
+            $dirs  = $disk->directories($directory);
+
+            // Spezialfall: nur thumb drin?
+            if (count($dirs) === 1 && basename($dirs[0]) === 'thumb') {
+                $thumbFiles = $disk->files($dirs[0]);
+                $thumbDirs  = $disk->directories($dirs[0]);
+
+                if (empty($thumbFiles) && empty($thumbDirs)) {
+                    $disk->deleteDirectory($dirs[0]); // thumb löschen
+                    $dirs = []; // thumb weg
+                }
+            }
+
+            // Nach thumb-Check aktualisieren
+            $files = $disk->files($directory);
+            $dirs  = array_filter($disk->directories($directory), fn($d) => basename($d) !== 'thumb');
+
+            if (!empty($files) || !empty($dirs)) {
+                break; // noch was drin -> STOP
+            }
+
+            // Jetzt wirklich löschen
+            $disk->deleteDirectory($directory);
+
+            // eine Ebene hoch
+            $directory = dirname($directory);
+        }
+    }
+
     // =============================================
     // SECURE FILE UPLOAD
     // =============================================
@@ -57,7 +212,7 @@ class File extends Model
     public static function createFromUpload(
         UploadedFile $uploadedFile,
         Model $model,
-        ?string $field = null,
+        string $field,
         string $type,
         ?array $additionalData = []
     ): self {
@@ -71,7 +226,7 @@ class File extends Model
         $diskName = self::generateDiskName($uploadedFile->getClientOriginalName(), $type, $model);
 
         // 3. Datei speichern
-        $storedPath = $uploadedFile->storeAs( '', $diskName);
+        $storedPath = $uploadedFile->storeAs( '', $diskName, 'private');
         if (!$storedPath) {
             throw new \RuntimeException('Failed to store uploaded file');
         }
@@ -98,7 +253,8 @@ class File extends Model
     public static function createMultipleFromUpload(
         array $uploadedFiles,
         Model $model,
-        ?string $field = null,
+        string $field,
+        string $type,
         ?array $additionalData = []
     ): array {
         $createdFiles = [];
@@ -106,7 +262,7 @@ class File extends Model
 
         foreach ($uploadedFiles as $index => $uploadedFile) {
             try {
-                $file = self::createFromUpload($uploadedFile, $model, $field, $additionalData);
+                $file = self::createFromUpload($uploadedFile, $model, $field, $type, $additionalData);
                 $file->sort_order = $index + 1;
                 $file->save();
                 $createdFiles[] = $file;
@@ -255,12 +411,17 @@ class File extends Model
         return $this->disk_name;
     }
 
+    protected static function getDefaultDiskName(): string
+    {
+        return config('filesystems.default', 'private');
+    }
+
     /**
      * Prüft ob Datei physisch existiert
      */
     public function exists(): bool
     {
-        return Storage::exists($this->getStoragePath());
+        return Storage::disk(self::getDefaultDiskName())->exists($this->getStoragePath());
     }
 
     /**
@@ -272,7 +433,7 @@ class File extends Model
             throw new \Exception("File not found: {$this->disk_name}");
         }
 
-        return Storage::get($this->getStoragePath());
+        return Storage::disk(self::getDefaultDiskName())->get($this->getStoragePath());
     }
 
     /**
@@ -284,8 +445,8 @@ class File extends Model
         $thumbnails = $this->getThumbnailsFromMetadata();
 
         foreach ($thumbnails as $thumbnail) {
-            if (isset($thumbnail['path']) && Storage::exists($thumbnail['path'])) {
-                Storage::delete($thumbnail['path']);
+            if (isset($thumbnail['path']) && Storage::disk(self::getDefaultDiskName())->exists($thumbnail['path'])) {
+                Storage::disk(self::getDefaultDiskName())->delete($thumbnail['path']);
                 $deletedCount++;
             }
         }
@@ -298,8 +459,8 @@ class File extends Model
         // Leeres thumb/ Verzeichnis auch löschen
         $originalPath = $this->getStoragePath();
         $thumbDir = dirname($originalPath) . '/thumb';
-        if (Storage::exists($thumbDir) && empty(Storage::files($thumbDir))) {
-            Storage::deleteDirectory($thumbDir);
+        if (Storage::disk(self::getDefaultDiskName())->exists($thumbDir) && empty(Storage::disk(self::getDefaultDiskName())->files($thumbDir))) {
+            Storage::disk(self::getDefaultDiskName())->deleteDirectory($thumbDir);
         }
 
         return $deletedCount;
@@ -316,7 +477,10 @@ class File extends Model
 
             // Physische Datei löschen
             if ($this->exists()) {
-                Storage::delete($this->getStoragePath());
+                if ($this->is_public) {
+                    $this->unpublish();
+                }
+                $this->deleteIfExists(self::getDefaultDiskName(), $this->getStoragePath());
             }
 
             // DB-Record löschen
@@ -331,11 +495,31 @@ class File extends Model
      */
     public function getUrl(?string $permission = null, string $route = 'files.private', $hoursValid = 24, bool $download = false): string
     {
+        $disk = self::getDefaultDiskName();
         if ($this->is_public) {
-            return Storage::url($this->getStoragePath());
+            return $this->getPublicUrl($disk);
+        }
+
+        if ($disk === 's3') {
+            return Storage::disk($disk)->temporaryUrl(
+                $this->getStoragePath(),
+                now()->addHours($hoursValid)
+            );
         }
 
         return self::getSignedUrl($route, $permission, $hoursValid, $download);
+    }
+
+    public function getPublicUrl(string $disk, bool $absolute = false): string
+    {
+        if ($disk === 's3') {
+            return Storage::disk('s3')->url($this->getStoragePath());
+        }
+
+        $relative = '/storage/'.$this->getStoragePath();
+        return $absolute
+            ? request()->getSchemeAndHttpHost().$relative
+            : $relative;
     }
 
     public function getSignedUrl(string $route, string $permission, int $hoursValid, bool $download): string
@@ -409,7 +593,7 @@ class File extends Model
      */
     public function thumbnailExists(int $width, int $height, int $quality = 80): bool
     {
-        return Storage::exists($this->getThumbnailPath($width, $height, $quality));
+        return Storage::disk(self::getDefaultDiskName())->exists($this->getThumbnailPath($width, $height, $quality));
     }
 
     /**
@@ -419,6 +603,10 @@ class File extends Model
     {
         if (!$this->isImage()) {
             return '';
+        }
+
+        if($this->is_public) {
+            return $this->getUrl();
         }
 
         $user = auth()->user();
@@ -495,13 +683,6 @@ class File extends Model
         return hash('sha256', $this->id . $user->id . config('app.key'));
     }
 
-    /**
-     * Öffentliche URL (nur für öffentliche Dateien)
-     */
-    public function getPublicUrl(): ?string
-    {
-        return $this->is_public ? Storage::url($this->getStoragePath()) : null;
-    }
 
     // =============================================
     // FILE INFO HELPERS
@@ -683,34 +864,7 @@ class File extends Model
         return $mimeTypes[$extension] ?? 'application/octet-stream';
     }
 
-    // =============================================
-    // ELOQUENT EVENTS
-    // =============================================
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        // Beim Erstellen: Security-Validierung
-        static::creating(function (File $file) {
-            // Prüfe ob Dateityp erlaubt ist
-            if (!self::isAllowedType($file->getExtension())) {
-                throw new \InvalidArgumentException("File type '{$file->getExtension()}' is not allowed");
-            }
-
-            // Prüfe MIME-Type
-            if (!in_array($file->content_type, self::getAllowedMimeTypes())) {
-                throw new \InvalidArgumentException("MIME type '{$file->content_type}' is not allowed");
-            }
-        });
-
-        // Beim Löschen des Models: Physische Datei auch löschen
-        static::deleting(function (File $file) {
-            if ($file->exists()) {
-                Storage::delete($file->getStoragePath());
-            }
-        });
-    }
 
     // =============================================
     // ACCESSORS & MUTATORS

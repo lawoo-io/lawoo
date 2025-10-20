@@ -100,7 +100,9 @@ priority: 0
 <livewire:web.modal.modal-stack />
 @fluxScripts
 @persist('toast')
-<flux:toast position="top right" class="mt-12" />
+<flux:toast.group position="top right" expanded>
+    <flux:toast class="mt-12" />
+</flux:toast.group>
 @endpersist
 @stack('scripts')
 </body>

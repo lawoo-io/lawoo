@@ -14,15 +14,15 @@ priority: 0
     @else
     <form wire:submit.prevent="submit">
         @csrf
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-            <flux:field>
-                <flux:input wire:model="first_name" placeholder="Vorname" />
-                <flux:error name="first_name"/>
-            </flux:field>
-            <flux:field>
-                <flux:input wire:model="last_name" placeholder="Name" />
-                <flux:error name="last_name"/>
-            </flux:field>
+        <div class="grid grid-cols-1 gap-4 text-left">
+{{--            <flux:field>--}}
+{{--                <flux:input wire:model="first_name" placeholder="Vorname" />--}}
+{{--                <flux:error name="first_name"/>--}}
+{{--            </flux:field>--}}
+{{--            <flux:field>--}}
+{{--                <flux:input wire:model="last_name" placeholder="Name" />--}}
+{{--                <flux:error name="last_name"/>--}}
+{{--            </flux:field>--}}
             <flux:field>
                 <flux:input wire:model="email" placeholder="E-Mail Adresse" />
                 <flux:error name="email"/>
@@ -35,7 +35,7 @@ priority: 0
                 <flux:error name="privacy"/>
             </div>
         </div>
-        <div class="mt-4 flex items-center justify-center gap-6">
+        <div class="mt-4 flex items-center gap-6">
 
             <flux:button type="submit" variant="primary" class="cursor-pointer">Jetzt anmelden</flux:button>
             @if($showContactBtn)

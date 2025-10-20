@@ -54,5 +54,10 @@
     "follow": "follow",
     "nofollow": "nofollow",
     "Canonical URL": "Canonical URL",
-    "Redirect URL": "Weiterleitung URL"
+    "Redirect URL": "Weiterleitung URL",
+    "Dynamic meta": "Dynamische Meta-Daten",
+    "Image": "Bild",
+    "Media": "Media",
+    "Documents": "Dokumente",
+    "Url": "Url"
 }

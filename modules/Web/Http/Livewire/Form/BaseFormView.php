@@ -137,6 +137,7 @@ class BaseFormView extends Component
             $this->pageTitle = __t('Create', 'Web');
         }
 
+
         $this->setFields();
         $this->loadData();
         $this->setRules();
@@ -226,7 +227,9 @@ class BaseFormView extends Component
 
     public function setRules(): void
     {
-        $this->rules = [];
+        $this->rules = [
+            'data.name' => 'required',
+        ];
     }
 
     public function save(): void
@@ -317,10 +320,21 @@ class BaseFormView extends Component
     protected function initializeFields(): void
     {
         foreach ($this->fields as $field => $options) {
+
+            if ($field === 'tabs') {
+                foreach ($options as $tab => $tabFields) {
+                    foreach ($tabFields['fields'] as $tabField => $tabOptions) {
+                        if (isset($tabOptions['type']) && in_array($tabOptions['type'], ['fileUpload', 'avatar'], true)) {
+                            $this->fields[$field][$tab]['fields'][$tabField]['model'] = $this->record;
+                        }
+                    }
+                }
+            }
+
             if (!isset($this->data[$field])) {
                 $this->data[$field] = $options['default'] ?? null;
             }
-            if (isset($options['type']) && $options['type'] === 'fileUploader') {
+            if (isset($options['type']) && in_array($options['type'], ['fileUpload', 'avatar'], true)) {
                 $this->fields[$field]['model'] = $this->record;
             }
         }
@@ -362,7 +376,7 @@ class BaseFormView extends Component
 
     public function getCompanies(): ?array
     {
-        return Company::whereIn('id', session()->get('company_ids', null))->pluck('name', 'id')->toArray();
+        return Company::whereIn('id', session()->get('company_ids', []))->pluck('name', 'id')->toArray();
     }
 
     public function generateSlugFromName(): void

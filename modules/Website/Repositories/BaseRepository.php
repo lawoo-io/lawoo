@@ -14,11 +14,14 @@ class BaseRepository extends \Modules\Core\Abstracts\BaseRepository
         $query = parent::getFilteredData($params);
 
         $websiteId = session()->get('website_id', null);
-
-        $query->where(function ($q) use ($websiteId) {
-            $q->where('website_id', $websiteId);
-            $q->orWhereNull('website_id');
-        });
+        if ($websiteId){
+            $query->where(function ($q) use ($websiteId) {
+                $q->where('website_id', $websiteId);
+                $q->orWhereNull('website_id');
+            });
+        } else {
+            $query->whereNull('website_id');
+        }
 
         return $query;
     }

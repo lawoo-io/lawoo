@@ -61,15 +61,19 @@ priority: 0
                             <flux:tab.group class="mt-2 lg:col-span-12">
                                 <flux:tabs>
                                     @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
+                                        @if(!isset($tabOptions['show']) || $tabOptions['show'] === true)
                                         <flux:tab :name="$tabKey" class="cursor-pointer {{ in_array($tabKey, $this->tabsWithErrors) ? 'text-red-600! font-bold' : '' }}" :icon="$tabOptions['icon'] ?? false">{{ $tabOptions['label'] }}</flux:tab>
+                                        @endif
                                     @endforeach
                                 </flux:tabs>
                                 @foreach($this->fields['tabs'] as $tabKey => $tabOptions)
+                                    @if(!isset($tabOptions['show']) || $tabOptions['show'] === true)
                                     <flux:tab.panel :name="$tabKey" class="{{ $tabOptions['class'] ? $tabOptions['class'] : 'md:col-span-12' }}">
                                         @foreach($tabOptions['fields'] as $field => $options)
                                             <x-web.form.types :field="$field" :options="$options"/>
                                         @endforeach
                                     </flux:tab.panel>
+                                    @endif
                                 @endforeach
                             </flux:tab.group>
                         @endif

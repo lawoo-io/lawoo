@@ -9,6 +9,7 @@ priority: 0
     'field',
     'options'
 ])
+@if(!isset($options['show']) || $options['show'] === true)
 @if ($options['type'] === 'input')
     <x-web.form.types.input :field="$field" :options="$options"/>
 @elseif($options['type'] === 'switch')
@@ -21,6 +22,10 @@ priority: 0
     <x-web.form.types.select :field="$field" :options="$options" />
 @elseif($options['type'] === 'fileUploader')
     <x-web.form.types.file-uploader :field="$field" :options="$options"/>
+@elseif($options['type'] === 'fileUpload')
+    <x-web.form.types.file-upload-widget :field="$field" :options="$options"/>
+@elseif($options['type'] === 'avatar')
+    <x-web.form.types.avatar-widget :field="$field" :options="$options"/>
 @elseif($options['type'] === 'cards')
     <x-web.form.types.cards :field="$field" :options="$options"/>
 @elseif($options['type'] === 'textarea')
@@ -29,4 +34,5 @@ priority: 0
     <x-web.form.types.editor :field="$field" :options="$options"/>
 @elseif($options['type'] === 'pillbox')
     <x-web.form.types.pillbox :field="$field" :options="$options"/>
+@endif
 @endif

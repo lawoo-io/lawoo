@@ -6,6 +6,8 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Console\Commands\ClearPermissionCache;
 use Modules\Core\Console\Commands\InitCommand;
@@ -72,10 +74,17 @@ class CoreServiceProvider extends ServiceProvider
          */
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'core');
 
+        /**
+         * Register Component Namespace
+         */
+        self::registerComponentNamespaceForWebsites();
+
     }
 
     public function boot(): void
     {
+
+
         /**
          * Load Kernel
          */
@@ -141,6 +150,7 @@ class CoreServiceProvider extends ServiceProvider
             return "<?php echo __t({$expression}); ?>";
         });
 
+
     }
 
     protected function registerRbacMiddleware(): void
@@ -184,6 +194,29 @@ class CoreServiceProvider extends ServiceProvider
             if (class_exists($override->original_class) && class_exists($override->override_class)) {
                 $this->app->bind($override->original_class, $override->override_class);
             }
+        }
+    }
+
+
+    protected function registerComponentNamespaceForWebsites(): void
+    {
+        $websitesPath = resource_path('views/websites');
+
+        // 1. Überprüfe, ob der Hauptordner 'websites' überhaupt existiert
+        if (!File::isDirectory($websitesPath)) {
+            return;
+        }
+
+        // 2. Hole alle direkten Unterordner im 'websites'-Verzeichnis
+        $websiteDirectories = File::directories($websitesPath);
+
+        foreach ($websiteDirectories as $path) {
+            // 3. Extrahiere den reinen Ordnernamen aus dem vollen Pfad
+            // z.B. wird aus "/.../views/websites/website_lawoo" -> "website_lawoo"
+            $folderName = basename($path);
+
+
+            // 4. Registriere den Ordnernamen als Namespace, der auf den Pfad zeigt
         }
     }
 }
