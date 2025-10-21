@@ -53,7 +53,8 @@ class FileUploadWidget extends Component
 
         $this->showPreview = $options['show_preview'] ?? false;
 
-        $this->validationDescription = $options['description'] ?? $this->model->getFileValidationDescription($this->field);
+        if($this->model)
+            $this->validationDescription = $options['description'] ?? $this->model->getFileValidationDescription($this->field);
 
         $this->setToPublic = $options['set_to_public'] ?? false;
 
