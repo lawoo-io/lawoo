@@ -4,6 +4,7 @@ namespace Modules\Web\Http\Livewire\Widgets;
 
 
 use Modules\Core\Models\File;
+use Modules\Web\Http\Livewire\Widgets\FileUploadWidget;
 
 class AvatarWidget extends FileUploadWidget
 {
