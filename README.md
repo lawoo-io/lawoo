@@ -124,3 +124,8 @@ export default defineConfig({
     ],
 });
 ```
+
+### 11. Public Storage link
+```shell
+php artisan storage:link
+```

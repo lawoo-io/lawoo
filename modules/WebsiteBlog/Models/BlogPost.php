@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Core\Abstracts\BaseModel;
 use Modules\Core\Models\Traits\HasFiles;
 use Modules\Core\Models\UserExtended;
+use Modules\Website\Models\Website;
 
 /**
  * Database model description
@@ -53,6 +54,11 @@ class BlogPost extends BaseModel
     {
         return $this->belongsTo(BlogCategory::class, 'blog_category_id')
             ->select(['id', 'name', 'slug', 'meta_title', 'meta_description']);
+    }
+
+    public function website(): BelongsTo
+    {
+        return $this->belongsTo(Website::class, 'website_id');
     }
 
     public function user(): BelongsTo

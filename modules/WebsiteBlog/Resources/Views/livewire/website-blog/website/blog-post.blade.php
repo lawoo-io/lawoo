@@ -6,16 +6,39 @@ override_name: '',
 priority: 0
 --}}
 <div>
+    @php
+    $imageUrl = $post->image->getThumbnailUrl(1200, 800, 80) ?? false;
+    @endphp
     <x-slot:head>
-        <meta name="description" content="{{ $post->meta_description }}">
-        <meta name="robots" content="{{ $post->robot_index  ?? 'noindex' }}, {{ $post->robot_follow  ?? 'nofollow' }}">
+    <meta name="description" content="{{ $post->meta_description }}">
+    <meta name="robots" content="{{ $post->robot_index  ?? 'noindex' }}, {{ $post->robot_follow  ?? 'nofollow' }}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="{{ $post->website->name ?? '' }}" />
+    <meta property="og:title" content="{{ $post->meta_titl ?? $post->name }}" />
+    <meta property="og:description" content="{{ $post->short_description }}" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    @if($imageUrl)
+    <meta property="og:image" content="{{ url($imageUrl) }}" />
+    <meta property="og:image:alt" content="{{ $post->name }}" />
+    @endif
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ $post->name }}" />
+    <meta name="twitter:description" content="{{ $post->short_description }}" />
+    @if($imageUrl)
+    <meta name="twitter:image" content="{{ url($imageUrl) }}" />
+    <meta name="twitter:image:alt" content="{{ $post->name }}" />
+    @endif
     </x-slot:head>
     <div class="w-full">
         <!-- Bild -->
-        @if($post->image)
+        @if($imageUrl)
         <div class="bg-white shadow-none border-gray-200 border rounded-lg overflow-hidden transition hover:shadow-md flex flex-col md:flex-row mb-6">
             <div class="w-full h-64 md:h-80 lg:h-96 xl:h-110 bg-gray-100 flex items-center justify-center">
-                <img src="{{ $post->image->getThumbnailUrl(1200, 800, 80) }}"
+                <img src="{{ $imageUrl }}"
                      alt="{{ $post->name }}"
                      title="{{ $post->name }}"
                      class="h-full w-full object-cover">

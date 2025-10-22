@@ -5,7 +5,6 @@ namespace Modules\WebsiteBlog\Http\Livewire\Website;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Modules\WebsiteBlog\Models\BlogPost as Post;
 
@@ -25,7 +24,7 @@ class BlogPost extends Component
 
     protected function loadPost(): ?Model
     {
-        return Post::with(['category'])
+        return Post::with(['category', 'website'])
             ->where('slug', $this->slug)
             ->where('is_active', true)
             ->where('website_id', $this->websiteId)
