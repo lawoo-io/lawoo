@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Web\Http\Livewire\Widgets;
+namespace Modules\Web\Http\Livewire\Widgets2;
 
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;

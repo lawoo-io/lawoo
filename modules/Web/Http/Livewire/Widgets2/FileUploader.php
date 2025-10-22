@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Web\Http\Livewire\Widgets;
+namespace Modules\Web\Http\Livewire\Widgets2;
 
 
 use Flux\Flux;
