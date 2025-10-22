@@ -104,7 +104,7 @@ priority: 0
                         </h2>
 
                         <p class="text-gray-600 mb-4 flex-1">
-                            {{ Str::limit($post->short_description, 150) }}
+                            {{ Str::limit($post->short_description, $loop->first ? 256 : 150) }}
                         </p>
 
                         <div class="text-sm text-gray-500 mt-auto flex justify-between">
