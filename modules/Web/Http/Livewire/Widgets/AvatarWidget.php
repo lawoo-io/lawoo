@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Web\Http\Livewire\Widgets2;
+namespace Modules\Web\Http\Livewire\Widgets;
 
 
 use Modules\Core\Models\File;
 
-class AvatarWidget extends \Modules\Web\Http\Livewire\Widgets2\FileUploadWidget
+class AvatarWidget extends \Modules\Web\Http\Livewire\Widgets\FileUploadWidget
 {
     public ?File $avatar;
 
