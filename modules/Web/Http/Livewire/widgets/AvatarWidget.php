@@ -11,7 +11,8 @@ class AvatarWidget extends \Modules\Web\Http\Livewire\Widgets\FileUploadWidget
 
     public function loadExisting(): void
     {
-        $this->avatar = $this->model->{$this->field}()->first();
+        if($this->model)
+            $this->avatar = $this->model->{$this->field}()->first();
     }
 
     public function saveFile(): void

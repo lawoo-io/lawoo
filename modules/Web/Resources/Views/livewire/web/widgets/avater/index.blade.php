@@ -5,7 +5,8 @@ active: 1,
 override_name: '',
 priority: 0
 --}}
-<div>
+<div class="{{ $model ? '' : 'w-full' }}">
+    @if($model)
     <flux:file-upload wire:model="file">
         <!-- Custom avatar uploader -->
         <div class="
@@ -37,4 +38,7 @@ priority: 0
             @endif
         </div>
     </flux:file-upload>
+    @else
+        <flux:callout variant="secondary" class="w-full" icon="information-circle" heading="{{ __t('The image can be uploaded after creation.', 'Web') }}" />
+    @endif
 </div>

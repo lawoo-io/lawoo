@@ -8,6 +8,7 @@ priority: 0
 <div class="space-y-4" x-data="{ showPdfPreview: false, fileUrl: '', fileTitle: '' }">
 
     {{-- Flux File Input --}}
+    @if($model)
     <flux:file-upload
         wire:key="{{ $componentId . '-' . $uploaderKey }}"
         wire:model="{{ $multiple ? 'files' : 'file' }}"
@@ -22,6 +23,9 @@ priority: 0
             inline
         />
     </flux:file-upload>
+    @else
+        <flux:callout variant="secondary" class="w-full" icon="information-circle" heading="{{ __t('Files can be uploaded after creation.', 'Web') }}" />
+    @endif
 
     @if ($existingFiles && count($existingFiles))
     <div class="mt-3 flex flex-col gap-2">

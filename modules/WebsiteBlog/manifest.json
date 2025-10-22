@@ -4,6 +4,6 @@
     "category": "Basis",
     "author": "Your name or Company name",
     "author_url": "https://www.lawoo.io",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "depends": ["Web", "Website"]
 }
