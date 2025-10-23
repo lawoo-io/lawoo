@@ -3,6 +3,7 @@
 namespace Modules\Core\Services\Resources;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Modules\Core\Models\Module;
 
@@ -55,7 +56,7 @@ class OverrideViews
         $patched = self::applyPatchesRecursively($view);
         File::put($destination, $patched);
 
-        echo "{$source} → {$destination}\n";
+        Log::info("{$source} → {$destination}");
 
         return $destination;
     }

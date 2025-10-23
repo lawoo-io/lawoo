@@ -23,7 +23,7 @@ priority: 0
 
     @if ($module->enabled)
         <div class="my-3">
-            <flux:button wire:click="update({{ $module->id }})" size="xs">{{ __t('Update', 'Web') }}</flux:button>
+            <flux:button wire:click="updateModule({{ $module->id }})" size="xs">{{ __t('Update', 'Web') }}</flux:button>
             <flux:button wire:click="remove({{ $module->id }})" size="xs" variant="danger">{{ __t('Remove', 'Web') }}</flux:button>
         </div>
     @else

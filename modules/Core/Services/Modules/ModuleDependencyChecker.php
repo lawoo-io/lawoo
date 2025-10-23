@@ -3,6 +3,7 @@
 namespace Modules\Core\Services\Modules;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Models\Module;
 use Modules\Core\Services\PathService;
 
@@ -32,7 +33,14 @@ class ModuleDependencyChecker
                 $content = json_decode(File::get($manifestPath), true, 512, JSON_THROW_ON_ERROR);
                 Module::attachDependency($content, $mod);
             } catch (\JsonException $e) {
-                echo "Error in '$mod/manifest.json': " . $e->getMessage() . "\n";
+                $message = "Error in '$mod/manifest.json': " . $e->getMessage();
+
+                if (app()->runningInConsole()) {
+                    echo $message . PHP_EOL;
+                } else {
+                    Log::error($message);
+                    throw $e;
+                }
             }
         }
     }
