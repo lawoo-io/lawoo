@@ -1,0 +1,9 @@
+{
+    "name": "Contact Module",
+    "short_desc": "Contact Module für CRM",
+    "category": "Basis",
+    "author": "Alexander Kröker",
+    "author_url": "https://www.lawoo.io",
+    "version": "0.0.1",
+    "depends": []
+}

@@ -1,0 +1,47 @@
+contacts:
+  base: 1
+  sequence: 10
+  fields:
+    # Basis
+    id: id
+    type: string=50.nullable # person|company
+    salutation_id: integer.nullable
+    title_id: integer.nullable
+    first_name: string=100.nullable
+    last_name: string=100.nullable
+    name: string=256.nullable
+    language_id: integer.nullable
+    # Addresses
+    street: string=256.nullable
+    house_number: string=10.nullable
+    street_2: string=256.nullable
+    zip: string=15.nullable
+    city: string=150.nullable
+    state_id: integer.nullable
+    country_id: integer.nullable
+    # Contact data
+    email: string=150.nullable
+    phone: string=30.nullable
+    mobile: string=30.nullable
+    fax: string=30.nullable
+    website: string=256.nullable
+    # Legal and Finance
+    tax_id: string=30
+    tax_number: string=30
+    # system
+    parent_id: integer.nullable
+    is_customer: boolean.default=0
+    is_supplier: boolean.default=0
+    is_partner: boolean.default=0
+    is_employee: boolean.default=0
+    company_id: integer.nullable
+    is_active: boolean.default=1
+    is_contact: boolean.default=0
+    is_company: boolean.default=0
+    #dsgvo
+    gdpr_consent: boolean.default=0
+    gdpr_consent_at: timestamp.nullable
+    # system fields
+    created_at: timestamp.nullable
+    updated_at: timestamp.nullable
+    deleted_at: timestamp.nullable
