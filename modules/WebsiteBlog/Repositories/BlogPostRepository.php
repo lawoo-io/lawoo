@@ -2,7 +2,7 @@
 
 namespace Modules\WebsiteBlog\Repositories;
 
-use Modules\Website\Repositories\BaseRepository;
+use Modules\Core\Abstracts\BaseRepository;
 use Modules\WebsiteBlog\Models\BlogPost;
 
 class BlogPostRepository extends BaseRepository

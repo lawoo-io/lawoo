@@ -55,7 +55,7 @@ priority: 0
                 @endif
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
                     @foreach($this->fields as $field => $options)
-                        @if ($field !== 'tabs' && $field !== 'tab_*')
+                        @if ($field !== 'tabs' && $field !== 'tab_*' && !str_starts_with($field, 'group_'))
                             <x-web.form.types :field="$field" :options="$options"/>
                         @elseif($field === 'tabs')
                             <flux:tab.group class="mt-2 lg:col-span-12">
@@ -76,6 +76,19 @@ priority: 0
                                     @endif
                                 @endforeach
                             </flux:tab.group>
+                        @elseif(str_starts_with($field, 'group_'))
+                            <flux:fieldset id="{{ $field }}" name="{{ $field }}" class="{{ $options['class'] ? $options['class'] : 'md:col-span-12' }}">
+                                @if($options['label'])
+                                    <flux:legend>{{ $options['label'] }}</flux:legend>
+                                @endif
+
+                                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+                                @foreach($options['fields'] as $field => $options)
+                                    <x-web.form.types :field="$field" :options="$options"/>
+                                @endforeach
+                                </div>
+
+                            </flux:fieldset>
                         @endif
                     @endforeach
                 </div>

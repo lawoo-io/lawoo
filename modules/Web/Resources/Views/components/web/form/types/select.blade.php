@@ -10,14 +10,14 @@ priority: 0
     'options'
 ])
 <flux:field class="{{ $options['class'] }}">
-    @if ($options['label'])
+    @if (isset($options['label']) && $options['label'])
         <flux:label wire:dirty.class="!text-yellow-500" wire:target="data.{{ $field }}">{{ $options['label'] }}</flux:label>
     @endif
     @if (isset($options['description_top']))
         <flux:description>{{ $options['description_top'] }}</flux:description>
     @endif
 
-    <flux:select variant="listbox" wire:model="data.{{ $field }}" :wire:change="$options['change'] ?? false" searchable :placeholder="__t('--Please select--', 'Web')" :disabled="$options['disabled'] ?? false">
+    <flux:select variant="listbox" wire:model="data.{{ $field }}" :wire:change="$options['change'] ?? false" searchable :placeholder="$options['placeholder'] ?? __t('--Please select--', 'Web')" :disabled="$options['disabled'] ?? false">
     @foreach($options['options'] as $key => $value)
         <flux:select.option :value="$key">{{ $value }}</flux:select.option>
     @endforeach
